@@ -4,9 +4,59 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DnaDeviceMonitor"
+        xmlns:c="clr-namespace:DnaDeviceMonitor.Converters"
+        xmlns:g="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=DotNetProjects.DataVisualization.Toolkit"
         mc:Ignorable="d"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Closing="Window_Closing"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+    <Window.Resources>
+        <ResourceDictionary>
+            <c:TemperatureConverter x:Key="temperatureConverter" />
+        </ResourceDictionary>
+    </Window.Resources>
+    <DockPanel>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Column="0">
+                <TextBlock Name="lblStatus" Text="Disconnected" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="1">
+                <Button x:Name="btnConnect" DockPanel.Dock="Right" Content="Connect" Click="btnConnect_Click" Padding="8,0,8,0" />
+            </StatusBarItem>
+        </StatusBar>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="64px" />
+                <RowDefinition Height="24px" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalContentAlignment="Center" FontSize="18pt" Content="{Binding Path=LatestSample.Power, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} W"/>
+            <Label Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalContentAlignment="Center" FontSize="18pt" Content="{Binding Path=LatestSample.Temperature, Converter={StaticResource temperatureConverter}, FallbackValue=???}"/>
+            <Label Grid.Column="2" Grid.Row="0" HorizontalAlignment="Center" VerticalContentAlignment="Center" FontSize="18pt" Content="{Binding Path=LatestSample.Voltage, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} V"/>
+            <Label Grid.Column="3" Grid.Row="0" HorizontalAlignment="Center" VerticalContentAlignment="Center" FontSize="18pt" Content="{Binding Path=LatestSample.LiveResistance, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} Ω"/>
+            <!-- Battery Stats -->
+            <Label Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" FontSize="8pt" Content="Power" />
+            <Label Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" FontSize="8pt" Content="Temperature" />
+            <Label Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" FontSize="8pt" Content="Voltage" />
+            <Label Grid.Column="3" Grid.Row="1" HorizontalAlignment="Center" FontSize="8pt" Content="Resistance" />
+            <Label Grid.Column="4" Grid.Row="1" HorizontalAlignment="Center" FontSize="8pt" Content="Battery" />
+        </Grid>
+    </DockPanel>
 </Window>
