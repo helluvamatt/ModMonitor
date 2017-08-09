@@ -23,6 +23,8 @@ namespace DnaDeviceMonitor
     public partial class MainWindow : Window
     {
         public static DependencyProperty LatestSampleProperty = DependencyProperty.Register("LatestSample", typeof(Sample), typeof(MainWindow), new UIPropertyMetadata(new Sample()));
+        public static DependencyProperty MinTimeProperty = DependencyProperty.Register("MinTime", typeof(DateTime), typeof(MainWindow), new UIPropertyMetadata(DateTime.Now));
+        public static DependencyProperty MaxTimeProperty = DependencyProperty.Register("MaxTime", typeof(DateTime), typeof(MainWindow), new UIPropertyMetadata(DateTime.Now));
 
         public Sample LatestSample
         {
@@ -33,6 +35,30 @@ namespace DnaDeviceMonitor
             set
             {
                 SetValue(LatestSampleProperty, value);
+            }
+        }
+
+        public DateTime MinTime
+        {
+            get
+            {
+                return (DateTime)GetValue(MinTimeProperty);
+            }
+            set
+            {
+                SetValue(MinTimeProperty, value);
+            }
+        }
+
+        public DateTime MaxTime
+        {
+            get
+            {
+                return (DateTime)GetValue(MaxTimeProperty);
+            }
+            set
+            {
+                SetValue(MaxTimeProperty, value);
             }
         }
 
@@ -137,7 +163,13 @@ namespace DnaDeviceMonitor
 
         private void SampleArrived(Sample sample)
         {
-            if (!Dispatcher.HasShutdownStarted) Dispatcher.Invoke(() => { LatestSample = sample; GraphData.Add(sample); });
+            if (!Dispatcher.HasShutdownStarted) Dispatcher.Invoke(() =>
+            {
+                LatestSample = sample;
+                MinTime = sample.End - TimeSpan.FromSeconds(30);
+                MaxTime = sample.End;
+                GraphData.Add(sample);
+            });
         }
     }
 
