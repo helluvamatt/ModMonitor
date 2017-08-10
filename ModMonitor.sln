@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DnaDeviceMonitor", "ModMonitor\DnaDeviceMonitor.csproj", "{B0FB5CBD-0173-4E10-9967-3DB6FD33DB25}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModMonitor", "ModMonitor\ModMonitor.csproj", "{B0FB5CBD-0173-4E10-9967-3DB6FD33DB25}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibDnaSerial", "LibDnaSerial\LibDnaSerial.csproj", "{BB9ACC29-53E4-4913-9CB6-32D719690C65}"
 EndProject
