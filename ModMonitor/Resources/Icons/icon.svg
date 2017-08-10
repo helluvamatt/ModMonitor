@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 128 128" width="128" height="128">
+  <circle cx="66" cy="66" r="62" fill="#000000" fill-opacity="0.4" />
+  <circle cx="64" cy="64" r="62" fill="#09a" />
+  <text x="66" y="92" text-anchor="middle" font="Arial" font-size="100" stroke="#cccccc" fill="#cccccc">Ω</text>
+  <text x="64" y="90" text-anchor="middle" font="Arial" font-size="100" stroke="#ffffff" fill="#ffffff">Ω</text>
+</svg>

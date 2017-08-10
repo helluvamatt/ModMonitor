@@ -44,7 +44,7 @@ namespace ModMonitor
 
         private void about_Click(object sender, RoutedEventArgs e)
         {
-
+            new AboutWindow().ShowDialog();
         }
 
         private void MainViewModel_SaveFileRequested(object sender, Events.SaveFileRequestedEventArgs args)

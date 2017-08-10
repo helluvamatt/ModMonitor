@@ -1,0 +1,37 @@
+﻿<Window x:Class="ModMonitor.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ModMonitor"
+        mc:Ignorable="d"
+        Title="Mod Monitor" Height="500" Width="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Image Grid.Row="0" Source="/Resources/Icons/icon.png" Stretch="None" />
+        <TextBlock Grid.Row="1" TextAlignment="Center" FontSize="16pt" FontWeight="Bold">Mod Monitor</TextBlock>
+        <TextBlock Grid.Row="2" TextAlignment="Center" FontSize="12pt">Copyright © 2017 Matt Schneeberger</TextBlock>
+        <ScrollViewer Grid.Row="3">
+            <StackPanel Orientation="Vertical" Margin="5">
+                <StackPanel.Resources>
+                    <Style x:Key="licenseTextStyle" TargetType="TextBlock">
+                        <Setter Property="FontFamily" Value="Courier New" />
+                        <Setter Property="FontSize" Value="10pt" />
+                        <Setter Property="TextWrapping" Value="Wrap" />
+                        <Setter Property="Margin" Value="0 8 0 0" />
+                    </Style>
+                </StackPanel.Resources>
+                <TextBlock Style="{StaticResource licenseTextStyle}">This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.</TextBlock>
+                <TextBlock Style="{StaticResource licenseTextStyle}">This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.</TextBlock>
+                <TextBlock Style="{StaticResource licenseTextStyle}">You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.</TextBlock>
+            </StackPanel>
+        </ScrollViewer>
+        <Button Grid.Row="4" Margin="5" Padding="10 2 10 2" HorizontalAlignment="Center" Click="close_Click">OK</Button>
+    </Grid>
+</Window>
