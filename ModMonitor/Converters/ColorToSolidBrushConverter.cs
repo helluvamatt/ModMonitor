@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace DnaDeviceMonitor.Converters
+namespace ModMonitor.Converters
 {
     [ValueConversion(typeof(Color), typeof(System.Windows.Media.Brush))]
     public class ColorToSolidBrushConverter : IValueConverter

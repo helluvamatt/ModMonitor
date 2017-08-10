@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace DnaDeviceMonitor
+namespace ModMonitor
 {
     class SampleRecorder : IDisposable
     {

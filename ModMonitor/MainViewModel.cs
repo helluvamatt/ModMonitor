@@ -1,4 +1,4 @@
-﻿using DnaDeviceMonitor.Events;
+﻿using ModMonitor.Events;
 using LibDnaSerial;
 using MvvmFoundation.Wpf;
 using System;
@@ -12,7 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace DnaDeviceMonitor
+namespace ModMonitor
 {
     class MainViewModel : DependencyObject, IDisposable
     {

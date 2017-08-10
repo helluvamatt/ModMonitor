@@ -3,7 +3,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace DnaDeviceMonitor.Converters
+namespace ModMonitor.Converters
 {
     [ValueConversion(typeof(Temperature), typeof(string))]
     class TemperatureConverter : IValueConverter

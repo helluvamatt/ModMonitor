@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace DnaDeviceMonitor.Converters
+namespace ModMonitor.Converters
 {
     [ValueConversion(typeof(Temperature), typeof(float))]
     class TemperatureValueConverter : DependencyObject, IValueConverter

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace DnaDeviceMonitor.Converters
+namespace ModMonitor.Converters
 {
     [ValueConversion(typeof(bool), typeof(Visibility))]
     class BooleanToVisibilityConverter : IValueConverter
