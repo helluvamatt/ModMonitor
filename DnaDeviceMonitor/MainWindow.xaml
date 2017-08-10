@@ -6,16 +6,58 @@
         xmlns:local="clr-namespace:DnaDeviceMonitor"
         xmlns:c="clr-namespace:DnaDeviceMonitor.Converters"
         xmlns:g="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=DotNetProjects.DataVisualization.Toolkit"
+        xmlns:dv="clr-namespace:System.Windows.Controls.DataVisualization;assembly=DotNetProjects.DataVisualization.Toolkit"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Closing="Window_Closing"
-        Title="MainWindow" Height="350" Width="525">
+        Closed="Window_Closed"
+        Title="Mod Monitor" Height="720" Width="1280">
+    <Window.DataContext>
+        <local:MainViewModel SaveFileRequested="MainViewModel_SaveFileRequested" />
+    </Window.DataContext>
     <Window.Resources>
         <ResourceDictionary>
             <c:TemperatureConverter x:Key="temperatureConverter" />
+            <c:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+            <c:BooleanToVisibilityConverter x:Key="notBooleanToVisibilityConverter" Negate="True" />
+            <Style TargetType="Label">
+                <Setter Property="FontSize" Value="8pt" />
+                <Setter Property="Padding" Value="2" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
+            <Style TargetType="Label" x:Key="legendHeader">
+                <Setter Property="FontSize" Value="10pt" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="Padding" Value="2" />
+            </Style>
+            <Style TargetType="{x:Type dv:Legend}" x:Key="hideLegendStyle">
+                <Setter Property="Width" Value="0" />
+                <Setter Property="Height" Value="0" />
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Device">
+                <MenuItem Header="O_ptions" InputGestureText="Alt + P">
+                    <MenuItem.Icon>
+                        <fa:ImageAwesome Icon="Cogs" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="E_xit" Click="exit_Click" InputGestureText="Alt + F4">
+                    <MenuItem.Icon>
+                        <fa:ImageAwesome Icon="SignOut" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About" Click="about_Click" InputGestureText="F1">
+                    <MenuItem.Icon>
+                        <fa:ImageAwesome Icon="InfoCircle" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -28,63 +70,247 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
             <StatusBarItem Grid.Column="0">
-                <TextBlock Name="lblStatus" Text="Disconnected" />
+                <TextBlock Text="{Binding Status}" />
             </StatusBarItem>
             <StatusBarItem Grid.Column="1">
-                <Button x:Name="btnConnect" DockPanel.Dock="Right" Content="Connect" Click="btnConnect_Click" Padding="8,0,8,0" />
+                <Button DockPanel.Dock="Right" Content="{Binding ConnectText}" IsEnabled="{Binding ConnectEnabled}" Command="{Binding ConnectCommand}" Padding="8,0,8,0" />
             </StatusBarItem>
         </StatusBar>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="64px" />
-                <RowDefinition Height="24px" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Grid.Row="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18pt" Content="{Binding Path=LatestSample.Power, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} W"/>
-            <Label Grid.Column="1" Grid.Row="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18pt" Content="{Binding Path=LatestSample.Temperature, Converter={StaticResource temperatureConverter}, FallbackValue=???}"/>
-            <Label Grid.Column="2" Grid.Row="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18pt" Content="{Binding Path=LatestSample.Voltage, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} V"/>
-            <Label Grid.Column="3" Grid.Row="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18pt" Content="{Binding Path=LatestSample.LiveResistance, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} Ω"/>
-            <StackPanel Grid.Column="4" Grid.Row="0" VerticalAlignment="Center">
-                <Label HorizontalContentAlignment="Center" FontSize="18pt" Content="{Binding Path=LatestSample.BatteryLevel, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0}%" />
-                <Label HorizontalContentAlignment="Center" FontSize="12pt" Margin="0 -10 0 0" Content="{Binding Path=LatestSample.BatteryVoltage, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0:#0.00} V" />
+
+            <Grid Grid.Column="2" Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Style="{StaticResource legendHeader}" Content="Coil" />
+
+                <DockPanel Grid.Column="0" Grid.Row="1" Background="{Binding ColorPower}">
+                    <CheckBox IsChecked="{Binding ShowPower}" VerticalAlignment="Center" Margin="3" />
+                </DockPanel>
+                <Label Grid.Column="1" Grid.Row="1" Content="Power" />
+                <Label Grid.Column="2" Grid.Row="1" Content="{Binding Path=LatestSample.Power, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} W"/>
+
+                <DockPanel Grid.Column="0" Grid.Row="2" Background="{Binding ColorTemperature}">
+                    <CheckBox IsChecked="{Binding ShowTemperature}" VerticalAlignment="Center" Margin="3" />
+                </DockPanel>
+                <Label Grid.Column="1" Grid.Row="2" Content="Temperature" />
+                <Label Grid.Column="2" Grid.Row="2" Content="{Binding Path=LatestSample.Temperature, Converter={StaticResource temperatureConverter}, FallbackValue=???}" />
+
+                <DockPanel Grid.Column="0" Grid.Row="3" Background="{Binding ColorVoltage}">
+                    <CheckBox IsChecked="{Binding ShowVoltage}" VerticalAlignment="Center" Margin="3" />
+                </DockPanel>
+                <Label Grid.Column="1" Grid.Row="3" Content="Voltage" />
+                <Label Grid.Column="2" Grid.Row="3" Content="{Binding Path=LatestSample.Voltage, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} V" />
+
+                <DockPanel Grid.Column="0" Grid.Row="4" Background="{Binding ColorCurrent}">
+                    <CheckBox IsChecked="{Binding ShowCurrent}" VerticalAlignment="Center" Margin="3" />
+                </DockPanel>
+                <Label Grid.Column="1" Grid.Row="4" Content="Current" />
+                <Label Grid.Column="2" Grid.Row="4" Content="{Binding Path=LatestSample.Current, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} A" />
+
+                <DockPanel Grid.Column="0" Grid.Row="5" Background="{Binding ColorLiveResistance}">
+                    <CheckBox IsChecked="{Binding ShowLiveResistance}" VerticalAlignment="Center" Margin="3" />
+                </DockPanel>
+                <Label Grid.Column="1" Grid.Row="5" Content="Live Resistance" />
+                <Label Grid.Column="2" Grid.Row="5" Content="{Binding Path=LatestSample.LiveResistance, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} Ω" />
+
+                <DockPanel Grid.Column="0" Grid.Row="6" Background="{Binding ColorColdResistance}">
+                    <CheckBox IsChecked="{Binding ShowColdResistance}" VerticalAlignment="Center" Margin="3" />
+                </DockPanel>
+                <Label Grid.Column="1" Grid.Row="6" Content="Cold Resistance" />
+                <Label Grid.Column="2" Grid.Row="6" Content="{Binding Path=LatestSample.ColdResistance, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} Ω" />
+
+                <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="7" Style="{StaticResource legendHeader}" Content="Battery" />
+
+                <DockPanel Grid.Column="0" Grid.Row="8" Background="{Binding ColorBatteryLevel}">
+                    <CheckBox IsChecked="{Binding ShowBatteryLevel}" VerticalAlignment="Center" Margin="3" />
+                </DockPanel>
+                <Label Grid.Column="1" Grid.Row="8" Content="Battery Level" />
+                <Label Grid.Column="2" Grid.Row="8" Content="{Binding Path=LatestSample.BatteryLevel, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0}%" />
+
+                <DockPanel Grid.Column="0" Grid.Row="9" Background="{Binding ColorBatteryVoltage}">
+                    <CheckBox IsChecked="{Binding ShowBatteryVoltage}" VerticalAlignment="Center" Margin="3" />
+                </DockPanel>
+                <Label Grid.Column="1" Grid.Row="9" Content="Battery Voltage" />
+                <Label Grid.Column="2" Grid.Row="9" Content="{Binding Path=LatestSample.BatteryVoltage, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0:#0.00} V" />
+
+                <Label Grid.Column="0" Grid.ColumnSpan="3"  Grid.Row="10" Style="{StaticResource legendHeader}" Content="Device" />
+
+                <DockPanel Grid.Column="0" Grid.Row="11" Background="{Binding ColorBoardTemperature}">
+                    <CheckBox IsChecked="{Binding ShowBoardTemperature}" VerticalAlignment="Center" Margin="3" />
+                </DockPanel>
+                <Label Grid.Column="1" Grid.Row="11" Content="Board Temperature" />
+                <Label Grid.Column="2" Grid.Row="11" Content="{Binding Path=LatestSample.BoardTemperature, Converter={StaticResource temperatureConverter}, FallbackValue=???}" />
+
+                <DockPanel Grid.Column="0" Grid.Row="12" Background="{Binding ColorRoomTemperature}">
+                    <CheckBox IsChecked="{Binding ShowRoomTemperature}" VerticalAlignment="Center" Margin="3" />
+                </DockPanel>
+                <Label Grid.Column="1" Grid.Row="12" Content="Room Temperature" />
+                <Label Grid.Column="2" Grid.Row="12" Content="{Binding Path=LatestSample.RoomTemperature, Converter={StaticResource temperatureConverter}, FallbackValue=???}" />
+
+                <DockPanel Grid.Column="0" Grid.Row="13" Background="{Binding ColorPowerSetpoint}">
+                    <CheckBox IsChecked="{Binding ShowPowerSetpoint}" VerticalAlignment="Center" Margin="3" />
+                </DockPanel>
+                <Label Grid.Column="1" Grid.Row="13" Content="Power Setpoint" />
+                <Label Grid.Column="2" Grid.Row="13" Content="{Binding Path=LatestSample.PowerSetpoint, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} W"/>
+
+                <DockPanel Grid.Column="0" Grid.Row="14" Background="{Binding ColorTemperatureSetpoint}">
+                    <CheckBox IsChecked="{Binding ShowTemperatureSetpoint}" VerticalAlignment="Center" Margin="3" />
+                </DockPanel>
+                <Label Grid.Column="1" Grid.Row="14" Content="Temperature Setpoint" />
+                <Label Grid.Column="2" Grid.Row="14" Content="{Binding Path=LatestSample.TemperatureSetpoint, Converter={StaticResource temperatureConverter}, FallbackValue=???}" />
+
+            </Grid>
+            <GridSplitter Grid.Column="1" Grid.Row="0" Margin="5 0 5 0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="DarkGray" ShowsPreview="True" Width="2" Cursor="SizeWE" />
+
+            <g:Chart Grid.Column="0" Grid.Row="0" LegendStyle="{StaticResource hideLegendStyle}" BorderThickness="0">
+                <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.Temperature.Value" DependentRangeAxis="{Binding ElementName=yAxisSingleTemperature}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowTemperature, Converter={StaticResource booleanToVisibilityConverter}}">
+                    <g:LineSeries.DataPointStyle>
+                        <Style TargetType="{x:Type g:DataPoint}">
+                            <Setter Property="Background" Value="{Binding ColorTemperature}" />
+                            <Setter Property="Template" Value="{x:Null}"/>
+                        </Style>
+                    </g:LineSeries.DataPointStyle>
+                </g:LineSeries>
+                <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.TemperatureSetpoint.Value" DependentRangeAxis="{Binding ElementName=yAxisSingleTemperature}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowTemperatureSetpoint, Converter={StaticResource booleanToVisibilityConverter}}">
+                    <g:LineSeries.DataPointStyle>
+                        <Style TargetType="{x:Type g:DataPoint}">
+                            <Setter Property="Background" Value="{Binding ColorTemperatureSetpoint}" />
+                            <Setter Property="Template" Value="{x:Null}"/>
+                        </Style>
+                    </g:LineSeries.DataPointStyle>
+                </g:LineSeries>
+                <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.Power" DependentRangeAxis="{Binding ElementName=yAxisSinglePower}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowPower, Converter={StaticResource booleanToVisibilityConverter}}">
+                    <g:LineSeries.DataPointStyle>
+                        <Style TargetType="{x:Type g:DataPoint}">
+                            <Setter Property="Background" Value="{Binding ColorPower}" />
+                            <Setter Property="Template" Value="{x:Null}"/>
+                        </Style>
+                    </g:LineSeries.DataPointStyle>
+                </g:LineSeries>
+                <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.PowerSetpoint" DependentRangeAxis="{Binding ElementName=yAxisSinglePower}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowPowerSetpoint, Converter={StaticResource booleanToVisibilityConverter}}">
+                    <g:LineSeries.DataPointStyle>
+                        <Style TargetType="{x:Type g:DataPoint}">
+                            <Setter Property="Background" Value="{Binding ColorPowerSetpoint}" />
+                            <Setter Property="Template" Value="{x:Null}"/>
+                        </Style>
+                    </g:LineSeries.DataPointStyle>
+                </g:LineSeries>
+                <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.Voltage" DependentRangeAxis="{Binding ElementName=yAxisSingleVoltage}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowVoltage, Converter={StaticResource booleanToVisibilityConverter}}">
+                    <g:LineSeries.DataPointStyle>
+                        <Style TargetType="{x:Type g:DataPoint}">
+                            <Setter Property="Background" Value="{Binding ColorVoltage}" />
+                            <Setter Property="Template" Value="{x:Null}" />
+                        </Style>
+                    </g:LineSeries.DataPointStyle>
+                </g:LineSeries>
+                <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.Current" DependentRangeAxis="{Binding ElementName=yAxisSingleCurrent}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowCurrent, Converter={StaticResource booleanToVisibilityConverter}}">
+                    <g:LineSeries.DataPointStyle>
+                        <Style TargetType="{x:Type g:DataPoint}">
+                            <Setter Property="Background" Value="{Binding ColorCurrent}" />
+                            <Setter Property="Template" Value="{x:Null}" />
+                        </Style>
+                    </g:LineSeries.DataPointStyle>
+                </g:LineSeries>
+                <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.LiveResistance" DependentRangeAxis="{Binding ElementName=yAxisSingleResistance}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowLiveResistance, Converter={StaticResource booleanToVisibilityConverter}}">
+                    <g:LineSeries.DataPointStyle>
+                        <Style TargetType="{x:Type g:DataPoint}">
+                            <Setter Property="Background" Value="{Binding ColorLiveResistance}" />
+                            <Setter Property="Template" Value="{x:Null}" />
+                        </Style>
+                    </g:LineSeries.DataPointStyle>
+                </g:LineSeries>
+                <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.ColdResistance" DependentRangeAxis="{Binding ElementName=yAxisSingleResistance}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowColdResistance, Converter={StaticResource booleanToVisibilityConverter}}">
+                    <g:LineSeries.DataPointStyle>
+                        <Style TargetType="{x:Type g:DataPoint}">
+                            <Setter Property="Background" Value="{Binding ColorColdResistance}" />
+                            <Setter Property="Template" Value="{x:Null}" />
+                        </Style>
+                    </g:LineSeries.DataPointStyle>
+                </g:LineSeries>
+                <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.BatteryVoltage" DependentRangeAxis="{Binding ElementName=yAxisSingleVoltage}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowBatteryVoltage, Converter={StaticResource booleanToVisibilityConverter}}">
+                    <g:LineSeries.DataPointStyle>
+                        <Style TargetType="{x:Type g:DataPoint}">
+                            <Setter Property="Background" Value="{Binding ColorBatteryVoltage}" />
+                            <Setter Property="Template" Value="{x:Null}" />
+                        </Style>
+                    </g:LineSeries.DataPointStyle>
+                </g:LineSeries>
+                <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.BoardTemperature.Value" DependentRangeAxis="{Binding ElementName=yAxisSingleTemperatureLow}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowBoardTemperature, Converter={StaticResource booleanToVisibilityConverter}}">
+                    <g:LineSeries.DataPointStyle>
+                        <Style TargetType="{x:Type g:DataPoint}">
+                            <Setter Property="Background" Value="{Binding ColorBoardTemperature}" />
+                            <Setter Property="Template" Value="{x:Null}" />
+                        </Style>
+                    </g:LineSeries.DataPointStyle>
+                </g:LineSeries>
+                <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.RoomTemperature.Value" DependentRangeAxis="{Binding ElementName=yAxisSingleTemperatureLow}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowRoomTemperature, Converter={StaticResource booleanToVisibilityConverter}}">
+                    <g:LineSeries.DataPointStyle>
+                        <Style TargetType="{x:Type g:DataPoint}">
+                            <Setter Property="Background" Value="{Binding ColorRoomTemperature}" />
+                            <Setter Property="Template" Value="{x:Null}" />
+                        </Style>
+                    </g:LineSeries.DataPointStyle>
+                </g:LineSeries>
+                <g:Chart.Axes>
+                    <g:DateTimeAxis Orientation="X" Minimum="{Binding Path=MinTime}" Maximum="{Binding Path=MaxTime}" />
+                    <g:LinearAxis x:Name="yAxisSingleTemperature" Orientation="Y" Minimum="0" Maximum="{Binding MaxTemp.Value}">
+                        <g:LinearAxis.Title>
+                            <TextBlock Text="{Binding TemperatureUnit, StringFormat={}Temperature (º{0})}" />
+                        </g:LinearAxis.Title>
+                    </g:LinearAxis>
+                    <g:LinearAxis x:Name="yAxisSingleTemperatureLow" Orientation="Y" Minimum="0" Maximum="{Binding MaxTempLow.Value}">
+                        <g:LinearAxis.Title>
+                            <TextBlock Text="{Binding TemperatureUnit, StringFormat={}Temperature (º{0})}" />
+                        </g:LinearAxis.Title>
+                    </g:LinearAxis>
+                    <g:LinearAxis x:Name="yAxisSinglePower" Orientation="Y" Title="Power (W)" Minimum="0" Maximum="100" />
+                    <g:LinearAxis x:Name="yAxisSingleVoltage" Orientation="Y" Title="Voltage (V)" Minimum="0" Maximum="10" />
+                    <g:LinearAxis x:Name="yAxisSingleCurrent" Orientation="Y" Title="Current (A)" Minimum="0" Maximum="40" />
+                    <g:LinearAxis x:Name="yAxisSingleResistance" Orientation="Y" Title="Resistance (Ω)" Minimum="0" Maximum="3" />
+                </g:Chart.Axes>
+            </g:Chart>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" FontSize="24pt" Visibility="{Binding IsRecording, Converter={StaticResource booleanToVisibilityConverter}}">Recording In Progress...</TextBlock>
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="8 8 8 8">
+                <ToggleButton IsChecked="{Binding IsGraphPaused}" Padding="5 5 5 5">
+                    <fa:FontAwesome Icon="Pause" />
+                </ToggleButton>
+                <Button Padding="5 5 5 5" Foreground="Red" Margin="5 0 0 0" Visibility="{Binding IsRecording, Converter={StaticResource notBooleanToVisibilityConverter}}" Command="{Binding StartRecordingCommand}">
+                    <fa:FontAwesome Icon="Circle" />
+                </Button>
+                <Button Padding="5 5 5 5" Margin="5 0 0 0" Visibility="{Binding IsRecording, Converter={StaticResource booleanToVisibilityConverter}}" Command="{Binding StopRecordingCommand}">
+                    <fa:FontAwesome Icon="Square" />
+                </Button>
             </StackPanel>
-            <Label Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Center" FontSize="8pt" Content="Power" />
-            <Label Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center" FontSize="8pt" Content="Temperature" />
-            <Label Grid.Column="2" Grid.Row="1" HorizontalContentAlignment="Center" FontSize="8pt" Content="Voltage" />
-            <Label Grid.Column="3" Grid.Row="1" HorizontalContentAlignment="Center" FontSize="8pt" Content="Resistance" />
-            <Label Grid.Column="4" Grid.Row="1" HorizontalContentAlignment="Center" FontSize="8pt" Content="Battery" />
-            <ScrollViewer Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="5" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
-                <g:Chart>
-                    <g:LineSeries IndependentValuePath="End" DependentValuePath="Temperature.Value" DependentRangeAxis="{Binding ElementName=yAxisTemperature}" ItemsSource="{Binding Path=GraphData}" Title="Temperature">
-                        <g:LineSeries.DataPointStyle>
-                            <Style TargetType="{x:Type g:DataPoint}">
-                                <Setter Property="Background" Value="Red"/>
-                                <Setter Property="Template" Value="{x:Null}"/>
-                            </Style>
-                        </g:LineSeries.DataPointStyle>
-                    </g:LineSeries>
-                    <g:LineSeries IndependentValuePath="End" DependentValuePath="Power" DependentRangeAxis="{Binding ElementName=yAxisPower}" ItemsSource="{Binding Path=GraphData}" Title="Power">
-                        <g:LineSeries.DataPointStyle>
-                            <Style TargetType="{x:Type g:DataPoint}">
-                                <Setter Property="Background" Value="Lime"/>
-                                <Setter Property="Template" Value="{x:Null}"/>
-                            </Style>
-                        </g:LineSeries.DataPointStyle>
-                    </g:LineSeries>
-                    <g:Chart.Axes>
-                        <g:DateTimeAxis Orientation="X" Name="xAxis" Minimum="{Binding Path=MinTime}" Maximum="{Binding Path=MaxTime}" />
-                        <g:LinearAxis x:Name="yAxisTemperature" Orientation="Y" Title="Temperature" Minimum="0" Maximum="600" />
-                        <g:LinearAxis x:Name="yAxisPower" Orientation="Y" Title="Power" Minimum="0" Maximum="100" />
-                    </g:Chart.Axes>
-                </g:Chart>
-            </ScrollViewer>
         </Grid>
     </DockPanel>
 </Window>

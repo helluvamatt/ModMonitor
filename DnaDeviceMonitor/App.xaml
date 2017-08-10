@@ -5,8 +5,7 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-            </ResourceDictionary.MergedDictionaries>
+            <FontFamily x:Key="Icons">pack://application:,,,/Resources/#icons</FontFamily>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

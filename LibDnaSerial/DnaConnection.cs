@@ -35,6 +35,7 @@ namespace LibDnaSerial
         private Regex tempRegex;
 
         private uint cellCount = 0;
+        private ulong sampleIndex = 0;
 
         /// <summary>
         /// C'tor
@@ -75,6 +76,7 @@ namespace LibDnaSerial
         public Sample GetSample()
         {
             Sample s = new Sample();
+            s.Index = sampleIndex++;
             s.Begin = DateTime.Now;
             s.BatteryVoltage = GetBatteryVoltage();
             s.CellVoltages = GetCellVoltages();
@@ -86,6 +88,7 @@ namespace LibDnaSerial
             s.ColdResistance = GetResistance();
             s.LiveResistance = GetLiveResistance();
             s.Temperature = GetTemperature();
+            s.TemperatureSetpoint = GetTemperatureSetpoint();
             s.BoardTemperature = GetBoardTemperature();
             s.RoomTemperature = GetRoomTemperature();
             s.Voltage = GetVoltage();
@@ -353,6 +356,18 @@ namespace LibDnaSerial
             }
 
             SendMessage(new Message(CODE_TEMPERATURE, string.Format("{0:0,0.000}{1}", temperature.Value, temperature.Unit)));
+        }
+
+        /// <summary>
+        /// Get the current temperature limiting setpoint
+        /// </summary>
+        /// <returns>Temperature setpoint</returns>
+        public Temperature GetTemperatureSetpoint()
+        {
+            SendMessage(new Message(CODE_TEMPERATURE, "GET SP"));
+            var m = ReadMessage();
+            if (m.Argument == "?") return new Temperature { Unit = TemperatureUnit.C, Value = 0f };
+            return ParseTemperature(m.Argument);
         }
 
         /// <summary>
