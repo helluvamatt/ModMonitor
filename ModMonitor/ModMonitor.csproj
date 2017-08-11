@@ -84,8 +84,16 @@
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SampleRecorder.cs" />
+    <Compile Include="DevicePicker.xaml.cs">
+      <DependentUpon>DevicePicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Events\DevicePickerRequestedEvent.cs" />
+    <Compile Include="Models\SampleRecorder.cs" />
     <Page Include="AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DevicePicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -102,15 +110,16 @@
     <Compile Include="Converters\TemperatureConverter.cs" />
     <Compile Include="Converters\TemperatureValueConverter.cs" />
     <Compile Include="Events\SaveFileRequestedEvent.cs" />
-    <Compile Include="ImmutableTemperature.cs" />
-    <Compile Include="MainViewModel.cs" />
+    <Compile Include="Models\ImmutableTemperature.cs" />
+    <Compile Include="ViewModels\DevicePickerViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ObservableDictionary.cs" />
+    <Compile Include="Utils\ObservableDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

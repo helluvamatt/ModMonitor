@@ -24,6 +24,7 @@ namespace LibDnaSerial
                     dev.SerialPort = serialPort;
                     dev.Manufacturer = conn.GetManufacturer();
                     dev.ProductName = conn.GetProductName();
+                    dev.SerialNumber = conn.GetSerialNumber();
                     dev.Features = conn.GetFeatures();
                     return dev;
                 }

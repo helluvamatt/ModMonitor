@@ -196,6 +196,17 @@ namespace LibDnaSerial
         }
 
         /// <summary>
+        /// Get the board serial number
+        /// </summary>
+        /// <returns>Serial number</returns>
+        public string GetSerialNumber()
+        {
+            SendMessage(new Message(CODE_INFO, "GET SERIAL"));
+            var m = ReadMessage();
+            return m.Argument;
+        }
+
+        /// <summary>
         /// Get feature codes
         /// </summary>
         /// <param name="featureNumber">1-based index</param>
@@ -315,6 +326,7 @@ namespace LibDnaSerial
         {
             SendMessage(new Message(CODE_RESISTANCE, "GET"));
             var m = ReadMessage();
+            if (m.Argument == "?") return 0f;
             return float.Parse(TrimUnit(m.Argument, UNIT_OHM));
         }
 

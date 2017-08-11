@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace ModMonitor
+namespace ModMonitor.Models
 {
     class SampleRecorder : IDisposable
     {

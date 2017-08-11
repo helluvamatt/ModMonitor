@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 
-namespace ModMonitor
+namespace ModMonitor.Utils
 {
     /// <summary>
     /// Provides a dictionary for use with data binding.

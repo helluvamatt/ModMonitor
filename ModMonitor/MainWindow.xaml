@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ModMonitor"
         xmlns:c="clr-namespace:ModMonitor.Converters"
+        xmlns:vm="clr-namespace:ModMonitor.ViewModels"
         xmlns:g="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=DotNetProjects.DataVisualization.Toolkit"
         xmlns:dv="clr-namespace:System.Windows.Controls.DataVisualization;assembly=DotNetProjects.DataVisualization.Toolkit"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
@@ -12,7 +13,7 @@
         Closed="Window_Closed"
         Title="Mod Monitor" Height="720" Width="1280">
     <Window.DataContext>
-        <local:MainViewModel SaveFileRequested="MainViewModel_SaveFileRequested" />
+        <vm:MainViewModel SaveFileRequested="MainViewModel_SaveFileRequested" DevicePickerRequested="MainViewModel_DevicePickerRequested" />
     </Window.DataContext>
     <Window.Resources>
         <ResourceDictionary>

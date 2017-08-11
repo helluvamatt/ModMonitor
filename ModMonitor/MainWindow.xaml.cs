@@ -58,5 +58,10 @@ namespace ModMonitor
                 args.Callback(dialog.FileName);
             }
         }
+
+        private void MainViewModel_DevicePickerRequested(object sender, Events.DevicePickerRequestedEventArgs args)
+        {
+            new DevicePicker(args.Callback).ShowDialog();
+        }
     }
 }

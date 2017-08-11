@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace ModMonitor
+namespace ModMonitor.Models
 {
     /// <summary>
     /// Represents a temperature where the value follows the unit, meaning that the input temperature is fixed, but if the unit changes, the value changes to reflect the same temperature in the new unit

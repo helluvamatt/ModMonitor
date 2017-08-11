@@ -11,8 +11,10 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using ModMonitor.Models;
+using ModMonitor.Utils;
 
-namespace ModMonitor
+namespace ModMonitor.ViewModels
 {
     class MainViewModel : DependencyObject, IDisposable
     {
@@ -656,6 +658,8 @@ namespace ModMonitor
 
         public event SaveFileRequestedEvent SaveFileRequested = (sender, args) => { };
 
+        public event DevicePickerRequestedEvent DevicePickerRequested = (sender, args) => { };
+
         private DnaSampleManager sampleManager = null;
         private SampleRecorder sampleRecorder = null;
 
@@ -675,58 +679,60 @@ namespace ModMonitor
             MaxTime = DateTime.Now + TimeSpan.FromSeconds(30);
         }
 
-        private async void Connect()
+        private void Connect()
         {
             ConnectEnabled = false;
             if (sampleManager != null)
             {
-                await Task.Run(() =>
+                Task.Run(() =>
                 {
                     sampleManager.Dispose();
                     sampleManager = null;
+                    Invoke(() =>
+                    {
+                        LatestSample = null;
+                        ConnectText = "Connect";
+                        Status = "Disconnected";
+                        ConnectEnabled = true;
+                    });
                 });
-                LatestSample = null;
-                ConnectText = "Connect";
-                Status = "Disconnected";
             }
             else
             {
-                var result = await Task.Run(() =>
+                DevicePickerRequested(this, new DevicePickerRequestedEventArgs(Connect));
+            }
+        }
+
+        private void Connect(DnaDevice device)
+        {
+            if (device != null)
+            {
+                Task.Run(() =>
                 {
                     try
                     {
-                        List<DnaDevice> devices = DnaDeviceManager.ListDnaDevices();
-                        if (devices.Count > 0)
+                        sampleManager = new DnaSampleManager(device.SerialPort);
+                        sampleManager.SampleCollected += SampleArrived;
+                        sampleManager.Error += Error;
+                        sampleManager.Connect();
+                        Invoke(() =>
                         {
-                            var device = devices[0];
-                            sampleManager = new DnaSampleManager(device.SerialPort);
-                            sampleManager.SampleCollected += SampleArrived;
-                            sampleManager.Error += Error;
-                            sampleManager.Connect();
-                            return new ConnectResult { Device = device };
-                        }
-                        else
-                        {
-                            return new ConnectResult { IsError = true, Error = "No DNA devices found. Please connect a DNA device and try again." };
-                        }
+                            ConnectText = "Disconnect";
+                            Status = string.Format("Connected to \"{0}\"", device);
+                        });
                     }
                     catch (Exception)
                     {
-                        return new ConnectResult { IsError = true, Error = "Error connecting to DNA device." };
                         // TODO Log the exception
+                        Invoke(() => MessageBox.Show("Error connecting to DNA device.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning));
                     }
+                    Invoke(() => ConnectEnabled = true);
                 });
-                if (result.IsError)
-                {
-                    MessageBox.Show(result.Error, "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                else
-                {
-                    ConnectText = "Disconnect";
-                    Status = string.Format("Connected to \"{0}\"", result.Device);
-                }
             }
-            ConnectEnabled = true;
+            else
+            {
+                ConnectEnabled = true;
+            }
         }
 
         private void StartRecording()
@@ -754,10 +760,11 @@ namespace ModMonitor
 
         private void Error(string msg, Exception ex)
         {
-            Console.WriteLine("Error occurred in device thread: {0}", ex.Message);
+            Console.Error.WriteLine("Error occurred in device thread: {0}", ex.Message);
+            Console.Error.WriteLine(ex.StackTrace);
             sampleManager.Dispose();
             sampleManager = null;
-            if (!Dispatcher.HasShutdownStarted) Dispatcher.Invoke(() => {
+            Invoke(() => {
                 LatestSample = null;
                 ConnectText = "Connect";
                 Status = "Disconnected";
@@ -766,7 +773,7 @@ namespace ModMonitor
 
         private void SampleArrived(Sample sample)
         {
-            if (!Dispatcher.HasShutdownStarted) Dispatcher.Invoke(() =>
+            Invoke(() =>
             {
                 LatestSample = sample;
                 if (!IsGraphPaused)
@@ -786,6 +793,14 @@ namespace ModMonitor
             });
         }
 
+        private void Invoke(Action action)
+        {
+            if (!Dispatcher.HasShutdownStarted)
+            {
+                Dispatcher.Invoke(action);
+            }
+        }
+
         public void Dispose()
         {
             Task.Run(() =>
@@ -801,7 +816,6 @@ namespace ModMonitor
         {
             public string Error { get; set; }
             public bool IsError { get; set; }
-            public DnaDevice Device { get; set; }
         }
     }
 }

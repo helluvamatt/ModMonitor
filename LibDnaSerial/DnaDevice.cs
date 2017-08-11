@@ -27,13 +27,18 @@ namespace LibDnaSerial
         public string ProductName { get; set; }
 
         /// <summary>
+        /// Serial number read from device
+        /// </summary>
+        public string SerialNumber { get; set; }
+
+        /// <summary>
         /// Features read from device
         /// </summary>
         public List<string> Features { get; set; }
 
         public override string ToString()
         {
-            return string.Format("{0} {1} ({2})", Manufacturer, ProductName, SerialPort);
+            return string.Format("{0} {1} ({2}) on {3}", Manufacturer, ProductName, SerialNumber, SerialPort);
         }
     }
 }
