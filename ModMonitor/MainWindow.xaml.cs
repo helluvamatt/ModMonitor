@@ -42,11 +42,6 @@ namespace ModMonitor
             Close();
         }
 
-        private void about_Click(object sender, RoutedEventArgs e)
-        {
-            new AboutWindow().ShowDialog();
-        }
-
         private void MainViewModel_SaveFileRequested(object sender, Events.SaveFileRequestedEventArgs args)
         {
             var dialog = new SaveFileDialog();
@@ -67,6 +62,11 @@ namespace ModMonitor
         private void MainViewModel_EditSettingsRequested(object sender, EventArgs args)
         {
             new SettingsWindow().ShowDialog();
+        }
+
+        private void MainViewModel_ShowAboutRequested(object sender, EventArgs e)
+        {
+            new AboutWindow().ShowDialog();
         }
     }
 }

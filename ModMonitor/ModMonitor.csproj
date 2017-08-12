@@ -94,6 +94,7 @@
       <DependentUpon>DevicePicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="Events\DevicePickerRequestedEvent.cs" />
+    <Compile Include="Events\EditColorEventHandler.cs" />
     <Compile Include="Models\SampleRecorder.cs" />
     <Page Include="AboutWindow.xaml">
       <SubType>Designer</SubType>
@@ -121,6 +122,7 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\DevicePickerViewModel.cs" />
+    <Compile Include="ViewModels\EditSettingsViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

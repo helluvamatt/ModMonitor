@@ -6,10 +6,14 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:ModMonitor"
         xmlns:lib="clr-namespace:LibDnaSerial;assembly=LibDnaSerial"
+        xmlns:vm="clr-namespace:ModMonitor.ViewModels"
         xmlns:c="clr-namespace:ModMonitor.Converters"
         xmlns:p="clr-namespace:ModMonitor.Properties"
         mc:Ignorable="d"
-        Title="Mod Monitor Settings" Height="333" Width="420" ResizeMode="NoResize">
+        Title="Mod Monitor Settings" Height="361" Width="420" ResizeMode="NoResize">
+    <Window.DataContext>
+        <vm:EditSettingsViewModel EditColor="EditSettingsViewModel_EditColor" />
+    </Window.DataContext>
     <Window.Resources>
         <c:ColorToSolidBrushConverter x:Key="colorToSolidBrushConverter" />
         <Style TargetType="Label">
@@ -74,42 +78,43 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
         <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Style="{StaticResource legendHeader}" Content="Coil" />
 
         <CheckBox Grid.Column="0" Grid.Row="1" IsChecked="{Binding ShowPower, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
-        <Button Grid.Column="1" Grid.Row="1" Style="{StaticResource colorButton}">
+        <Button Grid.Column="1" Grid.Row="1" Style="{StaticResource colorButton}" Command="{Binding EditColorCommand}" CommandParameter="ColorPower">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding Path=ColorPower, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
         <Label Grid.Column="2" Grid.Row="1" Content="Power" />
 
         <CheckBox Grid.Column="0" Grid.Row="2" IsChecked="{Binding ShowTemperature, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
-        <Button Grid.Column="1" Grid.Row="2" Style="{StaticResource colorButton}">
+        <Button Grid.Column="1" Grid.Row="2" Style="{StaticResource colorButton}" Command="{Binding EditColorCommand}" CommandParameter="ColorTemperature">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding ColorTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
         <Label Grid.Column="2" Grid.Row="2" Content="Temperature" />
 
         <CheckBox Grid.Column="0" Grid.Row="3" IsChecked="{Binding ShowVoltage, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
-        <Button Grid.Column="1" Grid.Row="3" Style="{StaticResource colorButton}">
+        <Button Grid.Column="1" Grid.Row="3" Style="{StaticResource colorButton}" Command="{Binding EditColorCommand}" CommandParameter="ColorVoltage">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding ColorVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
         <Label Grid.Column="2" Grid.Row="3" Content="Voltage" />
 
         <CheckBox Grid.Column="0" Grid.Row="4" IsChecked="{Binding ShowCurrent, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
-        <Button Grid.Column="1" Grid.Row="4" Style="{StaticResource colorButton}">
+        <Button Grid.Column="1" Grid.Row="4" Style="{StaticResource colorButton}" Command="{Binding EditColorCommand}" CommandParameter="ColorCurrent">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding ColorCurrent, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
         <Label Grid.Column="2" Grid.Row="4" Content="Current" />
 
         <CheckBox Grid.Column="0" Grid.Row="5" IsChecked="{Binding ShowLiveResistance, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
-        <Button Grid.Column="1" Grid.Row="5" Style="{StaticResource colorButton}">
+        <Button Grid.Column="1" Grid.Row="5" Style="{StaticResource colorButton}" Command="{Binding EditColorCommand}" CommandParameter="ColorLiveResistance">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding ColorLiveResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
         <Label Grid.Column="2" Grid.Row="5" Content="Live Resistance" />
 
         <CheckBox Grid.Column="0" Grid.Row="6" IsChecked="{Binding ShowColdResistance, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
-        <Button Grid.Column="1" Grid.Row="6" Style="{StaticResource colorButton}">
+        <Button Grid.Column="1" Grid.Row="6" Style="{StaticResource colorButton}" Command="{Binding EditColorCommand}" CommandParameter="ColorColdResistance">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding ColorColdResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
         <Label Grid.Column="2" Grid.Row="6" Content="Cold Resistance" />
@@ -117,13 +122,13 @@
         <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="7" Style="{StaticResource legendHeader}" Content="Battery" />
 
         <CheckBox Grid.Column="0" Grid.Row="8" IsChecked="{Binding ShowBatteryLevel, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
-        <Button Grid.Column="1" Grid.Row="8" Style="{StaticResource colorButton}">
+        <Button Grid.Column="1" Grid.Row="8" Style="{StaticResource colorButton}"  Command="{Binding EditColorCommand}" CommandParameter="ColorBatteryLevel">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding ColorBatteryLevel, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
         <Label Grid.Column="2" Grid.Row="8" Content="Battery Level" />
 
         <CheckBox Grid.Column="0" Grid.Row="9" IsChecked="{Binding ShowBatteryVoltage, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
-        <Button Grid.Column="1" Grid.Row="9" Style="{StaticResource colorButton}">
+        <Button Grid.Column="1" Grid.Row="9" Style="{StaticResource colorButton}"  Command="{Binding EditColorCommand}" CommandParameter="ColorBatteryVoltage">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding ColorBatteryVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
         <Label Grid.Column="2" Grid.Row="9" Content="Battery Voltage" />
@@ -131,25 +136,25 @@
         <Label Grid.Column="3" Grid.ColumnSpan="3"  Grid.Row="0" Style="{StaticResource legendHeader}" Content="Device" />
 
         <CheckBox Grid.Column="3" Grid.Row="1" IsChecked="{Binding ShowBoardTemperature, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
-        <Button Grid.Column="4" Grid.Row="1" Style="{StaticResource colorButton}">
+        <Button Grid.Column="4" Grid.Row="1" Style="{StaticResource colorButton}"  Command="{Binding EditColorCommand}" CommandParameter="ColorBoardTemperature">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding ColorBoardTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
         <Label Grid.Column="5" Grid.Row="1" Content="Board Temperature" />
 
         <CheckBox Grid.Column="3" Grid.Row="2" IsChecked="{Binding ShowRoomTemperature, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
-        <Button Grid.Column="4" Grid.Row="2" Style="{StaticResource colorButton}">
+        <Button Grid.Column="4" Grid.Row="2" Style="{StaticResource colorButton}" Command="{Binding EditColorCommand}" CommandParameter="ColorRoomTemperature">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding ColorRoomTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
         <Label Grid.Column="5" Grid.Row="2" Content="Room Temperature" />
 
         <CheckBox Grid.Column="3" Grid.Row="3" IsChecked="{Binding ShowPowerSetpoint, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
-        <Button Grid.Column="4" Grid.Row="3" Style="{StaticResource colorButton}">
+        <Button Grid.Column="4" Grid.Row="3" Style="{StaticResource colorButton}" Command="{Binding EditColorCommand}" CommandParameter="ColorPowerSetpoint">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding ColorPowerSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
         <Label Grid.Column="5" Grid.Row="3" Content="Power Setpoint" />
 
         <CheckBox Grid.Column="3" Grid.Row="4" IsChecked="{Binding ShowTemperatureSetpoint, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
-        <Button Grid.Column="4" Grid.Row="4" Style="{StaticResource colorButton}">
+        <Button Grid.Column="4" Grid.Row="4" Style="{StaticResource colorButton}"  Command="{Binding EditColorCommand}" CommandParameter="ColorTemperatureSetpoint">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding ColorTemperatureSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
         <Label Grid.Column="5" Grid.Row="4" Content="Temperature Setpoint" />
@@ -162,5 +167,7 @@
         <CheckBox Grid.Row="9" Grid.Column="3" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnitForce}" ToolTip="Force temperature conversions to the specified unit" />
         <ComboBox Grid.Row="9" Grid.Column="4" IsEnabled="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnitForce, Mode=OneWay}" IsEditable="False" ItemsSource="{Binding Source={StaticResource temperatureUnitValues}}" SelectedItem="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnit}" Margin="4" />
         <Label Grid.Row="9" Grid.Column="5" VerticalAlignment="Center" ToolTip="Temperatures will be converted into this unit for display. 'Auto' means to use the values provided by the device.">Convert Temperatures</Label>
+
+        <Button Grid.Row="10" Grid.ColumnSpan="6" Grid.Column="0" Command="{Binding ResetCommand}" Margin="0 6 0 0">Reset to Defaults</Button>
     </Grid>
 </Window>

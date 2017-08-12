@@ -229,6 +229,14 @@ namespace ModMonitor.ViewModels
             }
         }
 
+        public ICommand ShowAboutCommand
+        {
+            get
+            {
+                return showAboutCommand;
+            }
+        }
+
         #endregion
 
         #endregion
@@ -239,6 +247,8 @@ namespace ModMonitor.ViewModels
 
         public event EventHandler EditSettingsRequested = (sender, args) => { };
 
+        public event EventHandler ShowAboutRequested = (sender, args) => { };
+
         private DnaSampleManager sampleManager = null;
         private SampleRecorder sampleRecorder = null;
 
@@ -246,6 +256,7 @@ namespace ModMonitor.ViewModels
         private ICommand startRecordingCommand;
         private ICommand stopRecordingCommand;
         private ICommand editSettingsCommand;
+        private ICommand showAboutCommand;
 
         public MainViewModel()
         {
@@ -254,8 +265,10 @@ namespace ModMonitor.ViewModels
             startRecordingCommand = new RelayCommand(StartRecording, () => !IsRecording);
             stopRecordingCommand = new RelayCommand(StopRecording, () => IsRecording);
             editSettingsCommand = new RelayCommand(EditSettings);
+            showAboutCommand = new RelayCommand(ShowAbout);
             MinTime = DateTime.Now;
             MaxTime = DateTime.Now + TimeSpan.FromSeconds(30);
+            SetGraphTemperatureUnit(Settings.Default.TemperatureUnitForce ? Settings.Default.TemperatureUnit : TemperatureUnit.F);
         }
 
         private void Connect()
@@ -335,6 +348,11 @@ namespace ModMonitor.ViewModels
         private void EditSettings()
         {
             EditSettingsRequested(this, EventArgs.Empty);
+        }
+
+        private void ShowAbout()
+        {
+            ShowAboutRequested(this, EventArgs.Empty);
         }
 
         private void Error(string msg, Exception ex)
