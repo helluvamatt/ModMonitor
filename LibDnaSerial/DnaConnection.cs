@@ -64,9 +64,23 @@ namespace LibDnaSerial
             cellCount = GetCellCount();
         }
 
+        ~DnaConnection()
+        {
+            Dispose(false);
+        }
+
         public void Dispose()
         {
-            serialPort.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && serialPort != null)
+            {
+                serialPort.Dispose();
+            }
         }
 
         /// <summary>
