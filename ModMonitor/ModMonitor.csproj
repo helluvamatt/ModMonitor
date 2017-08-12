@@ -90,6 +90,7 @@
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\DateTimeConverter.cs" />
     <Compile Include="DevicePicker.xaml.cs">
       <DependentUpon>DevicePicker.xaml</DependentUpon>
     </Compile>

@@ -44,17 +44,13 @@
                 <x:Type TypeName="lib:TemperatureUnit" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
-        <x:Array x:Key="graphResolutionValues" Type="{x:Type sys:UInt32}">
-            <sys:UInt32>1</sys:UInt32>
-            <sys:UInt32>2</sys:UInt32>
-            <sys:UInt32>3</sys:UInt32>
-            <sys:UInt32>4</sys:UInt32>
-            <sys:UInt32>5</sys:UInt32>
-            <sys:UInt32>6</sys:UInt32>
-            <sys:UInt32>7</sys:UInt32>
-            <sys:UInt32>8</sys:UInt32>
-            <sys:UInt32>9</sys:UInt32>
-            <sys:UInt32>10</sys:UInt32>
+        <x:Array x:Key="sampleThrottleValues" Type="{x:Type sys:Int64}">
+            <sys:Int64>25</sys:Int64>
+            <sys:Int64>30</sys:Int64>
+            <sys:Int64>40</sys:Int64>
+            <sys:Int64>50</sys:Int64>
+            <sys:Int64>100</sys:Int64>
+            <sys:Int64>200</sys:Int64>
         </x:Array>
     </Window.Resources>
     <Grid Margin="5">
@@ -160,9 +156,9 @@
         <Label Grid.Column="5" Grid.Row="4" Content="Temperature Setpoint" />
 
         <Label Grid.Row="7" Grid.Column="3" Grid.ColumnSpan="3" Style="{StaticResource legendHeader}" Content="Mod Monitor" />
-        
-        <ComboBox Grid.Row="8" Grid.Column="3" Grid.ColumnSpan="2" IsEditable="False" ItemsSource="{Binding Source={StaticResource graphResolutionValues}}" SelectedItem="{Binding Source={x:Static p:Settings.Default}, Path=GraphResolution}" Margin="4" />
-        <Label Grid.Row="8" Grid.Column="5" VerticalAlignment="Center" ToolTip="One sample out of this number of samples will be used for the graph, the rest are skipped.">Graph Sample Skipping</Label>
+
+        <ComboBox Grid.Row="8" Grid.Column="3" Grid.ColumnSpan="2" IsEditable="False" Margin="4" ItemsSource="{Binding Source={StaticResource sampleThrottleValues}}" SelectedItem="{Binding SampleThrottle, Source={x:Static p:Settings.Default}}" />
+        <Label Grid.Row="8" Grid.Column="5" Content="Graph Sample Delay" ToolTip="Delay in milliseconds between samples on the graph." />
 
         <CheckBox Grid.Row="9" Grid.Column="3" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnitForce}" ToolTip="Force temperature conversions to the specified unit" />
         <ComboBox Grid.Row="9" Grid.Column="4" IsEnabled="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnitForce, Mode=OneWay}" IsEditable="False" ItemsSource="{Binding Source={StaticResource temperatureUnitValues}}" SelectedItem="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnit}" Margin="4" />

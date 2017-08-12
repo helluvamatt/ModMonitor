@@ -21,6 +21,8 @@ namespace ModMonitor.ViewModels
 {
     class MainViewModel : DependencyObject, IDisposable
     {
+        private const long WINDOW = 30000;
+
         #region Dependency Properties
 
         #region Status
@@ -113,45 +115,45 @@ namespace ModMonitor.ViewModels
 
         #endregion
 
-        #region MinTime
+        #region MinOffset
 
-        public DateTime MinTime
+        public long MinOffset
         {
             get
             {
-                return (DateTime)GetValue(MinTimeProperty);
+                return (long)GetValue(MinOffsetProperty);
             }
             set
             {
-                SetValue(MinTimeProperty, value);
+                SetValue(MinOffsetProperty, value);
             }
         }
 
-        public static readonly DependencyProperty MinTimeProperty = DependencyProperty.Register("MinTime", typeof(DateTime), typeof(MainViewModel), new UIPropertyMetadata(DateTime.Now));
+        public static readonly DependencyProperty MinOffsetProperty = DependencyProperty.Register("MinOffset", typeof(long), typeof(MainViewModel), new UIPropertyMetadata(0L));
 
         #endregion
 
-        #region MaxTime
+        #region MaxOffset
 
-        public DateTime MaxTime
+        public long MaxOffset
         {
             get
             {
-                return (DateTime)GetValue(MaxTimeProperty);
+                return (long)GetValue(MaxOffsetProperty);
             }
             set
             {
-                SetValue(MaxTimeProperty, value);
+                SetValue(MaxOffsetProperty, value);
             }
         }
 
-        public static readonly DependencyProperty MaxTimeProperty = DependencyProperty.Register("MaxTime", typeof(DateTime), typeof(MainViewModel), new UIPropertyMetadata(DateTime.Now));
+        public static readonly DependencyProperty MaxOffsetProperty = DependencyProperty.Register("MaxOffset", typeof(long), typeof(MainViewModel), new UIPropertyMetadata(0L));
 
         #endregion
 
         #region GraphData
 
-        public ObservableDictionary<DateTime, Sample> GraphData { get; private set; }
+        public ObservableDictionary<long, Sample> GraphData { get; private set; }
 
         #endregion
 
@@ -260,15 +262,16 @@ namespace ModMonitor.ViewModels
 
         public MainViewModel()
         {
-            GraphData = new ObservableDictionary<DateTime, Sample>();
+            GraphData = new ObservableDictionary<long, Sample>();
             connectCommand = new RelayCommand(Connect);
             startRecordingCommand = new RelayCommand(StartRecording, () => !IsRecording);
             stopRecordingCommand = new RelayCommand(StopRecording, () => IsRecording);
             editSettingsCommand = new RelayCommand(EditSettings);
             showAboutCommand = new RelayCommand(ShowAbout);
-            MinTime = DateTime.Now;
-            MaxTime = DateTime.Now + TimeSpan.FromSeconds(30);
+            MinOffset = 0;
+            MaxOffset = WINDOW / Settings.Default.SampleThrottle;
             SetGraphTemperatureUnit(Settings.Default.TemperatureUnitForce ? Settings.Default.TemperatureUnit : TemperatureUnit.F);
+            Settings.Default.PropertyChanged += Settings_PropertyChanged;
         }
 
         private void Connect()
@@ -303,7 +306,7 @@ namespace ModMonitor.ViewModels
                 {
                     try
                     {
-                        sampleManager = new DnaSampleManager(device.SerialPort);
+                        sampleManager = new DnaSampleManager(device.SerialPort, Settings.Default.SampleThrottle);
                         sampleManager.SampleCollected += SampleArrived;
                         sampleManager.Error += Error;
                         sampleManager.Connect();
@@ -394,16 +397,21 @@ namespace ModMonitor.ViewModels
                 }
                 if (!IsGraphPaused)
                 {
-                    MaxTime = sample.End;
-                    MinTime = sample.End - TimeSpan.FromSeconds(30);
-                    if (sample.Index % Settings.Default.GraphResolution == 0)
-                    {
-                        GraphData.RemoveAll(k => k < MinTime);
-                        GraphData.Add(sample.End, sample);
-                    }
+                    var currentOffset = (MaxOffset += Settings.Default.SampleThrottle);
+                    MinOffset = currentOffset - WINDOW;
+                    GraphData.RemoveAll(k => k < MinOffset);
+                    GraphData.Add(currentOffset, sample);
                 }
 
             });
+        }
+
+        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "SampleThrottle" && sampleManager != null)
+            {
+                sampleManager.Throttle = Settings.Default.SampleThrottle;
+            }
         }
 
         private void SetGraphTemperatureUnit(TemperatureUnit unit)

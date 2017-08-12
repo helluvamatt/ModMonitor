@@ -25,18 +25,6 @@ namespace ModMonitor.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("4")]
-        public uint GraphResolution {
-            get {
-                return ((uint)(this["GraphResolution"]));
-            }
-            set {
-                this["GraphResolution"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool ShowPower {
             get {
@@ -344,6 +332,18 @@ namespace ModMonitor.Properties {
             }
             set {
                 this["TemperatureUnitForce"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public long SampleThrottle {
+            get {
+                return ((long)(this["SampleThrottle"]));
+            }
+            set {
+                this["SampleThrottle"] = value;
             }
         }
     }
