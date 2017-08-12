@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:local="clr-namespace:ModMonitor"
         xmlns:c="clr-namespace:ModMonitor.Converters"
         xmlns:vm="clr-namespace:ModMonitor.ViewModels"
@@ -20,31 +21,19 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <ListBox Grid.Row="0" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" />
+        <ListView Grid.Row="0" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding OkCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ListView>
         <Grid Grid.Row="0" Background="Black" Opacity="0.7" Visibility="{Binding Loading, Converter={StaticResource boolToVisibilityConverter}}">
             <TextBlock  HorizontalAlignment="Stretch" TextAlignment="Center" VerticalAlignment="Center" FontSize="24pt" Foreground="White">Loading...</TextBlock>
         </Grid>
-        <StackPanel Grid.Row="1" HorizontalAlignment="Left">
-            <StackPanel.Resources>
-                <Style TargetType="Button">
-                    <Setter Property="Padding" Value="4" />
-                    <Setter Property="Margin" Value="6 6 0 6" />
-                </Style>
-            </StackPanel.Resources>
-            <Button Command="{Binding RefreshCommand}">
-                <fa:FontAwesome Icon="Refresh" />
-            </Button>
-        </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <StackPanel.Resources>
-                <Style TargetType="Button">
-                    <Setter Property="Padding" Value="8 3 8 3" />
-                    <Setter Property="Margin" Value="0 6 6 6" />
-                    <Setter Property="MinWidth" Value="60" />
-                </Style>
-            </StackPanel.Resources>
-            <Button Command="{Binding OkCommand}">OK</Button>
-            <Button Command="{Binding CancelCommand}">Cancel</Button>
-        </StackPanel>
+        <Button Grid.Row="1" Command="{Binding RefreshCommand}" Padding="4" Margin="6 6 0 6" HorizontalAlignment="Left">
+            <fa:FontAwesome Icon="Refresh" />
+        </Button>
+        <Button Grid.Row="1" HorizontalAlignment="Right" Padding="8 3 8 3" MinWidth="60" Margin="0 6 6 6" Command="{Binding CancelCommand}" >Cancel</Button>
     </Grid>
 </Window>

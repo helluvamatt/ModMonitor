@@ -22,5 +22,329 @@ namespace ModMonitor.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public uint GraphResolution {
+            get {
+                return ((uint)(this["GraphResolution"]));
+            }
+            set {
+                this["GraphResolution"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowPower {
+            get {
+                return ((bool)(this["ShowPower"]));
+            }
+            set {
+                this["ShowPower"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowPowerSetpoint {
+            get {
+                return ((bool)(this["ShowPowerSetpoint"]));
+            }
+            set {
+                this["ShowPowerSetpoint"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowTemperature {
+            get {
+                return ((bool)(this["ShowTemperature"]));
+            }
+            set {
+                this["ShowTemperature"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowTemperatureSetpoint {
+            get {
+                return ((bool)(this["ShowTemperatureSetpoint"]));
+            }
+            set {
+                this["ShowTemperatureSetpoint"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowVoltage {
+            get {
+                return ((bool)(this["ShowVoltage"]));
+            }
+            set {
+                this["ShowVoltage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowCurrent {
+            get {
+                return ((bool)(this["ShowCurrent"]));
+            }
+            set {
+                this["ShowCurrent"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowLiveResistance {
+            get {
+                return ((bool)(this["ShowLiveResistance"]));
+            }
+            set {
+                this["ShowLiveResistance"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowColdResistance {
+            get {
+                return ((bool)(this["ShowColdResistance"]));
+            }
+            set {
+                this["ShowColdResistance"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowBatteryVoltage {
+            get {
+                return ((bool)(this["ShowBatteryVoltage"]));
+            }
+            set {
+                this["ShowBatteryVoltage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowBatteryLevel {
+            get {
+                return ((bool)(this["ShowBatteryLevel"]));
+            }
+            set {
+                this["ShowBatteryLevel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowBoardTemperature {
+            get {
+                return ((bool)(this["ShowBoardTemperature"]));
+            }
+            set {
+                this["ShowBoardTemperature"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowRoomTemperature {
+            get {
+                return ((bool)(this["ShowRoomTemperature"]));
+            }
+            set {
+                this["ShowRoomTemperature"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Lime")]
+        public global::System.Drawing.Color ColorPower {
+            get {
+                return ((global::System.Drawing.Color)(this["ColorPower"]));
+            }
+            set {
+                this["ColorPower"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Green")]
+        public global::System.Drawing.Color ColorPowerSetpoint {
+            get {
+                return ((global::System.Drawing.Color)(this["ColorPowerSetpoint"]));
+            }
+            set {
+                this["ColorPowerSetpoint"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Red")]
+        public global::System.Drawing.Color ColorTemperature {
+            get {
+                return ((global::System.Drawing.Color)(this["ColorTemperature"]));
+            }
+            set {
+                this["ColorTemperature"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DarkRed")]
+        public global::System.Drawing.Color ColorTemperatureSetpoint {
+            get {
+                return ((global::System.Drawing.Color)(this["ColorTemperatureSetpoint"]));
+            }
+            set {
+                this["ColorTemperatureSetpoint"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Cyan")]
+        public global::System.Drawing.Color ColorVoltage {
+            get {
+                return ((global::System.Drawing.Color)(this["ColorVoltage"]));
+            }
+            set {
+                this["ColorVoltage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Goldenrod")]
+        public global::System.Drawing.Color ColorCurrent {
+            get {
+                return ((global::System.Drawing.Color)(this["ColorCurrent"]));
+            }
+            set {
+                this["ColorCurrent"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("MediumPurple")]
+        public global::System.Drawing.Color ColorLiveResistance {
+            get {
+                return ((global::System.Drawing.Color)(this["ColorLiveResistance"]));
+            }
+            set {
+                this["ColorLiveResistance"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Purple")]
+        public global::System.Drawing.Color ColorColdResistance {
+            get {
+                return ((global::System.Drawing.Color)(this["ColorColdResistance"]));
+            }
+            set {
+                this["ColorColdResistance"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Black")]
+        public global::System.Drawing.Color ColorBatteryVoltage {
+            get {
+                return ((global::System.Drawing.Color)(this["ColorBatteryVoltage"]));
+            }
+            set {
+                this["ColorBatteryVoltage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Gray")]
+        public global::System.Drawing.Color ColorBatteryLevel {
+            get {
+                return ((global::System.Drawing.Color)(this["ColorBatteryLevel"]));
+            }
+            set {
+                this["ColorBatteryLevel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DarkSalmon")]
+        public global::System.Drawing.Color ColorBoardTemperature {
+            get {
+                return ((global::System.Drawing.Color)(this["ColorBoardTemperature"]));
+            }
+            set {
+                this["ColorBoardTemperature"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("BurlyWood")]
+        public global::System.Drawing.Color ColorRoomTemperature {
+            get {
+                return ((global::System.Drawing.Color)(this["ColorRoomTemperature"]));
+            }
+            set {
+                this["ColorRoomTemperature"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("F")]
+        public global::LibDnaSerial.TemperatureUnit TemperatureUnit {
+            get {
+                return ((global::LibDnaSerial.TemperatureUnit)(this["TemperatureUnit"]));
+            }
+            set {
+                this["TemperatureUnit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TemperatureUnitForce {
+            get {
+                return ((bool)(this["TemperatureUnitForce"]));
+            }
+            set {
+                this["TemperatureUnitForce"] = value;
+            }
+        }
     }
 }

@@ -63,5 +63,10 @@ namespace ModMonitor
         {
             new DevicePicker(args.Callback).ShowDialog();
         }
+
+        private void MainViewModel_EditSettingsRequested(object sender, EventArgs args)
+        {
+            new SettingsWindow().ShowDialog();
+        }
     }
 }
