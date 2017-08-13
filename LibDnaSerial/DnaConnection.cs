@@ -19,11 +19,15 @@ namespace LibDnaSerial
         public const char CODE_TEMPERATURE = 'T';
         public const char CODE_USB = 'U';
         public const char CODE_VOLTAGE = 'V';
+        public const char CODE_EXTRA = 'X';
 
         private const string UNIT_OHM = "OHM";
         private const string UNIT_VOLT = "V";
         private const string UNIT_WATTHOUR = "WH";
+        private const string UNIT_MILLIWATTHOUR = "MWH";
         private const string UNIT_AMP = "A";
+        private const string UNIT_WATT = "W";
+        private const string UNIT_SECOND = "S";
 
         private const string MESSAGE_PATTERN = @".*?([A-Z])=(.*)";
         private const string TEMP_PATTERN = @"(\d+(?:\.\d+)?)([FCK])";
@@ -36,6 +40,7 @@ namespace LibDnaSerial
 
         private uint cellCount = 0;
         private ulong sampleIndex = 0;
+        private ulong statisticSampleIndex = 0;
 
         /// <summary>
         /// C'tor
@@ -47,7 +52,7 @@ namespace LibDnaSerial
         /// C'tor
         /// </summary>
         /// <param name="portName">Serial port name</param>
-        public DnaConnection(string portName) : this(portName, 30000) { }
+        public DnaConnection(string portName) : this(portName, 500) { }
 
         /// <summary>
         /// C'tor
@@ -106,6 +111,7 @@ namespace LibDnaSerial
             s.BoardTemperature = GetBoardTemperature();
             s.RoomTemperature = GetRoomTemperature();
             s.Voltage = GetVoltage();
+            s.Buttons = GetButtons();
             s.End = DateTime.Now;
             return s;
         }
@@ -221,6 +227,17 @@ namespace LibDnaSerial
         }
 
         /// <summary>
+        /// Get the board firmware version
+        /// </summary>
+        /// <returns>Firmware version</returns>
+        public string GetFirmwareVersion()
+        {
+            SendMessage(new Message(CODE_INFO, "GET VERSION"));
+            var m = ReadMessage();
+            return m.Argument;
+        }
+
+        /// <summary>
         /// Get feature codes
         /// </summary>
         /// <param name="featureNumber">1-based index</param>
@@ -262,6 +279,28 @@ namespace LibDnaSerial
         {
             if (duration < 0) throw new ArgumentOutOfRangeException("Duration must be positive");
             SendMessage(new Message(CODE_FIRE, string.Format("{0:0,0.0}S", duration)));
+        }
+
+        /// <summary>
+        /// Get the current profile index on the device
+        /// </summary>
+        /// <returns>The current profile index</returns>
+        public int GetProfile()
+        {
+            SendMessage(new Message(CODE_PROFILES, "GET"));
+            var m = ReadMessage();
+            return int.Parse(m.Argument);
+        }
+
+        /// <summary>
+        /// Set the current profile on the device
+        /// 
+        /// Most devices support up to 8 profiles
+        /// </summary>
+        /// <param name="profile">Profile index (first profile is 1)</param>
+        public void SetProfile(int profile)
+        {
+            SendMessage(new Message(CODE_PROFILES, profile.ToString()));
         }
 
         /// <summary>
@@ -307,7 +346,7 @@ namespace LibDnaSerial
             SendMessage(new Message(CODE_POWER, "GET"));
             var m = ReadMessage();
             if (m.Argument == "?") return 0f;
-            return float.Parse(TrimUnit(m.Argument, "W"));
+            return float.Parse(TrimUnit(m.Argument, UNIT_WATT));
         }
 
         /// <summary>
@@ -329,7 +368,7 @@ namespace LibDnaSerial
         {
             SendMessage(new Message(CODE_POWER, "GET SP"));
             var m = ReadMessage();
-            return float.Parse(TrimUnit(m.Argument, "W"));
+            return float.Parse(TrimUnit(m.Argument, UNIT_WATT));
         }
 
         /// <summary>
@@ -432,6 +471,67 @@ namespace LibDnaSerial
             return ParseVoltage(m.Argument);
         }
 
+        /// <summary>
+        /// Get which buttons are currently being pressed
+        /// </summary>
+        /// <returns>Buttons enum indicating which buttons are being pressed using a bitmask/flags enum</returns>
+        public Buttons GetButtons()
+        {
+            SendMessage(new Message(CODE_EXTRA, "GET BUTTONS"));
+            var m = ReadMessage();
+            int rawValue = int.Parse(m.Argument);
+            return (Buttons)rawValue;
+        }
+
+        /// <summary>
+        /// Get the latest sample of statistics from the device
+        /// </summary>
+        /// <returns>StatisticsSample</returns>
+        public StatisticsSample GetStatisticsSample()
+        {
+            var sample = new StatisticsSample();
+            sample.Index = statisticSampleIndex++;
+            sample.Begin = DateTime.Now;
+            sample.Resets = GetPuffsStatistic("GET RESETS");
+            sample.Puffs = GetPuffsStatistic("GET PUFFS");
+            sample.TemperatureProtectedPuffs = GetPuffsStatistic("GET TEMP PUFFS");
+            sample.DevicePuffs = GetPuffsStatistic("GET DEVICE PUFFS");
+            sample.DeviceTemperatureProtectedPuffs = GetPuffsStatistic("GET DEVICE TEMP PUFFS");
+            sample.LastEnergy = GetStatistic("GET LASTENERGY", UNIT_MILLIWATTHOUR);
+            sample.LastPower = GetStatistic("GET LASTPOWER", UNIT_WATT);
+            sample.LastTemperature = GetTemperatureStatistic("GET LASTTEMP");
+            sample.LastTemperaturePeak = GetOptionalTemperatureStatistic("GET LASTPEAKTEMP");
+            sample.LastTime = GetStatistic("GET LAST TIME", UNIT_SECOND);
+            sample.MeanEnergy = GetStatistic("GET MEAN ENERGY", UNIT_MILLIWATTHOUR);
+            sample.MeanPower = GetStatistic("GET MEAN POWER", UNIT_WATT);
+            sample.MeanTemperature = GetTemperatureStatistic("GET MEAN TEMP");
+            sample.MeanTemperaturePeak = GetOptionalTemperatureStatistic("GET MEAN PEAK TEMP");
+            sample.MeanTime = GetStatistic("GET MEAN TIME", UNIT_SECOND);
+            sample.StdDevEnergy = GetStatistic("GET SD ENERGY", UNIT_MILLIWATTHOUR);
+            sample.StdDevPower = GetStatistic("GET SD POWER", UNIT_WATT);
+            sample.StdDevTemperature = GetTemperatureStatistic("GET SD TEMP");
+            sample.StdDevTemperaturePeak = GetOptionalTemperatureStatistic("GET SD PEAK TEMP");
+            sample.StdDevTime = GetStatistic("GET SD TIME", UNIT_SECOND);
+            sample.TotalEnergy = GetStatistic("GET ENERGY", UNIT_MILLIWATTHOUR);
+            sample.TotalTime = GetStatistic("GET TIME", UNIT_SECOND);
+            sample.DeviceMeanEnergy = GetStatistic("GET DEVICE MEAN ENERGY", UNIT_MILLIWATTHOUR);
+            sample.DeviceMeanPower = GetStatistic("GET DEVICE MEAN POWER", UNIT_WATT);
+            sample.DeviceMeanTemperature = GetTemperatureStatistic("GET DEVICE MEAN TEMP");
+            sample.DeviceMeanTemperaturePeak = GetOptionalTemperatureStatistic("GET DEVICE MEAN PEAK TEMP");
+            sample.DeviceMeanTime = GetStatistic("GET DEVICE MEAN TIME", UNIT_SECOND);
+            sample.DeviceStdDevEnergy = GetStatistic("GET DEVICE SD ENERGY", UNIT_MILLIWATTHOUR);
+            sample.DeviceStdDevPower = GetStatistic("GET DEVICE SD POWER", UNIT_WATT);
+            sample.DeviceStdDevTemperature = GetTemperatureStatistic("GET DEVICE SD TEMP");
+            sample.DeviceStdDevTemperaturePeak = GetOptionalTemperatureStatistic("GET DEVICE SD PEAK TEMP");
+            sample.DeviceStdDevTime = GetStatistic("GET DEVICE SD TIME", UNIT_SECOND);
+            sample.DeviceTotalEnergy = GetStatistic("GET DEVICE ENERGY", UNIT_MILLIWATTHOUR);
+            sample.DeviceTotalTime = GetStatistic("GET DEVICE TIME", UNIT_SECOND);
+            sample.End = DateTime.Now;
+            return sample;
+        }
+
+        #region Private methods
+
         private void SendMessage(Message message)
         {
             serialPort.WriteLine(message.ToString());
@@ -466,5 +566,36 @@ namespace LibDnaSerial
         {
             return argument.Substring(0, argument.LastIndexOf(unit));
         }
+
+        private Temperature GetTemperatureStatistic(string argument)
+        {
+            SendMessage(new Message(CODE_STATISTICS, argument));
+            var m = ReadMessage();
+            return ParseTemperature(m.Argument);
+        }
+
+        private Temperature? GetOptionalTemperatureStatistic(string argument)
+        {
+            SendMessage(new Message(CODE_STATISTICS, argument));
+            var m = ReadMessage();
+            if (m.Argument == "?") return null;
+            return ParseTemperature(m.Argument);
+        }
+
+        private float GetStatistic(string argument, string unit)
+        {
+            SendMessage(new Message(CODE_STATISTICS, argument));
+            var m = ReadMessage();
+            return float.Parse(TrimUnit(m.Argument, unit));
+        }
+
+        private int GetPuffsStatistic(string argument)
+        {
+            SendMessage(new Message(CODE_STATISTICS, argument));
+            var m = ReadMessage();
+            return int.Parse(m.Argument);
+        }
+
+        #endregion
     }
 }

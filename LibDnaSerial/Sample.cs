@@ -111,6 +111,12 @@ namespace LibDnaSerial
         public float Voltage { get; set; }
 
         /// <summary>
+        /// Which buttons are currently being pressed
+        /// </summary>
+        /// <see cref="DnaConnection.GetButtons"/>
+        public Buttons Buttons { get; set; }
+
+        /// <summary>
         /// Format the line as CSV
         /// </summary>
         /// <returns></returns>

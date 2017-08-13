@@ -22,8 +22,6 @@ namespace ModMonitor.ViewModels
 {
     class MainViewModel : DependencyObject, IDisposable
     {
-        private const long WINDOW = 30000;
-
         private const float DEFAULT_MAX_POWER = 300f;
 
         #region Dependency Properties
@@ -61,24 +59,6 @@ namespace ModMonitor.ViewModels
         }
 
         public static readonly DependencyProperty ConnectTextProperty = DependencyProperty.Register("ConnectText", typeof(string), typeof(MainViewModel), new UIPropertyMetadata("Connect"));
-
-        #endregion
-
-        #region IsGraphPaused
-
-        public bool IsGraphPaused
-        {
-            get
-            {
-                return (bool)GetValue(IsGraphPausedProperty);
-            }
-            set
-            {
-                SetValue(IsGraphPausedProperty, value);
-            }
-        }
-
-        public static readonly DependencyProperty IsGraphPausedProperty = DependencyProperty.Register("IsGraphPaused", typeof(bool), typeof(MainViewModel));
 
         #endregion
 
@@ -136,45 +116,9 @@ namespace ModMonitor.ViewModels
 
         #endregion
 
-        #region MinOffset
-
-        public long MinOffset
-        {
-            get
-            {
-                return (long)GetValue(MinOffsetProperty);
-            }
-            set
-            {
-                SetValue(MinOffsetProperty, value);
-            }
-        }
-
-        public static readonly DependencyProperty MinOffsetProperty = DependencyProperty.Register("MinOffset", typeof(long), typeof(MainViewModel), new UIPropertyMetadata(0L));
-
-        #endregion
-
-        #region MaxOffset
-
-        public long MaxOffset
-        {
-            get
-            {
-                return (long)GetValue(MaxOffsetProperty);
-            }
-            set
-            {
-                SetValue(MaxOffsetProperty, value);
-            }
-        }
-
-        public static readonly DependencyProperty MaxOffsetProperty = DependencyProperty.Register("MaxOffset", typeof(long), typeof(MainViewModel), new UIPropertyMetadata(0L));
-
-        #endregion
-
         #region GraphData
 
-        public ObservableDictionary<long, Sample> GraphData { get; private set; }
+        public ObservableDictionary<double, Sample> GraphData { get; private set; }
 
         #endregion
 
@@ -305,20 +249,21 @@ namespace ModMonitor.ViewModels
         private ICommand editSettingsCommand;
         private ICommand showAboutCommand;
 
+        private bool isFiring = false;
+        private DateTime puffStart;
+
         private ILogger log;
 
         #endregion
 
         public MainViewModel()
         {
-            GraphData = new ObservableDictionary<long, Sample>();
+            GraphData = new ObservableDictionary<double, Sample>();
             connectCommand = new RelayCommand(Connect);
             startRecordingCommand = new RelayCommand(StartRecording, () => !IsRecording);
             stopRecordingCommand = new RelayCommand(StopRecording, () => IsRecording);
             editSettingsCommand = new RelayCommand(EditSettings);
             showAboutCommand = new RelayCommand(ShowAbout);
-            MinOffset = 0;
-            MaxOffset = WINDOW / Settings.Default.SampleThrottle;
             SetGraphTemperatureUnit(Settings.Default.TemperatureUnitForce ? Settings.Default.TemperatureUnit : TemperatureUnit.F);
             Settings.Default.PropertyChanged += Settings_PropertyChanged;
             log = LogManager.GetCurrentClassLogger();
@@ -404,13 +349,11 @@ namespace ModMonitor.ViewModels
             log.Info("Recording started. Recording to file \"{0}\"", fileName);
             sampleRecorder = new SampleRecorder(fileName);
             IsRecording = true;
-            IsGraphPaused = true;
         }
 
         private void StopRecording()
         {
             IsRecording = false;
-            IsGraphPaused = false;
             sampleRecorder.Dispose();
             sampleRecorder = null;
             log.Info("Recording stopped");
@@ -458,18 +401,26 @@ namespace ModMonitor.ViewModels
                 }
 
                 LatestSample = sample;
+
                 if (IsRecording && sampleRecorder != null)
                 {
                     sampleRecorder.RecordSample(sample);
                 }
-                if (!IsGraphPaused)
-                {
-                    var currentOffset = (MaxOffset += Settings.Default.SampleThrottle);
-                    MinOffset = currentOffset - WINDOW;
-                    GraphData.RemoveAll(k => k < MinOffset);
-                    GraphData.Add(currentOffset, sample);
-                }
 
+                if (sample.Buttons.HasFlag(Buttons.Fire))
+                {
+                    if (!isFiring)
+                    {
+                        puffStart = sample.End;
+                        GraphData.Clear();
+                    }
+                    isFiring = true;
+                    GraphData.Add((sample.End - puffStart).TotalSeconds, sample);
+                }
+                else
+                {
+                    isFiring = false;
+                }
             });
         }
 

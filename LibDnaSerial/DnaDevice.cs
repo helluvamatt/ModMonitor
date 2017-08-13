@@ -32,6 +32,11 @@ namespace LibDnaSerial
         public string SerialNumber { get; set; }
 
         /// <summary>
+        /// Firmware version reported by device
+        /// </summary>
+        public string FirmwareVersion { get; set; }
+
+        /// <summary>
         /// Max power of the device, provided by a table of known devices
         /// </summary>
         public float? MaxPower { get; set; }

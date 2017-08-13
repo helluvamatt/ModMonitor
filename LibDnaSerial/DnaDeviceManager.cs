@@ -25,6 +25,7 @@ namespace LibDnaSerial
                     dev.Manufacturer = conn.GetManufacturer();
                     dev.ProductName = conn.GetProductName();
                     dev.SerialNumber = conn.GetSerialNumber();
+                    dev.FirmwareVersion = conn.GetFirmwareVersion();
                     dev.Features = conn.GetFeatures();
                     dev.MaxPower = GetMaxPower(dev.Manufacturer, dev.ProductName);
                     return dev;
