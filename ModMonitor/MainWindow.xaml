@@ -131,6 +131,11 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
@@ -212,13 +217,27 @@
                 <Label Grid.Column="1" Grid.Row="14" Content="Temperature Setpoint" />
                 <Label Grid.Column="2" Grid.Row="14" Content="{Binding Path=LatestSample.TemperatureSetpoint, Converter={StaticResource temperatureConverter}, FallbackValue=???}" />
 
-                <Label Grid.Column="0" Grid.ColumnSpan="3"  Grid.Row="15" Style="{StaticResource legendHeader}" Content="Sample" />
+                <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="15" Style="{StaticResource legendHeader}" Content="Sample" />
                 
                 <Label Grid.Column="1" Grid.Row="16" Content="Timestamp" />
                 <Label Grid.Column="2" Grid.Row="16" Content="{Binding Path=LatestSample.End, Converter={StaticResource timestampConverter}}" />
 
                 <Label Grid.Column="1" Grid.Row="17" Content="Sample Delay" ToolTip="Time in milliseconds between samples on the graph." />
                 <Label Grid.Column="2" Grid.Row="17" Content="{Binding Path=SampleThrottle, Source={x:Static p:Settings.Default}}" ContentStringFormat="{}{0} ms" />
+
+                <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="18" Style="{StaticResource legendHeader}" Content="Device Information" />
+
+                <Label Grid.Column="1" Grid.Row="19" Content="Manufacturer" />
+                <Label Grid.Column="2" Grid.Row="19" Content="{Binding Path=CurrentDevice.Manufacturer}" />
+
+                <Label Grid.Column="1" Grid.Row="20" Content="Board Name" />
+                <Label Grid.Column="2" Grid.Row="20" Content="{Binding Path=CurrentDevice.ProductName}"/>
+
+                <Label Grid.Column="1" Grid.Row="21" Content="Serial Number" />
+                <Label Grid.Column="2" Grid.Row="21" Content="{Binding Path=CurrentDevice.SerialNumber}" />
+                
+                <Label Grid.Column="1" Grid.Row="22" Content="Max Power" ToolTip="Max power for known devices, affects the power scale on the graph" />
+                <Label Grid.Column="2" Grid.Row="22" Content="{Binding Path=CurrentDevice.MaxPower}" ContentStringFormat="{}{0} W" />
 
             </Grid>
             <GridSplitter Grid.Column="1" Grid.Row="0" Margin="5 0 5 0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="DarkGray" ShowsPreview="True" Width="2" Cursor="SizeWE" />
@@ -324,7 +343,7 @@
                             <TextBlock Text="{Binding TemperatureUnit, StringFormat={}Temperature (º{0}), Source={x:Static p:Settings.Default}, Mode=OneWay}" />
                         </g:LinearAxis.Title>
                     </g:LinearAxis>
-                    <g:LinearAxis x:Name="yAxisSinglePower" Orientation="Y" Title="Power (W)" Minimum="0" Maximum="300" />
+                    <g:LinearAxis x:Name="yAxisSinglePower" Orientation="Y" Title="Power (W)" Minimum="0" Maximum="{Binding MaxPower}" />
                     <g:LinearAxis x:Name="yAxisSingleVoltage" Orientation="Y" Title="Voltage (V)" Minimum="0" Maximum="10" />
                     <g:LinearAxis x:Name="yAxisSingleCurrent" Orientation="Y" Title="Current (A)" Minimum="0" Maximum="40" />
                     <g:LinearAxis x:Name="yAxisSingleResistance" Orientation="Y" Title="Resistance (Ω)" Minimum="0" Maximum="3" />

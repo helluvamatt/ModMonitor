@@ -24,6 +24,8 @@ namespace ModMonitor.ViewModels
     {
         private const long WINDOW = 30000;
 
+        private const float DEFAULT_MAX_POWER = 300f;
+
         #region Dependency Properties
 
         #region Status
@@ -116,6 +118,24 @@ namespace ModMonitor.ViewModels
 
         #endregion
 
+        #region CurrentDevice
+
+        public DnaDevice CurrentDevice
+        {
+            get
+            {
+                return (DnaDevice)GetValue(CurrentDeviceProperty);
+            }
+            set
+            {
+                SetValue(CurrentDeviceProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty CurrentDeviceProperty = DependencyProperty.Register("CurrentDevice", typeof(DnaDevice), typeof(MainViewModel));
+
+        #endregion
+
         #region MinOffset
 
         public long MinOffset
@@ -195,6 +215,24 @@ namespace ModMonitor.ViewModels
         public static readonly DependencyProperty MaxTempLowProperty = DependencyProperty.Register("MaxTempLow", typeof(Temperature), typeof(MainViewModel), new UIPropertyMetadata(DEFAULT_MAX_TEMP_LOW));
 
         public static readonly Temperature DEFAULT_MAX_TEMP_LOW = new Temperature { Unit = TemperatureUnit.F, Value = 200f };
+
+        #endregion
+
+        #region MaxPower
+
+        public float MaxPower
+        {
+            get
+            {
+                return (float)GetValue(MaxPowerProperty);
+            }
+            set
+            {
+                SetValue(MaxPowerProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty MaxPowerProperty = DependencyProperty.Register("MaxPower", typeof(float), typeof(MainViewModel), new UIPropertyMetadata(300f));
 
         #endregion
 
@@ -298,6 +336,7 @@ namespace ModMonitor.ViewModels
                     sampleManager = null;
                     Invoke(() =>
                     {
+                        CurrentDevice = null;
                         LatestSample = null;
                         ConnectText = "Connect";
                         Status = "Disconnected";
@@ -328,6 +367,15 @@ namespace ModMonitor.ViewModels
                         sampleManager.Connect();
                         Invoke(() =>
                         {
+                            CurrentDevice = device;
+                            if (CurrentDevice.MaxPower.HasValue)
+                            {
+                                MaxPower = (((int)CurrentDevice.MaxPower.Value / 50) + 1) * 50f;
+                            }
+                            else
+                            {
+                                MaxPower = DEFAULT_MAX_POWER;
+                            }
                             ConnectText = "Disconnect";
                             Status = string.Format("Connected to \"{0}\"", device);
                         });
