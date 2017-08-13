@@ -16,6 +16,7 @@ using ModMonitor.Utils;
 using System.Collections.Concurrent;
 using ModMonitor.Properties;
 using System.ComponentModel;
+using NLog;
 
 namespace ModMonitor.ViewModels
 {
@@ -243,6 +244,8 @@ namespace ModMonitor.ViewModels
 
         #endregion
 
+        #region Events
+
         public event SaveFileRequestedEvent SaveFileRequested = (sender, args) => { };
 
         public event DevicePickerRequestedEvent DevicePickerRequested = (sender, args) => { };
@@ -250,6 +253,10 @@ namespace ModMonitor.ViewModels
         public event EventHandler EditSettingsRequested = (sender, args) => { };
 
         public event EventHandler ShowAboutRequested = (sender, args) => { };
+
+        #endregion
+
+        #region Private members
 
         private DnaSampleManager sampleManager = null;
         private SampleRecorder sampleRecorder = null;
@@ -259,6 +266,10 @@ namespace ModMonitor.ViewModels
         private ICommand stopRecordingCommand;
         private ICommand editSettingsCommand;
         private ICommand showAboutCommand;
+
+        private ILogger log;
+
+        #endregion
 
         public MainViewModel()
         {
@@ -272,6 +283,7 @@ namespace ModMonitor.ViewModels
             MaxOffset = WINDOW / Settings.Default.SampleThrottle;
             SetGraphTemperatureUnit(Settings.Default.TemperatureUnitForce ? Settings.Default.TemperatureUnit : TemperatureUnit.F);
             Settings.Default.PropertyChanged += Settings_PropertyChanged;
+            log = LogManager.GetCurrentClassLogger();
         }
 
         private void Connect()
@@ -281,6 +293,7 @@ namespace ModMonitor.ViewModels
                 // "Disconnect"
                 Task.Run(() =>
                 {
+                    log.Info("Disconnectiong...");
                     sampleManager.Dispose();
                     sampleManager = null;
                     Invoke(() =>
@@ -290,10 +303,12 @@ namespace ModMonitor.ViewModels
                         Status = "Disconnected";
                         GraphData.Clear();
                     });
+                    log.Info("Disconnected");
                 });
             }
             else
             {
+                log.Info("Connect request processing...");
                 DevicePickerRequested(this, new DevicePickerRequestedEventArgs(Connect));
             }
         }
@@ -304,6 +319,7 @@ namespace ModMonitor.ViewModels
             {
                 Task.Run(() =>
                 {
+                    log.Info("Connecting to device \"{0}\"...", device);
                     try
                     {
                         sampleManager = new DnaSampleManager(device.SerialPort, Settings.Default.SampleThrottle);
@@ -315,10 +331,11 @@ namespace ModMonitor.ViewModels
                             ConnectText = "Disconnect";
                             Status = string.Format("Connected to \"{0}\"", device);
                         });
+                        log.Info("Connected to device \"{0}\"", device);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        // TODO Log the exception
+                        log.Error(ex, "Error connecting to device \"{0}\"", device);
                         Invoke(() => MessageBox.Show("Error connecting to DNA device.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning));
                     }
                 });
@@ -327,6 +344,7 @@ namespace ModMonitor.ViewModels
 
         private void StartRecording()
         {
+            log.Info("Recording start request...");
             var args = new SaveFileRequestedEventArgs(new Action<string>(StartRecording));
             args.Filters = "CSV files|*.csv|All files|*.*";
             args.Title = "Save CSV file...";
@@ -335,6 +353,7 @@ namespace ModMonitor.ViewModels
 
         private void StartRecording(string fileName)
         {
+            log.Info("Recording started. Recording to file \"{0}\"", fileName);
             sampleRecorder = new SampleRecorder(fileName);
             IsRecording = true;
             IsGraphPaused = true;
@@ -346,6 +365,7 @@ namespace ModMonitor.ViewModels
             IsGraphPaused = false;
             sampleRecorder.Dispose();
             sampleRecorder = null;
+            log.Info("Recording stopped");
         }
 
         private void EditSettings()
@@ -360,8 +380,7 @@ namespace ModMonitor.ViewModels
 
         private void Error(string msg, Exception ex)
         {
-            Console.Error.WriteLine("Error occurred in device thread: {0}", ex.Message);
-            Console.Error.WriteLine(ex.StackTrace);
+            log.Error(ex, "Exception on device thread: {0}", msg);
             sampleManager.Dispose();
             sampleManager = null;
             Invoke(() => {
@@ -430,6 +449,7 @@ namespace ModMonitor.ViewModels
 
         public void Dispose()
         {
+            log.Debug("Dispose called, async shutdown of sample manager...");
             Task.Run(() =>
             {
                 if (sampleManager != null)

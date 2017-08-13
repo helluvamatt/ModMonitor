@@ -324,7 +324,7 @@
                             <TextBlock Text="{Binding TemperatureUnit, StringFormat={}Temperature (º{0}), Source={x:Static p:Settings.Default}, Mode=OneWay}" />
                         </g:LinearAxis.Title>
                     </g:LinearAxis>
-                    <g:LinearAxis x:Name="yAxisSinglePower" Orientation="Y" Title="Power (W)" Minimum="0" Maximum="100" />
+                    <g:LinearAxis x:Name="yAxisSinglePower" Orientation="Y" Title="Power (W)" Minimum="0" Maximum="300" />
                     <g:LinearAxis x:Name="yAxisSingleVoltage" Orientation="Y" Title="Voltage (V)" Minimum="0" Maximum="10" />
                     <g:LinearAxis x:Name="yAxisSingleCurrent" Orientation="Y" Title="Current (A)" Minimum="0" Maximum="40" />
                     <g:LinearAxis x:Name="yAxisSingleResistance" Orientation="Y" Title="Resistance (Ω)" Minimum="0" Maximum="3" />

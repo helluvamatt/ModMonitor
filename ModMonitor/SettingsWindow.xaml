@@ -157,7 +157,7 @@
 
         <Label Grid.Row="7" Grid.Column="3" Grid.ColumnSpan="3" Style="{StaticResource legendHeader}" Content="Mod Monitor" />
 
-        <ComboBox Grid.Row="8" Grid.Column="3" Grid.ColumnSpan="2" IsEditable="False" Margin="4" ItemsSource="{Binding Source={StaticResource sampleThrottleValues}}" SelectedItem="{Binding SampleThrottle, Source={x:Static p:Settings.Default}}" />
+        <ComboBox Grid.Row="8" Grid.Column="3" Grid.ColumnSpan="2" IsEditable="False" Margin="4" ItemsSource="{Binding Source={StaticResource sampleThrottleValues}}" SelectedItem="{Binding SampleThrottle, Source={x:Static p:Settings.Default}}" ItemStringFormat="{}{0} ms" />
         <Label Grid.Row="8" Grid.Column="5" Content="Graph Sample Delay" ToolTip="Delay in milliseconds between samples on the graph." />
 
         <CheckBox Grid.Row="9" Grid.Column="3" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnitForce}" ToolTip="Force temperature conversions to the specified unit" />
