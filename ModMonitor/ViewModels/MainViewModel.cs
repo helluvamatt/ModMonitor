@@ -22,6 +22,8 @@ namespace ModMonitor.ViewModels
 {
     class MainViewModel : DependencyObject, IDisposable
     {
+        private const double MAX_OFFSET = 10.0;
+
         private const float DEFAULT_MAX_POWER = 300f;
 
         #region Dependency Properties
@@ -177,6 +179,24 @@ namespace ModMonitor.ViewModels
         }
 
         public static readonly DependencyProperty MaxPowerProperty = DependencyProperty.Register("MaxPower", typeof(float), typeof(MainViewModel), new UIPropertyMetadata(300f));
+
+        #endregion
+
+        #region MaxOffset
+
+        public double MaxOffset
+        {
+            get
+            {
+                return (double)GetValue(MaxOffsetProperty);
+            }
+            set
+            {
+                SetValue(MaxOffsetProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty MaxOffsetProperty = DependencyProperty.Register("MaxOffset", typeof(double), typeof(MainViewModel), new UIPropertyMetadata(MAX_OFFSET));
 
         #endregion
 
@@ -413,12 +433,17 @@ namespace ModMonitor.ViewModels
                     {
                         puffStart = sample.End;
                         GraphData.Clear();
+                        MaxOffset = MAX_OFFSET;
                     }
                     isFiring = true;
                     GraphData.Add((sample.End - puffStart).TotalSeconds, sample);
                 }
                 else
                 {
+                    if (isFiring && Settings.Default.ExpandGraph)
+                    {
+                        MaxOffset = GraphData.Keys.Max();
+                    }
                     isFiring = false;
                 }
             });

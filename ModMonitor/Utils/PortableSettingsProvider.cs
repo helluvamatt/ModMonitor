@@ -1,10 +1,12 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Collections.Specialized;
+using System.Configuration;
 using System.IO;
 using System.Xml;
 
 namespace ModMonitor.Utils
 {
-    internal class PortableSettingsProvider : SettingsProvider
+    internal class PortableSettingsProvider : SettingsProvider, IApplicationSettingsProvider
     {
         const string SETTINGSROOT = "Settings";
         
@@ -131,6 +133,24 @@ namespace ModMonitor.Utils
                 SettingNode.InnerText = propVal.SerializedValue.ToString();
                 SettingsXML.SelectSingleNode(SETTINGSROOT).AppendChild(SettingNode);
             }
+        }
+
+        public void Reset(SettingsContext ctxt)
+        {
+            File.Delete(Path.Combine(BaseDir, FileName));
+            _settingsXML = null;
+        }
+
+        public SettingsPropertyValue GetPreviousVersion(SettingsContext context, SettingsProperty property)
+        {
+            var val = new SettingsPropertyValue(property);
+            val.SerializedValue = GetValue(property);
+            return val;
+        }
+
+        public void Upgrade(SettingsContext context, SettingsPropertyCollection properties)
+        {
+            // Do nothing
         }
     }
 }

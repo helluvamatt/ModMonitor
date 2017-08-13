@@ -362,7 +362,7 @@
                     </g:LineSeries.DataPointStyle>
                 </g:LineSeries>
                 <g:Chart.Axes>
-                    <g:LinearAxis Orientation="X" Minimum="0" Maximum="10" Interval="1">
+                    <g:LinearAxis Orientation="X" Minimum="0" Maximum="{Binding MaxOffset}" Interval="1">
                         <g:LinearAxis.AxisLabelStyle>
                             <Style TargetType="g:AxisLabel">
                                 <Setter Property="Template">

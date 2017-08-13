@@ -346,5 +346,17 @@ namespace ModMonitor.Properties {
                 this["SampleThrottle"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ExpandGraph {
+            get {
+                return ((bool)(this["ExpandGraph"]));
+            }
+            set {
+                this["ExpandGraph"] = value;
+            }
+        }
     }
 }

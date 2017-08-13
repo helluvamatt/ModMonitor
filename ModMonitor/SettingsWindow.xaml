@@ -10,7 +10,7 @@
         xmlns:c="clr-namespace:ModMonitor.Converters"
         xmlns:p="clr-namespace:ModMonitor.Properties"
         mc:Ignorable="d"
-        Title="Mod Monitor Settings" Height="361" Width="420" ResizeMode="NoResize">
+        Title="Mod Monitor Settings" Height="365" Width="420" ResizeMode="NoResize">
     <Window.DataContext>
         <vm:EditSettingsViewModel EditColor="EditSettingsViewModel_EditColor" />
     </Window.DataContext>
@@ -53,7 +53,7 @@
             <sys:Int64>200</sys:Int64>
         </x:Array>
     </Window.Resources>
-    <Grid Margin="5">
+    <Grid Margin="5,5,5,0" Height="322" VerticalAlignment="Top">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
@@ -155,14 +155,17 @@
         </Button>
         <Label Grid.Column="5" Grid.Row="4" Content="Temperature Setpoint" />
 
-        <Label Grid.Row="7" Grid.Column="3" Grid.ColumnSpan="3" Style="{StaticResource legendHeader}" Content="Mod Monitor" />
+        <Label Grid.Row="6" Grid.Column="3" Grid.ColumnSpan="3" Style="{StaticResource legendHeader}" Content="Mod Monitor" />
 
-        <ComboBox Grid.Row="8" Grid.Column="3" Grid.ColumnSpan="2" IsEditable="False" Margin="4" ItemsSource="{Binding Source={StaticResource sampleThrottleValues}}" SelectedItem="{Binding SampleThrottle, Source={x:Static p:Settings.Default}}" ItemStringFormat="{}{0} ms" />
-        <Label Grid.Row="8" Grid.Column="5" Content="Graph Sample Delay" ToolTip="Delay in milliseconds between samples on the graph." />
+        <ComboBox Grid.Row="7" Grid.Column="3" Grid.ColumnSpan="2" IsEditable="False" Margin="4" ItemsSource="{Binding Source={StaticResource sampleThrottleValues}}" SelectedItem="{Binding SampleThrottle, Source={x:Static p:Settings.Default}}" ItemStringFormat="{}{0} ms" />
+        <Label Grid.Row="7" Grid.Column="5" Content="Graph Sample Delay" ToolTip="Delay in milliseconds between samples on the graph." />
 
-        <CheckBox Grid.Row="9" Grid.Column="3" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnitForce}" ToolTip="Force temperature conversions to the specified unit" />
-        <ComboBox Grid.Row="9" Grid.Column="4" IsEnabled="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnitForce, Mode=OneWay}" IsEditable="False" ItemsSource="{Binding Source={StaticResource temperatureUnitValues}}" SelectedItem="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnit}" Margin="4" />
-        <Label Grid.Row="9" Grid.Column="5" VerticalAlignment="Center" ToolTip="Temperatures will be converted into this unit for display. 'Auto' means to use the values provided by the device.">Convert Temperatures</Label>
+        <CheckBox Grid.Row="8" Grid.Column="3" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnitForce}" ToolTip="Force temperature conversions to the specified unit" />
+        <ComboBox Grid.Row="8" Grid.Column="4" IsEnabled="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnitForce, Mode=OneWay}" IsEditable="False" ItemsSource="{Binding Source={StaticResource temperatureUnitValues}}" SelectedItem="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnit}" Margin="4" />
+        <Label Grid.Row="8" Grid.Column="5" VerticalAlignment="Center" ToolTip="Temperatures will be converted into this unit for display. 'Auto' means to use the values provided by the device.">Convert Temperatures</Label>
+
+        <CheckBox Grid.Row="9" Grid.Column="3" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=ExpandGraph}" />
+        <Label Grid.Row="9" Grid.Column="4" Grid.ColumnSpan="2" VerticalAlignment="Center" ToolTip="When a puff is finished, change the scale so that lines take up the entire graph area." Content="Expand Graph" />
 
         <Button Grid.Row="10" Grid.ColumnSpan="6" Grid.Column="0" Command="{Binding ResetCommand}" Margin="0 6 0 0">Reset to Defaults</Button>
     </Grid>
