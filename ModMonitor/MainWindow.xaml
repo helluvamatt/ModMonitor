@@ -107,151 +107,11 @@
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="2" Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+            <DockPanel Grid.Column="2" Grid.Row="0">
 
-                <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Style="{StaticResource legendTitle}" Content="Live Data" />
+                <Label DockPanel.Dock="Top" Style="{StaticResource legendTitle}" Content="Live Data" />
 
-                <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Style="{StaticResource legendHeader}" Content="Coil" />
-
-                <DockPanel Grid.Column="0" Grid.Row="2" Background="{Binding Path=ColorPower, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
-                    <CheckBox IsChecked="{Binding ShowPower, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
-                </DockPanel>
-                <Label Grid.Column="1" Grid.Row="2" Content="Power" />
-                <Label Grid.Column="2" Grid.Row="2" Content="{Binding Path=LatestSample.Power, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} W"/>
-
-                <DockPanel Grid.Column="0" Grid.Row="3" Background="{Binding ColorTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
-                    <CheckBox IsChecked="{Binding ShowTemperature, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
-                </DockPanel>
-                <Label Grid.Column="1" Grid.Row="3" Content="Temperature" />
-                <Label Grid.Column="2" Grid.Row="3" Content="{Binding Path=LatestSample.Temperature, Converter={StaticResource temperatureConverter}, FallbackValue=???}" />
-
-                <DockPanel Grid.Column="0" Grid.Row="4" Background="{Binding ColorVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
-                    <CheckBox IsChecked="{Binding ShowVoltage, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
-                </DockPanel>
-                <Label Grid.Column="1" Grid.Row="4" Content="Voltage" />
-                <Label Grid.Column="2" Grid.Row="4" Content="{Binding Path=LatestSample.Voltage, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} V" />
-
-                <DockPanel Grid.Column="0" Grid.Row="5" Background="{Binding ColorCurrent, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
-                    <CheckBox IsChecked="{Binding ShowCurrent, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
-                </DockPanel>
-                <Label Grid.Column="1" Grid.Row="5" Content="Current" />
-                <Label Grid.Column="2" Grid.Row="5" Content="{Binding Path=LatestSample.Current, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} A" />
-
-                <DockPanel Grid.Column="0" Grid.Row="6" Background="{Binding ColorLiveResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
-                    <CheckBox IsChecked="{Binding ShowLiveResistance, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
-                </DockPanel>
-                <Label Grid.Column="1" Grid.Row="6" Content="Live Resistance" />
-                <Label Grid.Column="2" Grid.Row="6" Content="{Binding Path=LatestSample.LiveResistance, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} Ω" />
-
-                <DockPanel Grid.Column="0" Grid.Row="7" Background="{Binding ColorColdResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
-                    <CheckBox IsChecked="{Binding ShowColdResistance, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
-                </DockPanel>
-                <Label Grid.Column="1" Grid.Row="7" Content="Cold Resistance" />
-                <Label Grid.Column="2" Grid.Row="7" Content="{Binding Path=LatestSample.ColdResistance, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} Ω" />
-
-                <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="8" Style="{StaticResource legendHeader}" Content="Battery" />
-
-                <DockPanel Grid.Column="0" Grid.Row="9" Background="{Binding ColorBatteryLevel, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
-                    <CheckBox IsChecked="{Binding ShowBatteryLevel, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
-                </DockPanel>
-                <Label Grid.Column="1" Grid.Row="9" Content="Battery Level" />
-                <Label Grid.Column="2" Grid.Row="9" Content="{Binding Path=LatestSample.BatteryLevel, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0}%" />
-
-                <DockPanel Grid.Column="0" Grid.Row="10" Background="{Binding ColorBatteryVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
-                    <CheckBox IsChecked="{Binding ShowBatteryVoltage, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
-                </DockPanel>
-                <Label Grid.Column="1" Grid.Row="10" Content="Battery Voltage" />
-                <Label Grid.Column="2" Grid.Row="10" Content="{Binding Path=LatestSample.BatteryVoltage, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0:#0.00} V" />
-
-                <Label Grid.Column="0" Grid.ColumnSpan="3"  Grid.Row="11" Style="{StaticResource legendHeader}" Content="Device" />
-
-                <DockPanel Grid.Column="0" Grid.Row="12" Background="{Binding ColorBoardTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
-                    <CheckBox IsChecked="{Binding ShowBoardTemperature, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
-                </DockPanel>
-                <Label Grid.Column="1" Grid.Row="12" Content="Board Temperature" />
-                <Label Grid.Column="2" Grid.Row="12" Content="{Binding Path=LatestSample.BoardTemperature, Converter={StaticResource temperatureConverter}, FallbackValue=???}" />
-
-                <DockPanel Grid.Column="0" Grid.Row="13" Background="{Binding ColorRoomTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
-                    <CheckBox IsChecked="{Binding ShowRoomTemperature, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
-                </DockPanel>
-                <Label Grid.Column="1" Grid.Row="13" Content="Room Temperature" />
-                <Label Grid.Column="2" Grid.Row="13" Content="{Binding Path=LatestSample.RoomTemperature, Converter={StaticResource temperatureConverter}, FallbackValue=???}" />
-
-                <DockPanel Grid.Column="0" Grid.Row="14" Background="{Binding ColorPowerSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
-                    <CheckBox IsChecked="{Binding ShowPowerSetpoint, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
-                </DockPanel>
-                <Label Grid.Column="1" Grid.Row="14" Content="Power Setpoint" />
-                <Label Grid.Column="2" Grid.Row="14" Content="{Binding Path=LatestSample.PowerSetpoint, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} W"/>
-
-                <DockPanel Grid.Column="0" Grid.Row="15" Background="{Binding ColorTemperatureSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
-                    <CheckBox IsChecked="{Binding ShowTemperatureSetpoint, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
-                </DockPanel>
-                <Label Grid.Column="1" Grid.Row="15" Content="Temperature Setpoint" />
-                <Label Grid.Column="2" Grid.Row="15" Content="{Binding Path=LatestSample.TemperatureSetpoint, Converter={StaticResource temperatureConverter}, FallbackValue=???}" />
-
-                <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="16" Style="{StaticResource legendHeader}" Content="Sample" />
-                
-                <Label Grid.Column="1" Grid.Row="17" Content="Timestamp" />
-                <Label Grid.Column="2" Grid.Row="17" Content="{Binding Path=LatestSample.End, Converter={StaticResource timestampConverter}}" />
-
-                <Label Grid.Column="1" Grid.Row="18" Content="Sample Delay" ToolTip="Time in milliseconds between samples on the graph." />
-                <Label Grid.Column="2" Grid.Row="18" Content="{Binding Path=SampleThrottle, Source={x:Static p:Settings.Default}}" ContentStringFormat="{}{0} ms" />
-
-                <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="19" Style="{StaticResource legendHeader}" Content="Device Information" />
-
-                <Label Grid.Column="1" Grid.Row="20" Content="Manufacturer" />
-                <Label Grid.Column="2" Grid.Row="20" Content="{Binding Path=CurrentDevice.Manufacturer}" />
-
-                <Label Grid.Column="1" Grid.Row="21" Content="Board Name" />
-                <Label Grid.Column="2" Grid.Row="21" Content="{Binding Path=CurrentDevice.ProductName}"/>
-
-                <Label Grid.Column="1" Grid.Row="22" Content="Serial Number" />
-                <Label Grid.Column="2" Grid.Row="22" Content="{Binding Path=CurrentDevice.SerialNumber}" />
-
-                <Label Grid.Column="1" Grid.Row="23" Content="Firmware Version" />
-                <Label Grid.Column="2" Grid.Row="23" Content="{Binding Path=CurrentDevice.FirmwareVersion}" />
-
-                <Label Grid.Column="1" Grid.Row="24" Content="Max Power" ToolTip="Max power for known devices, affects the power scale on the graph" />
-                <Label Grid.Column="2" Grid.Row="24" Content="{Binding Path=CurrentDevice.MaxPower}" ContentStringFormat="{}{0} W" />
-
-                <Label Grid.Column="1" Grid.Row="25" Content="Buttons" />
-                <Label Grid.Column="2" Grid.Row="25" Content="{Binding Path=LatestSample.Buttons}" />
-
-                <DockPanel Grid.Column="0" Grid.Row="26" Grid.ColumnSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="8">
+                <DockPanel DockPanel.Dock="Bottom" Grid.Column="0" Grid.Row="26" Grid.ColumnSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="8">
                     <Button DockPanel.Dock="Right" Padding="5 5 5 5" Foreground="Red" Margin="5 0 0 0" Visibility="{Binding IsRecording, Converter={StaticResource notBooleanToVisibilityConverter}}" Command="{Binding StartRecordingCommand}">
                         <fa:FontAwesome Icon="Circle" />
                     </Button>
@@ -261,7 +121,180 @@
                     <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Center" Foreground="Red" Visibility="{Binding IsRecording, Converter={StaticResource booleanToVisibilityConverter}}">Recording In Progress...</TextBlock>
                 </DockPanel>
 
-            </Grid>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Style="{StaticResource legendHeader}" Content="Last Puff" />
+                        <Button Grid.Column="2" Grid.Row="0" HorizontalAlignment="Right" Padding="8 2 8 2" Margin="8 0 8 0">Statistics</Button>
+
+                        <!-- Row 1: Time -->
+                        <Label Grid.Column="1" Grid.Row="1" Content="Duration" />
+                        <Label Grid.Column="2" Grid.Row="1" Content="{Binding CurrentPuffDuration, FallbackValue=0}" ContentStringFormat="{}{0:0.0} s" />
+
+                        <!-- Row 2: Temperature -->
+                        <Label Grid.Column="1" Grid.Row="2" Content="Temperature" />
+                        <Label Grid.Column="2" Grid.Row="2" Content="{Binding LatestStatisticSample.LastTemperature, TargetNullValue=N/A, FallbackValue=N/A, Converter={StaticResource temperatureConverter}}" />
+
+                        <!-- Row 3: Power -->
+                        <Label Grid.Column="1" Grid.Row="3" Content="Power" />
+                        <Label Grid.Column="2" Grid.Row="3" Content="{Binding LatestStatisticSample.LastPower, TargetNullValue=N/A, FallbackValue=N/A}" ContentStringFormat="{}{0} W" />
+
+                        <!-- Row 4: Temperature Peak (calculated, since the value from the device is not reliably provided -->
+                        <Label Grid.Column="1" Grid.Row="4" Content="Peak Temperature" />
+                        <Label Grid.Column="2" Grid.Row="4" Content="{Binding PeakTemperature, TargetNullValue=N/A, FallbackValue=N/A, Converter={StaticResource temperatureConverter}}" />
+
+                        <!-- Row 5: Energy -->
+                        <Label Grid.Column="1" Grid.Row="5" Content="Energy" />
+                        <Label Grid.Column="2" Grid.Row="5" Content="{Binding LatestStatisticSample.LastEnergy, TargetNullValue=N/A, FallbackValue=N/A}" ContentStringFormat="{}{0} mWh" />
+
+                        <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="6" Style="{StaticResource legendHeader}" Content="Coil" />
+
+                        <DockPanel Grid.Column="0" Grid.Row="7" Background="{Binding Path=ColorPower, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
+                            <CheckBox IsChecked="{Binding ShowPower, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
+                        </DockPanel>
+                        <Label Grid.Column="1" Grid.Row="7" Content="Power" />
+                        <Label Grid.Column="2" Grid.Row="7" Content="{Binding Path=LatestSample.Power, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} W"/>
+
+                        <DockPanel Grid.Column="0" Grid.Row="8" Background="{Binding ColorTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
+                            <CheckBox IsChecked="{Binding ShowTemperature, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
+                        </DockPanel>
+                        <Label Grid.Column="1" Grid.Row="8" Content="Temperature" />
+                        <Label Grid.Column="2" Grid.Row="8" Content="{Binding Path=LatestSample.Temperature, Converter={StaticResource temperatureConverter}, FallbackValue=???}" />
+
+                        <DockPanel Grid.Column="0" Grid.Row="9" Background="{Binding ColorVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
+                            <CheckBox IsChecked="{Binding ShowVoltage, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
+                        </DockPanel>
+                        <Label Grid.Column="1" Grid.Row="9" Content="Voltage" />
+                        <Label Grid.Column="2" Grid.Row="9" Content="{Binding Path=LatestSample.Voltage, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} V" />
+
+                        <DockPanel Grid.Column="0" Grid.Row="10" Background="{Binding ColorCurrent, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
+                            <CheckBox IsChecked="{Binding ShowCurrent, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
+                        </DockPanel>
+                        <Label Grid.Column="1" Grid.Row="10" Content="Current" />
+                        <Label Grid.Column="2" Grid.Row="10" Content="{Binding Path=LatestSample.Current, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} A" />
+
+                        <DockPanel Grid.Column="0" Grid.Row="11" Background="{Binding ColorLiveResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
+                            <CheckBox IsChecked="{Binding ShowLiveResistance, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
+                        </DockPanel>
+                        <Label Grid.Column="1" Grid.Row="11" Content="Live Resistance" />
+                        <Label Grid.Column="2" Grid.Row="11" Content="{Binding Path=LatestSample.LiveResistance, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} Ω" />
+
+                        <DockPanel Grid.Column="0" Grid.Row="12" Background="{Binding ColorColdResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
+                            <CheckBox IsChecked="{Binding ShowColdResistance, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
+                        </DockPanel>
+                        <Label Grid.Column="1" Grid.Row="12" Content="Cold Resistance" />
+                        <Label Grid.Column="2" Grid.Row="12" Content="{Binding Path=LatestSample.ColdResistance, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} Ω" />
+
+                        <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="13" Style="{StaticResource legendHeader}" Content="Battery" />
+
+                        <DockPanel Grid.Column="0" Grid.Row="14" Background="{Binding ColorBatteryLevel, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
+                            <CheckBox IsChecked="{Binding ShowBatteryLevel, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
+                        </DockPanel>
+                        <Label Grid.Column="1" Grid.Row="14" Content="Battery Level" />
+                        <Label Grid.Column="2" Grid.Row="14" Content="{Binding Path=LatestSample.BatteryLevel, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0}%" />
+
+                        <DockPanel Grid.Column="0" Grid.Row="15" Background="{Binding ColorBatteryVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
+                            <CheckBox IsChecked="{Binding ShowBatteryVoltage, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
+                        </DockPanel>
+                        <Label Grid.Column="1" Grid.Row="15" Content="Battery Voltage" />
+                        <Label Grid.Column="2" Grid.Row="15" Content="{Binding Path=LatestSample.BatteryVoltage, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0:#0.00} V" />
+
+                        <Label Grid.Column="0" Grid.ColumnSpan="3"  Grid.Row="16" Style="{StaticResource legendHeader}" Content="Device" />
+
+                        <DockPanel Grid.Column="0" Grid.Row="17" Background="{Binding ColorBoardTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
+                            <CheckBox IsChecked="{Binding ShowBoardTemperature, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
+                        </DockPanel>
+                        <Label Grid.Column="1" Grid.Row="17" Content="Board Temperature" />
+                        <Label Grid.Column="2" Grid.Row="17" Content="{Binding Path=LatestSample.BoardTemperature, Converter={StaticResource temperatureConverter}, FallbackValue=???}" />
+
+                        <DockPanel Grid.Column="0" Grid.Row="18" Background="{Binding ColorRoomTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
+                            <CheckBox IsChecked="{Binding ShowRoomTemperature, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
+                        </DockPanel>
+                        <Label Grid.Column="1" Grid.Row="18" Content="Room Temperature" />
+                        <Label Grid.Column="2" Grid.Row="18" Content="{Binding Path=LatestSample.RoomTemperature, Converter={StaticResource temperatureConverter}, FallbackValue=???}" />
+
+                        <DockPanel Grid.Column="0" Grid.Row="19" Background="{Binding ColorPowerSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
+                            <CheckBox IsChecked="{Binding ShowPowerSetpoint, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
+                        </DockPanel>
+                        <Label Grid.Column="1" Grid.Row="19" Content="Power Setpoint" />
+                        <Label Grid.Column="2" Grid.Row="19" Content="{Binding Path=LatestSample.PowerSetpoint, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} W"/>
+
+                        <DockPanel Grid.Column="0" Grid.Row="20" Background="{Binding ColorTemperatureSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
+                            <CheckBox IsChecked="{Binding ShowTemperatureSetpoint, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
+                        </DockPanel>
+                        <Label Grid.Column="1" Grid.Row="20" Content="Temperature Setpoint" />
+                        <Label Grid.Column="2" Grid.Row="20" Content="{Binding Path=LatestSample.TemperatureSetpoint, Converter={StaticResource temperatureConverter}, FallbackValue=???}" />
+
+                        <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="21" Style="{StaticResource legendHeader}" Content="Sample" />
+
+                        <Label Grid.Column="1" Grid.Row="22" Content="Timestamp" />
+                        <Label Grid.Column="2" Grid.Row="22" Content="{Binding Path=LatestSample.End, Converter={StaticResource timestampConverter}}" />
+
+                        <Label Grid.Column="1" Grid.Row="23" Content="Sample Delay" ToolTip="Time in milliseconds between samples on the graph." />
+                        <Label Grid.Column="2" Grid.Row="23" Content="{Binding Path=SampleThrottle, Source={x:Static p:Settings.Default}}" ContentStringFormat="{}{0} ms" />
+
+                        <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="24" Style="{StaticResource legendHeader}" Content="Device Information" />
+
+                        <Label Grid.Column="1" Grid.Row="25" Content="Manufacturer" />
+                        <Label Grid.Column="2" Grid.Row="25" Content="{Binding Path=CurrentDevice.Manufacturer}" />
+
+                        <Label Grid.Column="1" Grid.Row="26" Content="Board Name" />
+                        <Label Grid.Column="2" Grid.Row="26" Content="{Binding Path=CurrentDevice.ProductName}"/>
+
+                        <Label Grid.Column="1" Grid.Row="27" Content="Serial Number" />
+                        <Label Grid.Column="2" Grid.Row="27" Content="{Binding Path=CurrentDevice.SerialNumber}" />
+
+                        <Label Grid.Column="1" Grid.Row="28" Content="Firmware Version" />
+                        <Label Grid.Column="2" Grid.Row="28" Content="{Binding Path=CurrentDevice.FirmwareVersion}" />
+
+                        <Label Grid.Column="1" Grid.Row="29" Content="Max Power" ToolTip="Max power for known devices, affects the power scale on the graph" />
+                        <Label Grid.Column="2" Grid.Row="29" Content="{Binding Path=CurrentDevice.MaxPower}" ContentStringFormat="{}{0} W" />
+
+                        <Label Grid.Column="1" Grid.Row="30" Content="Buttons" />
+                        <Label Grid.Column="2" Grid.Row="30" Content="{Binding Path=LatestSample.Buttons}" />
+
+                    </Grid>
+                </ScrollViewer>
+            </DockPanel>
+
             <GridSplitter Grid.Column="1" Grid.Row="0" Margin="5 0 5 0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="DarkGray" ShowsPreview="True" Width="2" Cursor="SizeWE" />
 
             <g:Chart Grid.Column="0" Grid.Row="0" LegendStyle="{StaticResource hideLegendStyle}" BorderThickness="0" Title="Current Puff" Padding="8 0 8 8">

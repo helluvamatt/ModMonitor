@@ -17,6 +17,7 @@ using System.Collections.Concurrent;
 using ModMonitor.Properties;
 using System.ComponentModel;
 using NLog;
+using LibDnaSerial.Models;
 
 namespace ModMonitor.ViewModels
 {
@@ -97,6 +98,60 @@ namespace ModMonitor.ViewModels
         }
 
         public static readonly DependencyProperty LatestSampleProperty = DependencyProperty.Register("LatestSample", typeof(Sample), typeof(MainViewModel), new UIPropertyMetadata(new Sample()));
+
+        #endregion
+
+        #region LatestStatisticSample
+
+        public LastPuffStatisticsSample LatestStatisticSample
+        {
+            get
+            {
+                return (LastPuffStatisticsSample)GetValue(LatestStatisticSampleProperty);
+            }
+            set
+            {
+                SetValue(LatestStatisticSampleProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty LatestStatisticSampleProperty = DependencyProperty.Register("LatestStatisticSample", typeof(LastPuffStatisticsSample), typeof(MainViewModel));
+
+        #endregion
+
+        #region CurrentPuffDuration
+
+        public double CurrentPuffDuration
+        {
+            get
+            {
+                return (double)GetValue(CurrentPuffDurationProperty);
+            }
+            set
+            {
+                SetValue(CurrentPuffDurationProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty CurrentPuffDurationProperty = DependencyProperty.Register("CurrentPuffDuration", typeof(double), typeof(MainViewModel));
+
+        #endregion
+
+        #region PeakTemperature
+
+        public Temperature PeakTemperature
+        {
+            get
+            {
+                return (Temperature)GetValue(PeakTemperatureProperty);
+            }
+            set
+            {
+                SetValue(PeakTemperatureProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty PeakTemperatureProperty = DependencyProperty.Register("PeakTemperature", typeof(Temperature), typeof(MainViewModel));
 
         #endregion
 
@@ -328,6 +383,7 @@ namespace ModMonitor.ViewModels
                     {
                         sampleManager = new DnaSampleManager(device.SerialPort, Settings.Default.SampleThrottle);
                         sampleManager.SampleCollected += SampleArrived;
+                        sampleManager.LastPuffStatisticsSampleCollected += LastPuffStatisticsSampleArrived;
                         sampleManager.Error += Error;
                         sampleManager.Connect();
                         Invoke(() =>
@@ -353,6 +409,15 @@ namespace ModMonitor.ViewModels
                     }
                 });
             }
+        }
+
+        private void LastPuffStatisticsSampleArrived(LastPuffStatisticsSample sample)
+        {
+            Invoke(() => {
+                LatestStatisticSample = sample;
+                CurrentPuffDuration = sample.LastTime;
+                PeakTemperature = GraphData.Max(kvp => kvp.Value.Temperature);
+            });
         }
 
         private void StartRecording()
@@ -434,16 +499,17 @@ namespace ModMonitor.ViewModels
                         puffStart = sample.End;
                         GraphData.Clear();
                         MaxOffset = MAX_OFFSET;
+                        PeakTemperature = default(Temperature);
+                        LatestStatisticSample = null;
                     }
                     isFiring = true;
-                    GraphData.Add((sample.End - puffStart).TotalSeconds, sample);
+                    var duration = (sample.End - puffStart).TotalSeconds;
+                    GraphData.Add(duration, sample);
+                    CurrentPuffDuration = duration;
                 }
                 else
                 {
-                    if (isFiring && Settings.Default.ExpandGraph)
-                    {
-                        MaxOffset = GraphData.Keys.Max();
-                    }
+                    if (isFiring && Settings.Default.ExpandGraph) MaxOffset = GraphData.Keys.Max();
                     isFiring = false;
                 }
             });

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibDnaSerial.Models;
+using System;
 using System.Collections.Concurrent;
 using System.Threading;
 
@@ -17,6 +18,8 @@ namespace LibDnaSerial
         private bool running;
         private Thread runThread;
         private object lockObject = new { };
+        private object sampleLockObject = new { };
+        private bool isFiring = false;
 
         private ConcurrentQueue<Sample> sampleQueue;
 
@@ -44,6 +47,12 @@ namespace LibDnaSerial
         /// Delay in milliseconds between sample collections
         /// </summary>
         public long Throttle { get; set; }
+
+        /// <summary>
+        /// Pause sending samples, but stay connected
+        /// </summary>
+        /// <remarks>Set this to true to stop sending samples, but keep the connection open. You can use this to pause sending samples while you are requesting (or about to request) statistics samples.</remarks>
+        public bool Paused { get; set; }
 
         /// <summary>
         /// C'tor specifying a SerialPort property value and a Throttle property value
@@ -122,6 +131,45 @@ namespace LibDnaSerial
         }
 
         /// <summary>
+        /// Get a statistics sample containing only the data for the last puff
+        /// </summary>
+        /// <returns>Last puff statistics sample</returns>
+        public LastPuffStatisticsSample GetLastPuffStatistics()
+        {
+            lock (sampleLockObject)
+            {
+                if (dnaConnection != null) return dnaConnection.GetLastPuffStatisticsSample();
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get the basic statistics
+        /// </summary>
+        /// <returns>Basic statistics sample</returns>
+        public BasicStatisticsSample GetBasicStatisticsSample()
+        {
+            lock (sampleLockObject)
+            {
+                if (dnaConnection != null) return dnaConnection.GetBasicStatisticsSample();
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get the full detailed statistics
+        /// </summary>
+        /// <returns>Detailed statistics sample</returns>
+        public DetailedStatisticsSample GetDetailedStatisticsSample()
+        {
+            lock (sampleLockObject)
+            {
+                if (dnaConnection != null) return dnaConnection.GetDetailedStatisticsSample();
+                return null;
+            }
+        }
+
+        /// <summary>
         /// EventHandler for when a sample is collected
         /// </summary>
         /// <param name="sample">Sample</param>
@@ -131,6 +179,17 @@ namespace LibDnaSerial
         /// Event for when a sample has been collected
         /// </summary>
         public event SampleCollectedEventHandler SampleCollected;
+
+        /// <summary>
+        /// Event handler for when a LastPuffStatisticsSample is collected
+        /// </summary>
+        /// <param name="sample"></param>
+        public delegate void LastPuffStatisticsCollectedEventHandler(LastPuffStatisticsSample sample);
+
+        /// <summary>
+        /// Event for when a last puff statistics sample has been collected
+        /// </summary>
+        public event LastPuffStatisticsCollectedEventHandler LastPuffStatisticsSampleCollected;
 
         /// <summary>
         /// EventHandler for when an error occurs
@@ -156,14 +215,31 @@ namespace LibDnaSerial
                 while (running)
                 {
                     DateTime start = DateTime.Now;
-                    Sample s = dnaConnection.GetSample();
-                    if (SampleCollected != null)
+                    if (!Paused)
                     {
-                        SampleCollected.Invoke(s);
-                    }
-                    else
-                    {
-                        sampleQueue.Enqueue(s);
+                        Sample s;
+                        lock (sampleLockObject)
+                        {
+                            s = dnaConnection.GetSample();
+                        }
+                        if (SampleCollected != null)
+                        {
+                            SampleCollected.Invoke(s);
+                        }
+                        else
+                        {
+                            sampleQueue.Enqueue(s);
+                        }
+                        var sampleIsFiring = s.Buttons.HasFlag(Buttons.Fire);
+                        if (!sampleIsFiring && isFiring)
+                        {
+                            if (LastPuffStatisticsSampleCollected != null)
+                            {
+                                var lastPuffSample = dnaConnection.GetLastPuffStatisticsSample();
+                                LastPuffStatisticsSampleCollected.Invoke(lastPuffSample);
+                            }
+                        }
+                        isFiring = sampleIsFiring;
                     }
                     long millis = (DateTime.Now - start).Ticks / TimeSpan.TicksPerMillisecond;
                     if (Throttle > millis)

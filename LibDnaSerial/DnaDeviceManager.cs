@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibDnaSerial.Models;
+using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 

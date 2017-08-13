@@ -143,6 +143,7 @@
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\LinqUtils.cs" />
     <Compile Include="Utils\PortableSettingsProvider.cs" />
     <Compile Include="ViewModels\DevicePickerViewModel.cs" />
     <Compile Include="ViewModels\EditSettingsViewModel.cs" />

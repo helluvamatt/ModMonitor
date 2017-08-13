@@ -1,4 +1,5 @@
 ﻿using LibDnaSerial;
+using LibDnaSerial.Models;
 using MvvmFoundation.Wpf;
 using NLog;
 using System;

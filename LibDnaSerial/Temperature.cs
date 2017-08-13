@@ -1,11 +1,13 @@
-﻿namespace LibDnaSerial
+﻿using System;
+
+namespace LibDnaSerial
 {
     /// <summary>
     /// Represents a temperature with a value and a unit
     /// 
     /// This is just a model, no conversion is done when setting properties
     /// </summary>
-    public struct Temperature
+    public struct Temperature : IComparable
     {
         /// <summary>
         /// Temperature value
@@ -70,6 +72,16 @@
         private static float CtoK(float c)
         {
             return c + 273.15f;
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj != null && obj is Temperature)
+            {
+                var other = ((Temperature)obj).GetValue(TemperatureUnit.C);
+                return GetValue(TemperatureUnit.C).CompareTo(other);
+            }
+            return 1; // was null
         }
     }
 }

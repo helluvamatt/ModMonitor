@@ -4,78 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibDnaSerial
+namespace LibDnaSerial.Models
 {
     /// <summary>
-    /// Sample of all statistics values
+    /// Detailed statistics sample with all values reported by the device
     /// </summary>
-    public class StatisticsSample
+    public class DetailedStatisticsSample : BasicStatisticsSample
     {
-        /// <summary>
-        /// Sample index for a particular connection
-        /// </summary>
-        public ulong Index { get; set; }
-
-        /// <summary>
-        /// Sample start timestamp
-        /// </summary>
-        public DateTime Begin { get; set; }
-
-        /// <summary>
-        /// Sample end timestamp
-        /// </summary>
-        public DateTime End { get; set; }
-
-        /// <summary>
-        /// Number of device resets over the lifetime of the device
-        /// </summary>
-        public int Resets { get; set; }
-
-        /// <summary>
-        /// Last energy in mWh
-        /// </summary>
-        public float LastEnergy { get; set; }
-
-        /// <summary>
-        /// Last average power
-        /// </summary>
-        public float LastPower { get; set; }
-
-        /// <summary>
-        /// Last average temperature
-        /// </summary>
-        public Temperature LastTemperature { get; set; }
-
-        /// <summary>
-        /// Last peak temperature
-        /// </summary>
-        public Temperature? LastTemperaturePeak { get; set; }
-
-        /// <summary>
-        /// Last puff time in seconds
-        /// </summary>
-        public float LastTime { get; set; }
-
-        /// <summary>
-        /// Total puffs since last reset
-        /// </summary>
-        public int Puffs { get; set; }
-
-        /// <summary>
-        /// Total temperature protected puffs since last reset
-        /// </summary>
-        public int TemperatureProtectedPuffs { get; set; }
-
-        /// <summary>
-        /// Total puffs over life of device
-        /// </summary>
-        public int DevicePuffs { get; set; }
-
-        /// <summary>
-        /// Total temperature protected puffs over life of device
-        /// </summary>
-        public int DeviceTemperatureProtectedPuffs { get; set; }
-
         /// <summary>
         /// Mean puff energy since last reset
         /// </summary>
