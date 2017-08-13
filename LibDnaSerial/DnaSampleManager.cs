@@ -189,6 +189,9 @@ namespace LibDnaSerial
         /// <summary>
         /// Event for when a last puff statistics sample has been collected
         /// </summary>
+        /// <remarks>
+        /// Consume this event if you want to automatically receive a LastPuffStatistics when the library detects a puff has completed. The library uses the Buttons field on the sample to determine when the fire button is released, and will automatically query for last puff statistics and send them through this handler.
+        /// </remarks>
         public event LastPuffStatisticsCollectedEventHandler LastPuffStatisticsSampleCollected;
 
         /// <summary>
