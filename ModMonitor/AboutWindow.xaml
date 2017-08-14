@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ModMonitor"
         mc:Ignorable="d"
-        Title="Mod Monitor" Height="500" Width="400">
+        Title="Mod Monitor" Height="500" Width="400" DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -17,7 +18,8 @@
         <Image Grid.Row="0" Source="/Resources/Icons/icon.png" Stretch="None" />
         <TextBlock Grid.Row="1" TextAlignment="Center" FontSize="16pt" FontWeight="Bold">Mod Monitor</TextBlock>
         <TextBlock Grid.Row="2" TextAlignment="Center" FontSize="12pt">Copyright © 2017 Matt Schneeberger</TextBlock>
-        <ScrollViewer Grid.Row="3">
+        <TextBlock Grid.Row="3" TextAlignment="Center" FontSize="10pt" Text="{Binding Version, StringFormat={}Version {0}}"></TextBlock>
+        <ScrollViewer Grid.Row="4">
             <StackPanel Orientation="Vertical" Margin="5">
                 <StackPanel.Resources>
                     <Style x:Key="licenseTextStyle" TargetType="TextBlock">
@@ -32,6 +34,6 @@
                 <TextBlock Style="{StaticResource licenseTextStyle}">You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.</TextBlock>
             </StackPanel>
         </ScrollViewer>
-        <Button Grid.Row="4" Margin="5" Padding="10 2 10 2" HorizontalAlignment="Center" Click="close_Click">OK</Button>
+        <Button Grid.Row="5" Margin="5" Padding="10 2 10 2" HorizontalAlignment="Center" Click="close_Click">OK</Button>
     </Grid>
 </Window>
