@@ -83,6 +83,47 @@ namespace ModMonitor.ViewModels
 
         #endregion
 
+        #region IsStatsMode
+
+        public bool IsStatsMode
+        {
+            get
+            {
+                return (bool)GetValue(IsStatsModeProperty);
+            }
+            set
+            {
+                SetValue(IsStatsModeProperty, value);
+                if (sampleManager != null)
+                {
+                    sampleManager.Paused = value;
+                    if (value) RefreshStatistics();
+                }
+            }
+        }
+
+        public static readonly DependencyProperty IsStatsModeProperty = DependencyProperty.Register("IsStatsMode", typeof(bool), typeof(MainViewModel), new UIPropertyMetadata(false));
+
+        #endregion
+
+        #region IsDownloadingStatistics
+
+        public bool IsDownloadingStatistics
+        {
+            get
+            {
+                return (bool)GetValue(IsDownloadingStatisticsProperty);
+            }
+            set
+            {
+                SetValue(IsDownloadingStatisticsProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty IsDownloadingStatisticsProperty = DependencyProperty.Register("IsDownloadingStatistics", typeof(bool), typeof(MainViewModel), new UIPropertyMetadata(false));
+
+        #endregion
+
         #region LatestSample
 
         public Sample LatestSample
@@ -116,6 +157,24 @@ namespace ModMonitor.ViewModels
         }
 
         public static readonly DependencyProperty LatestStatisticSampleProperty = DependencyProperty.Register("LatestStatisticSample", typeof(LastPuffStatisticsSample), typeof(MainViewModel));
+
+        #endregion
+
+        #region LatestDetailedStatisticsSample
+
+        public DetailedStatisticsSample LatestDetailedStatisticsSample
+        {
+            get
+            {
+                return (DetailedStatisticsSample)GetValue(LatestDetailedStatisticsSampleProperty);
+            }
+            set
+            {
+                SetValue(LatestDetailedStatisticsSampleProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty LatestDetailedStatisticsSampleProperty = DependencyProperty.Register("LatestDetailedStatisticsSample", typeof(DetailedStatisticsSample), typeof(MainViewModel));
 
         #endregion
 
@@ -257,45 +316,21 @@ namespace ModMonitor.ViewModels
 
         #region Commands
 
-        public ICommand ConnectCommand
-        {
-            get
-            {
-                return connectCommand;
-            }
-        }
+        public ICommand ConnectCommand { get; private set; }
 
-        public ICommand StartRecordingCommand
-        {
-            get
-            {
-                return startRecordingCommand;
-            }
-        }
+        public ICommand StartRecordingCommand { get; private set; }
 
-        public ICommand StopRecordingCommand
-        {
-            get
-            {
-                return stopRecordingCommand;
-            }
-        }
+        public ICommand StopRecordingCommand { get; private set; }
 
-        public ICommand EditSettingsCommand
-        {
-            get
-            {
-                return editSettingsCommand;
-            }
-        }
+        public ICommand EditSettingsCommand { get; private set; }
 
-        public ICommand ShowAboutCommand
-        {
-            get
-            {
-                return showAboutCommand;
-            }
-        }
+        public ICommand ShowAboutCommand { get; private set; }
+
+        public ICommand RefreshStatisticsCommand { get; private set; }
+
+        public ICommand StatisticsModeCommand { get; private set; }
+
+        public ICommand LiveDataModeCommand { get; private set; }
 
         #endregion
 
@@ -318,12 +353,6 @@ namespace ModMonitor.ViewModels
         private DnaSampleManager sampleManager = null;
         private SampleRecorder sampleRecorder = null;
 
-        private ICommand connectCommand;
-        private ICommand startRecordingCommand;
-        private ICommand stopRecordingCommand;
-        private ICommand editSettingsCommand;
-        private ICommand showAboutCommand;
-
         private bool isFiring = false;
         private DateTime puffStart;
 
@@ -334,11 +363,14 @@ namespace ModMonitor.ViewModels
         public MainViewModel()
         {
             GraphData = new ObservableDictionary<double, Sample>();
-            connectCommand = new RelayCommand(Connect);
-            startRecordingCommand = new RelayCommand(StartRecording, () => !IsRecording);
-            stopRecordingCommand = new RelayCommand(StopRecording, () => IsRecording);
-            editSettingsCommand = new RelayCommand(EditSettings);
-            showAboutCommand = new RelayCommand(ShowAbout);
+            ConnectCommand = new RelayCommand(Connect);
+            StartRecordingCommand = new RelayCommand(StartRecording, () => !IsRecording);
+            StopRecordingCommand = new RelayCommand(StopRecording, () => IsRecording);
+            EditSettingsCommand = new RelayCommand(EditSettings);
+            ShowAboutCommand = new RelayCommand(ShowAbout);
+            RefreshStatisticsCommand = new RelayCommand(RefreshStatistics);
+            StatisticsModeCommand = new RelayCommand(() => IsStatsMode = true);
+            LiveDataModeCommand = new RelayCommand(() => IsStatsMode = false);
             SetGraphTemperatureUnit(Settings.Default.TemperatureUnitForce ? Settings.Default.TemperatureUnit : TemperatureUnit.F);
             Settings.Default.PropertyChanged += Settings_PropertyChanged;
             log = LogManager.GetCurrentClassLogger();
@@ -358,6 +390,8 @@ namespace ModMonitor.ViewModels
                     {
                         CurrentDevice = null;
                         LatestSample = null;
+                        LatestStatisticSample = null;
+                        LatestDetailedStatisticsSample = null;
                         ConnectText = "Connect";
                         Status = "Disconnected";
                         GraphData.Clear();
@@ -384,7 +418,9 @@ namespace ModMonitor.ViewModels
                         sampleManager = new DnaSampleManager(device.SerialPort, Settings.Default.SampleThrottle);
                         sampleManager.SampleCollected += SampleArrived;
                         sampleManager.LastPuffStatisticsSampleCollected += LastPuffStatisticsSampleArrived;
+                        sampleManager.PuffEnd += PuffEnd;
                         sampleManager.Error += Error;
+                        Invoke(() => sampleManager.Paused = IsStatsMode); // Safe to set Paused property in UI thread, it just sets a bool, IsStatsMode must be read from UI thread
                         sampleManager.Connect();
                         Invoke(() =>
                         {
@@ -397,6 +433,7 @@ namespace ModMonitor.ViewModels
                             {
                                 MaxPower = DEFAULT_MAX_POWER;
                             }
+                            if (IsStatsMode) RefreshStatistics();
                             ConnectText = "Disconnect";
                             Status = string.Format("Connected to \"{0}\"", device);
                         });
@@ -454,6 +491,19 @@ namespace ModMonitor.ViewModels
             ShowAboutRequested(this, EventArgs.Empty);
         }
 
+        private void RefreshStatistics()
+        {
+            if (sampleManager != null)
+            {
+                IsDownloadingStatistics = true;
+                Task.Run(() =>
+                {
+                    var sample = sampleManager.GetDetailedStatisticsSample();
+                    Invoke(() => { LatestDetailedStatisticsSample = sample; IsDownloadingStatistics = false; });
+                });
+            }
+        }
+
         private void Error(string msg, Exception ex)
         {
             log.Error(ex, "Exception on device thread: {0}", msg);
@@ -465,6 +515,11 @@ namespace ModMonitor.ViewModels
                 Status = "Disconnected";
                 GraphData.Clear();
             });
+        }
+
+        private void PuffEnd()
+        {
+            Invoke(() => { if (IsStatsMode && Settings.Default.AutoDownloadStats) RefreshStatistics(); });
         }
 
         private void SampleArrived(Sample sample)

@@ -10,8 +10,15 @@ namespace ModMonitor.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var t = (Temperature)value;
-            return string.Format("{0:0,0.0} °{1}", t.Value, t.Unit);
+            if (value != null && value is Temperature)
+            {
+                var t = (Temperature)value;
+                return string.Format("{0:0,0.0} °{1}", t.Value, t.Unit);
+            }
+            else
+            {
+                return "N/A";
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

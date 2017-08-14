@@ -195,6 +195,16 @@ namespace LibDnaSerial
         public event LastPuffStatisticsCollectedEventHandler LastPuffStatisticsSampleCollected;
 
         /// <summary>
+        /// Event for when a puff has begun
+        /// </summary>
+        public event Action PuffBegin;
+
+        /// <summary>
+        /// Event for when a puff has ended
+        /// </summary>
+        public event Action PuffEnd;
+
+        /// <summary>
         /// EventHandler for when an error occurs
         /// </summary>
         /// <param name="msg">Error message</param>
@@ -236,11 +246,34 @@ namespace LibDnaSerial
                         var sampleIsFiring = s.Buttons.HasFlag(Buttons.Fire);
                         if (!sampleIsFiring && isFiring)
                         {
+                            PuffEnd?.Invoke();
                             if (LastPuffStatisticsSampleCollected != null)
                             {
                                 var lastPuffSample = dnaConnection.GetLastPuffStatisticsSample();
                                 LastPuffStatisticsSampleCollected.Invoke(lastPuffSample);
                             }
+                        }
+                        if (sampleIsFiring && !isFiring)
+                        {
+                            PuffBegin?.Invoke();
+                        }
+                        isFiring = sampleIsFiring;
+                    }
+                    else
+                    {
+                        Buttons buttons;
+                        lock (sampleLockObject)
+                        {
+                            buttons = dnaConnection.GetButtons();
+                        }
+                        var sampleIsFiring = buttons.HasFlag(Buttons.Fire);
+                        if (!sampleIsFiring && isFiring)
+                        {
+                            PuffEnd?.Invoke();
+                        }
+                        if (sampleIsFiring && !isFiring)
+                        {
+                            PuffBegin?.Invoke();
                         }
                         isFiring = sampleIsFiring;
                     }
@@ -250,6 +283,7 @@ namespace LibDnaSerial
                         Thread.Sleep(TimeSpan.FromMilliseconds(Throttle - millis));
                     }
                 }
+
             }
             catch (Exception ex)
             {

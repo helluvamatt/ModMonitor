@@ -42,6 +42,7 @@ namespace ModMonitor
             }
             
             log = LogManager.GetCurrentClassLogger();
+            log.Info("Application started, logging configured.");
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)

@@ -358,5 +358,17 @@ namespace ModMonitor.Properties {
                 this["ExpandGraph"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AutoDownloadStats {
+            get {
+                return ((bool)(this["AutoDownloadStats"]));
+            }
+            set {
+                this["AutoDownloadStats"] = value;
+            }
+        }
     }
 }
