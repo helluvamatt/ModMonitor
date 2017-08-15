@@ -113,6 +113,7 @@
     </Compile>
     <Compile Include="Converters\DateTimeConverter.cs" />
     <Compile Include="Converters\DoubleNegationConverter.cs" />
+    <Compile Include="Converters\IsNullToVisibilityConverter.cs" />
     <Compile Include="DevicePicker.xaml.cs">
       <DependentUpon>DevicePicker.xaml</DependentUpon>
     </Compile>

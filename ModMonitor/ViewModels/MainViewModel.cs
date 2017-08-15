@@ -238,6 +238,49 @@ namespace ModMonitor.ViewModels
 
         #endregion
 
+        #region HoveredSample
+
+        private double hoveredX;
+
+        public Sample HoveredSample
+        {
+            get
+            {
+                return (Sample)GetValue(HoveredSampleProperty);
+            }
+            set
+            {
+                SetValue(HoveredSampleProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty HoveredSampleProperty = DependencyProperty.Register("HoveredSample", typeof(Sample), typeof(MainViewModel));
+
+        public void SetHoveredSample(double normalizedX)
+        {
+            hoveredX = normalizedX;
+            if (GraphData.Any() && normalizedX >= 0)
+            {
+                var x = normalizedX * MaxOffset;
+                if (x > GraphData.Max(kvp => kvp.Key))
+                {
+                    HoveredSample = GraphData.Last().Value;
+                }
+                else
+                {
+                    double toTheRight = GraphData.Select(kvp => kvp.Key).FirstOrDefault(key => key >= x);
+                    double toTheLeft = GraphData.Select(kvp => kvp.Key).LastOrDefault(key => key <= x);
+                    HoveredSample = GraphData[Math.Abs(x - toTheLeft) < Math.Abs(x - toTheRight) ? toTheLeft : toTheRight];
+                }
+            }
+            else
+            {
+                HoveredSample = null;
+            }
+        }
+
+        #endregion
+
         #region MaxTemp
 
         public Temperature MaxTemp
@@ -567,6 +610,7 @@ namespace ModMonitor.ViewModels
                     if (isFiring && Settings.Default.ExpandGraph) MaxOffset = GraphData.Keys.Max();
                     isFiring = false;
                 }
+                SetHoveredSample(hoveredX);
             });
         }
 

@@ -10,6 +10,7 @@
         xmlns:p="clr-namespace:ModMonitor.Properties"
         xmlns:g="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=DotNetProjects.DataVisualization.Toolkit"
         xmlns:dv="clr-namespace:System.Windows.Controls.DataVisualization;assembly=DotNetProjects.DataVisualization.Toolkit"
+        xmlns:dvp="clr-namespace:System.Windows.Controls.DataVisualization.Charting.Primitives;assembly=DotNetProjects.DataVisualization.Toolkit"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
         Closed="Window_Closed"
@@ -25,6 +26,7 @@
             <c:ColorToSolidBrushConverter x:Key="colorToSolidBrushConverter" />
             <c:DateTimeConverter x:Key="timestampConverter" Format="yyyy-MM-dd HH:mm:ss.fff" />
             <c:DoubleNegationConverter x:Key="doubleNegationConverter" />
+            <c:IsNullToVisibilityConverter x:Key="isNullToVisibilityConverter" />
             <Style TargetType="Label">
                 <Setter Property="FontSize" Value="8pt" />
                 <Setter Property="Padding" Value="2" />
@@ -38,10 +40,6 @@
             <Style TargetType="Label" x:Key="legendTitle" BasedOn="{StaticResource legendHeader}">
                 <Setter Property="FontSize" Value="12pt" />
                 <Setter Property="HorizontalContentAlignment" Value="Center" />
-            </Style>
-            <Style TargetType="{x:Type dv:Legend}" x:Key="hideLegendStyle">
-                <Setter Property="Width" Value="0" />
-                <Setter Property="Height" Value="0" />
             </Style>
             <Style x:Key="collapseControlStyle" TargetType="Control">
                 <Setter Property="Visibility" Value="Collapsed" />
@@ -464,7 +462,130 @@
 
             <GridSplitter Grid.Column="1" Grid.Row="0" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="DarkGray" ShowsPreview="True" Width="2" Cursor="SizeWE" />
 
-            <g:Chart Grid.Column="0" Grid.Row="0" LegendStyle="{StaticResource hideLegendStyle}" BorderThickness="0" Title="Current Puff" Padding="8 0 8 8">
+            <g:Chart x:Name="chart" Grid.Column="0" Grid.Row="0" BorderThickness="0" Title="Current Puff" Padding="8 0 8 8" CrosshairVisibility="Visible">
+                <g:Chart.Resources>
+                    <Style x:Key="LocationLegendStyle" TargetType="Border">
+                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                        <Setter Property="VerticalAlignment" Value="Top"/>
+                        <Setter Property="Margin" Value="5"/>
+                        <Setter Property="Background" Value="White"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="BorderBrush" Value="DarkGray"/>
+                        <Setter Property="CornerRadius" Value="5"/>
+                    </Style>
+                </g:Chart.Resources>
+                <g:Chart.Template>
+                    <!-- Override the template so we can add things -->
+                    <ControlTemplate TargetType="{x:Type g:Chart}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <dv:Title Content="{TemplateBinding Title}" Style="{TemplateBinding TitleStyle}" />
+                                <!--  Use a nested Grid to avoid possible clipping behavior resulting from ColumnSpan+Width=Auto  -->
+                                <Grid Grid.Row="1" Margin="0,15,0,15">
+                                    <dvp:EdgePanel x:Name="ChartArea" Style="{TemplateBinding ChartAreaStyle}">
+                                        <Grid x:Name="PlotArea" Canvas.ZIndex="-1" Style="{TemplateBinding PlotAreaStyle}" />
+                                        <Border BorderBrush="#FF919191" BorderThickness="1" Canvas.ZIndex="10" />
+
+                                        <Grid Name="PART_CrosshairContainer" Visibility="{TemplateBinding CrosshairVisibility}" Background="Transparent" Canvas.ZIndex="1" MouseMove="CrosshairContainer_MouseMove" MouseLeave="CrosshairContainer_MouseLeave">
+                                            <Grid Name="PART_Crosshair">
+                                                <Line Name="Vertical" Stroke="Black" X1="{Binding Path=X}" X2="{Binding Path=X}" Y1="0" Y2="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
+                                            </Grid>
+                                        </Grid>
+                                        <Border Name="PART_LocationIndicator" Visibility="Collapsed" />
+
+                                        <Border Name="HoveredSampleContainer" IsHitTestVisible="False" Canvas.ZIndex="2" DataContext="{Binding Path=DataContext.HoveredSample, RelativeSource={RelativeSource AncestorType=local:MainWindow}}" Visibility="{Binding Converter={StaticResource isNullToVisibilityConverter}}" Style="{StaticResource LocationLegendStyle}">
+                                            <Grid>
+                                                <Grid.Resources>
+                                                    <Style TargetType="Rectangle">
+                                                        <Setter Property="Width" Value="12" />
+                                                        <Setter Property="Height" Value="2" />
+                                                        <Setter Property="Margin" Value="4" />
+                                                        <Setter Property="VerticalAlignment" Value="Center" />
+                                                    </Style>
+                                                </Grid.Resources>
+                                                
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="auto" />
+                                                    <ColumnDefinition Width="auto" />
+                                                    <ColumnDefinition Width="auto" />
+                                                </Grid.ColumnDefinitions>
+                                                
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="auto" />
+                                                    <RowDefinition Height="auto" />
+                                                    <RowDefinition Height="auto" />
+                                                    <RowDefinition Height="auto" />
+                                                    <RowDefinition Height="auto" />
+                                                    <RowDefinition Height="auto" />
+                                                    <RowDefinition Height="auto" />
+                                                    <RowDefinition Height="auto" />
+                                                    <RowDefinition Height="auto" />
+                                                    <RowDefinition Height="auto" />
+                                                    <RowDefinition Height="auto" />
+                                                    <RowDefinition Height="auto" />
+                                                </Grid.RowDefinitions>
+
+                                                <Rectangle Grid.Column="0" Grid.Row="0" Fill="{Binding ColorPower, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" Visibility="{Binding ShowPower, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="1" Grid.Row="0" Content="Power" Visibility="{Binding ShowPower, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="2" Grid.Row="0" Content="{Binding Path=Power, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} W" Visibility="{Binding ShowPower, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+
+                                                <Rectangle Grid.Column="0" Grid.Row="1" Fill="{Binding ColorTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" Visibility="{Binding ShowTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="1" Grid.Row="1" Content="Temperature" Visibility="{Binding ShowTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="2" Grid.Row="1" Content="{Binding Path=Temperature, Converter={StaticResource temperatureConverter}, FallbackValue=???}" Visibility="{Binding ShowTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+
+                                                <Rectangle Grid.Column="0" Grid.Row="2" Fill="{Binding ColorVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" Visibility="{Binding ShowVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="1" Grid.Row="2" Content="Voltage" Visibility="{Binding ShowVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="2" Grid.Row="2" Content="{Binding Path=Voltage, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} V" Visibility="{Binding ShowVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+
+                                                <Rectangle Grid.Column="0" Grid.Row="3" Fill="{Binding ColorCurrent, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" Visibility="{Binding ShowCurrent, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="1" Grid.Row="3" Content="Current" Visibility="{Binding ShowCurrent, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="2" Grid.Row="3" Content="{Binding Path=Current, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} A" Visibility="{Binding ShowCurrent, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+
+                                                <Rectangle Grid.Column="0" Grid.Row="4" Fill="{Binding ColorLiveResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" Visibility="{Binding ShowLiveResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="1" Grid.Row="4" Content="Live Resistance" Visibility="{Binding ShowLiveResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="2" Grid.Row="4" Content="{Binding Path=LiveResistance, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} Ω" Visibility="{Binding ShowLiveResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+
+                                                <Rectangle Grid.Column="0" Grid.Row="5" Fill="{Binding ColorColdResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" Visibility="{Binding ShowColdResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="1" Grid.Row="5" Content="Cold Resistance" Visibility="{Binding ShowColdResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="2" Grid.Row="5" Content="{Binding Path=ColdResistance, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} Ω" Visibility="{Binding ShowColdResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+
+                                                <Rectangle Grid.Column="0" Grid.Row="6" Fill="{Binding ColorBatteryLevel, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" Visibility="{Binding ShowBatteryLevel, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="1" Grid.Row="6" Content="Battery Level" Visibility="{Binding ShowBatteryLevel, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="2" Grid.Row="6" Content="{Binding Path=BatteryLevel, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0}%" Visibility="{Binding ShowBatteryLevel, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+
+                                                <Rectangle Grid.Column="0" Grid.Row="7" Fill="{Binding ColorBatteryVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" Visibility="{Binding ShowBatteryVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="1" Grid.Row="7" Content="Battery Voltage" Visibility="{Binding ShowBatteryVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="2" Grid.Row="7" Content="{Binding Path=BatteryVoltage, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0:#0.00} V" Visibility="{Binding ShowBatteryVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+
+                                                <Rectangle Grid.Column="0" Grid.Row="8" Fill="{Binding ColorBoardTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" Visibility="{Binding ShowBoardTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="1" Grid.Row="8" Content="Board Temperature" Visibility="{Binding ShowBoardTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="2" Grid.Row="8" Content="{Binding Path=BoardTemperature, Converter={StaticResource temperatureConverter}, FallbackValue=???}" Visibility="{Binding ShowBoardTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+
+                                                <Rectangle Grid.Column="0" Grid.Row="9" Fill="{Binding ColorRoomTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" Visibility="{Binding ShowRoomTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="1" Grid.Row="9" Content="Room Temperature" Visibility="{Binding ShowRoomTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="2" Grid.Row="9" Content="{Binding Path=RoomTemperature, Converter={StaticResource temperatureConverter}, FallbackValue=???}" Visibility="{Binding ShowRoomTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+
+                                                <Rectangle Grid.Column="0" Grid.Row="10" Fill="{Binding ColorPowerSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" Visibility="{Binding ShowPowerSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="1" Grid.Row="10" Content="Power Setpoint" Visibility="{Binding ShowPowerSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="2" Grid.Row="10" Content="{Binding Path=PowerSetpoint, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} W" Visibility="{Binding ShowPowerSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+
+                                                <Rectangle Grid.Column="0" Grid.Row="11" Fill="{Binding ColorTemperatureSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" Visibility="{Binding ShowTemperatureSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="1" Grid.Row="11" Content="Temperature Setpoint" Visibility="{Binding ShowTemperatureSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                <Label Grid.Column="2" Grid.Row="11" Content="{Binding Path=TemperatureSetpoint, Converter={StaticResource temperatureConverter}, FallbackValue=???}" Visibility="{Binding ShowTemperatureSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                            </Grid>
+                                        </Border>
+
+                                        <Canvas x:Name="SelectionArea" Background="Transparent" />
+                                    </dvp:EdgePanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </g:Chart.Template>
                 <g:Chart.TitleStyle>
                     <Style TargetType="dv:Title">
                         <Setter Property="FontSize" Value="12pt" />
@@ -591,6 +712,7 @@
                     <g:LinearAxis x:Name="yAxisSingleResistance" Orientation="Y" Title="Resistance (Ω)" Minimum="0" Maximum="3" />
                 </g:Chart.Axes>
             </g:Chart>
+            <Label x:Name="chartDebug" HorizontalAlignment="Right" VerticalAlignment="Bottom" />
         </Grid>
     </DockPanel>
 </Window>

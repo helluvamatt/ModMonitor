@@ -1,5 +1,6 @@
 ﻿using LibDnaSerial;
 using Microsoft.Win32;
+using ModMonitor.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.DataVisualization.Charting;
+using System.Windows.Controls.DataVisualization.Charting.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -67,6 +70,20 @@ namespace ModMonitor
         private void MainViewModel_ShowAboutRequested(object sender, EventArgs e)
         {
             new AboutWindow().ShowDialog();
+        }
+
+        private void CrosshairContainer_MouseMove(object sender, MouseEventArgs e)
+        {
+            var crosshairGrid = sender as Grid;
+            var p = e.GetPosition(crosshairGrid);
+            var ctxt = DataContext as MainViewModel;
+            ctxt.SetHoveredSample(p.X / crosshairGrid.ActualWidth);
+        }
+
+        private void CrosshairContainer_MouseLeave(object sender, MouseEventArgs e)
+        {
+            var ctxt = DataContext as MainViewModel;
+            ctxt.SetHoveredSample(-1);
         }
     }
 }
