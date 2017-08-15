@@ -10,7 +10,7 @@
         xmlns:c="clr-namespace:ModMonitor.Converters"
         xmlns:p="clr-namespace:ModMonitor.Properties"
         mc:Ignorable="d"
-        Title="Mod Monitor Settings" Height="377" Width="420" ResizeMode="NoResize">
+        Title="Mod Monitor Settings" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
     <Window.DataContext>
         <vm:EditSettingsViewModel EditColor="EditSettingsViewModel_EditColor" />
     </Window.DataContext>
@@ -84,37 +84,37 @@
         <Button Grid.Column="1" Grid.Row="1" Style="{StaticResource colorButton}" Command="{Binding EditColorCommand}" CommandParameter="ColorPower">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding Path=ColorPower, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
-        <Label Grid.Column="2" Grid.Row="1" Content="Power" />
+        <Label Grid.Column="2" Grid.Row="1" Content="Power" Margin="0 0 12 0" />
 
         <CheckBox Grid.Column="0" Grid.Row="2" IsChecked="{Binding ShowTemperature, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
         <Button Grid.Column="1" Grid.Row="2" Style="{StaticResource colorButton}" Command="{Binding EditColorCommand}" CommandParameter="ColorTemperature">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding ColorTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
-        <Label Grid.Column="2" Grid.Row="2" Content="Temperature" />
+        <Label Grid.Column="2" Grid.Row="2" Content="Temperature" Margin="0 0 12 0" />
 
         <CheckBox Grid.Column="0" Grid.Row="3" IsChecked="{Binding ShowVoltage, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
         <Button Grid.Column="1" Grid.Row="3" Style="{StaticResource colorButton}" Command="{Binding EditColorCommand}" CommandParameter="ColorVoltage">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding ColorVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
-        <Label Grid.Column="2" Grid.Row="3" Content="Voltage" />
+        <Label Grid.Column="2" Grid.Row="3" Content="Voltage" Margin="0 0 12 0" />
 
         <CheckBox Grid.Column="0" Grid.Row="4" IsChecked="{Binding ShowCurrent, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
         <Button Grid.Column="1" Grid.Row="4" Style="{StaticResource colorButton}" Command="{Binding EditColorCommand}" CommandParameter="ColorCurrent">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding ColorCurrent, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
-        <Label Grid.Column="2" Grid.Row="4" Content="Current" />
+        <Label Grid.Column="2" Grid.Row="4" Content="Current" Margin="0 0 12 0" />
 
         <CheckBox Grid.Column="0" Grid.Row="5" IsChecked="{Binding ShowLiveResistance, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
         <Button Grid.Column="1" Grid.Row="5" Style="{StaticResource colorButton}" Command="{Binding EditColorCommand}" CommandParameter="ColorLiveResistance">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding ColorLiveResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
-        <Label Grid.Column="2" Grid.Row="5" Content="Live Resistance" />
+        <Label Grid.Column="2" Grid.Row="5" Content="Live Resistance" Margin="0 0 12 0" />
 
         <CheckBox Grid.Column="0" Grid.Row="6" IsChecked="{Binding ShowColdResistance, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
         <Button Grid.Column="1" Grid.Row="6" Style="{StaticResource colorButton}" Command="{Binding EditColorCommand}" CommandParameter="ColorColdResistance">
             <Rectangle Style="{StaticResource colorRect}" Fill="{Binding ColorColdResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
         </Button>
-        <Label Grid.Column="2" Grid.Row="6" Content="Cold Resistance" />
+        <Label Grid.Column="2" Grid.Row="6" Content="Cold Resistance" Margin="0 0 12 0" />
 
         <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="7" Style="{StaticResource legendHeader}" Content="Battery" />
 
