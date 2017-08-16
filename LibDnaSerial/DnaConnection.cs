@@ -113,6 +113,7 @@ namespace LibDnaSerial
             s.RoomTemperature = GetRoomTemperature();
             s.Voltage = GetVoltage();
             s.Buttons = GetButtons();
+            s.Profile = GetProfile();
             s.End = DateTime.Now;
             return s;
         }
@@ -414,6 +415,8 @@ namespace LibDnaSerial
         /// <param name="temperature">Temperature model, conversion from Kelvin is supported</param>
         public void SetTemperature(Temperature temperature)
         {
+            if (temperature == null) throw new ArgumentNullException("temperature");
+
             if (temperature.Unit == TemperatureUnit.K)
             {
                 // DNA does not support Kelvin, easy conversion
@@ -569,13 +572,6 @@ namespace LibDnaSerial
         private Temperature GetTemperatureStatistic(string argument)
         {
             SendMessage(new Message(CODE_STATISTICS, argument));
-            var m = ReadMessage();
-            return ParseTemperature(m.Argument);
-        }
-
-        private Temperature? GetOptionalTemperatureStatistic(string argument)
-        {
-            SendMessage(new Message(CODE_STATISTICS, argument));
             try
             {
                 var m = ReadMessage();
@@ -607,7 +603,7 @@ namespace LibDnaSerial
             sample.LastEnergy = GetStatistic("GET LASTENERGY", UNIT_MILLIWATTHOUR);
             sample.LastPower = GetStatistic("GET LASTPOWER", UNIT_WATT);
             sample.LastTemperature = GetTemperatureStatistic("GET LASTTEMP");
-            sample.LastTemperaturePeak = GetOptionalTemperatureStatistic("GET LASTPEAKTEMP");
+            sample.LastTemperaturePeak = GetTemperatureStatistic("GET LASTPEAKTEMP");
             sample.LastTime = GetStatistic("GET LAST TIME", UNIT_SECOND);
         }
 
@@ -625,24 +621,24 @@ namespace LibDnaSerial
             sample.MeanEnergy = GetStatistic("GET MEAN ENERGY", UNIT_MILLIWATTHOUR);
             sample.MeanPower = GetStatistic("GET MEAN POWER", UNIT_WATT);
             sample.MeanTemperature = GetTemperatureStatistic("GET MEAN TEMP");
-            sample.MeanTemperaturePeak = GetOptionalTemperatureStatistic("GET MEAN PEAK TEMP");
+            sample.MeanTemperaturePeak = GetTemperatureStatistic("GET MEAN PEAK TEMP");
             sample.MeanTime = GetStatistic("GET MEAN TIME", UNIT_SECOND);
             sample.StdDevEnergy = GetStatistic("GET SD ENERGY", UNIT_MILLIWATTHOUR);
             sample.StdDevPower = GetStatistic("GET SD POWER", UNIT_WATT);
             sample.StdDevTemperature = GetTemperatureStatistic("GET SD TEMP");
-            sample.StdDevTemperaturePeak = GetOptionalTemperatureStatistic("GET SD PEAK TEMP");
+            sample.StdDevTemperaturePeak = GetTemperatureStatistic("GET SD PEAK TEMP");
             sample.StdDevTime = GetStatistic("GET SD TIME", UNIT_SECOND);
             sample.TotalEnergy = GetStatistic("GET ENERGY", UNIT_MILLIWATTHOUR);
             sample.TotalTime = GetStatistic("GET TIME", UNIT_SECOND);
             sample.DeviceMeanEnergy = GetStatistic("GET DEVICE MEAN ENERGY", UNIT_MILLIWATTHOUR);
             sample.DeviceMeanPower = GetStatistic("GET DEVICE MEAN POWER", UNIT_WATT);
             sample.DeviceMeanTemperature = GetTemperatureStatistic("GET DEVICE MEAN TEMP");
-            sample.DeviceMeanTemperaturePeak = GetOptionalTemperatureStatistic("GET DEVICE MEAN PEAK TEMP");
+            sample.DeviceMeanTemperaturePeak = GetTemperatureStatistic("GET DEVICE MEAN PEAK TEMP");
             sample.DeviceMeanTime = GetStatistic("GET DEVICE MEAN TIME", UNIT_SECOND);
             sample.DeviceStdDevEnergy = GetStatistic("GET DEVICE SD ENERGY", UNIT_MILLIWATTHOUR);
             sample.DeviceStdDevPower = GetStatistic("GET DEVICE SD POWER", UNIT_WATT);
             sample.DeviceStdDevTemperature = GetTemperatureStatistic("GET DEVICE SD TEMP");
-            sample.DeviceStdDevTemperaturePeak = GetOptionalTemperatureStatistic("GET DEVICE SD PEAK TEMP");
+            sample.DeviceStdDevTemperaturePeak = GetTemperatureStatistic("GET DEVICE SD PEAK TEMP");
             sample.DeviceStdDevTime = GetStatistic("GET DEVICE SD TIME", UNIT_SECOND);
             sample.DeviceTotalEnergy = GetStatistic("GET DEVICE ENERGY", UNIT_MILLIWATTHOUR);
             sample.DeviceTotalTime = GetStatistic("GET DEVICE TIME", UNIT_SECOND);

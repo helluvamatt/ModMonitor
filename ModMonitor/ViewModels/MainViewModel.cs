@@ -94,11 +94,7 @@ namespace ModMonitor.ViewModels
             set
             {
                 SetValue(IsStatsModeProperty, value);
-                if (sampleManager != null)
-                {
-                    sampleManager.Paused = value;
-                    if (value) RefreshStatistics();
-                }
+                if (value) RefreshStatistics();
             }
         }
 

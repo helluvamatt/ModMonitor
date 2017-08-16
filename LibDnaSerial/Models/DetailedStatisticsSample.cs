@@ -29,7 +29,7 @@ namespace LibDnaSerial.Models
         /// <summary>
         /// Mean peak temperature since last reset
         /// </summary>
-        public Temperature? MeanTemperaturePeak { get; set; }
+        public Temperature MeanTemperaturePeak { get; set; }
 
         /// <summary>
         /// Mean puff time since last reset
@@ -54,7 +54,7 @@ namespace LibDnaSerial.Models
         /// <summary>
         /// Standard deviation peak temperature since last reset
         /// </summary>
-        public Temperature? StdDevTemperaturePeak { get; set; }
+        public Temperature StdDevTemperaturePeak { get; set; }
 
         /// <summary>
         /// Standard deviation puff time since last reset
@@ -89,7 +89,7 @@ namespace LibDnaSerial.Models
         /// <summary>
         /// Mean peak puff temperature over life of device
         /// </summary>
-        public Temperature? DeviceMeanTemperaturePeak { get; set; }
+        public Temperature DeviceMeanTemperaturePeak { get; set; }
 
         /// <summary>
         /// Mean time of puffs over life of device
@@ -114,7 +114,7 @@ namespace LibDnaSerial.Models
         /// <summary>
         /// Standard deviation of peak temperature over life of device
         /// </summary>
-        public Temperature? DeviceStdDevTemperaturePeak { get; set; }
+        public Temperature DeviceStdDevTemperaturePeak { get; set; }
 
         /// <summary>
         /// Standard deviation of puff time over life of device

@@ -7,11 +7,12 @@
         xmlns:local="clr-namespace:ModMonitor"
         xmlns:c="clr-namespace:ModMonitor.Converters"
         xmlns:vm="clr-namespace:ModMonitor.ViewModels"
+        xmlns:u="clr-namespace:ModMonitor.Utils"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
         Title="Choose device..." Height="300" Width="300" ResizeMode="NoResize">
     <Window.DataContext>
-        <vm:DevicePickerViewModel CloseDialog="DevicePickerViewModel_CloseDialog" />
+        <vm:DevicePickerViewModel CloseDialog="DevicePickerViewModel_CloseDialog" FocusSelectedItem="DevicePickerViewModel_FocusSelectedItem" />
     </Window.DataContext>
     <Window.Resources>
         <c:BooleanToVisibilityConverter x:Key="boolToVisibilityConverter" />
@@ -21,8 +22,11 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <ListView Grid.Row="0" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}">
+        <ListView x:Name="devicesListView" Grid.Row="0" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}">
             <i:Interaction.Triggers>
+                <u:EnterKeyPressTrigger>
+                    <i:InvokeCommandAction Command="{Binding OkCommand}" />
+                </u:EnterKeyPressTrigger>
                 <i:EventTrigger EventName="MouseDoubleClick">
                     <i:InvokeCommandAction Command="{Binding OkCommand}" />
                 </i:EventTrigger>

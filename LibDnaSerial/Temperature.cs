@@ -7,7 +7,7 @@ namespace LibDnaSerial
     /// 
     /// This is just a model, no conversion is done when setting properties
     /// </summary>
-    public struct Temperature : IComparable
+    public class Temperature : IComparable
     {
         /// <summary>
         /// Temperature value

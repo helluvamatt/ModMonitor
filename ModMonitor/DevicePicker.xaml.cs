@@ -35,5 +35,12 @@ namespace ModMonitor
             DialogResult = result;
             Close();
         }
+
+        private void DevicePickerViewModel_FocusSelectedItem()
+        {
+            devicesListView.UpdateLayout();
+            var listBoxItem = (ListBoxItem)devicesListView.ItemContainerGenerator.ContainerFromItem(devicesListView.SelectedItem);
+            listBoxItem.Focus();
+        }
     }
 }

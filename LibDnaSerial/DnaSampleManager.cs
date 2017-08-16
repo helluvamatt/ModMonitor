@@ -170,6 +170,58 @@ namespace LibDnaSerial
         }
 
         /// <summary>
+        /// Set the currently selected device profile
+        /// </summary>
+        /// <param name="profile">Profile index, profile numbers start at 1, typically there are 8 profiles</param>
+        /// <see cref="DnaConnection.SetProfile(int)"/>
+        public void SetProfile(int profile)
+        {
+            lock (sampleLockObject)
+            {
+                if (dnaConnection != null) dnaConnection.SetProfile(profile);
+            }
+        }
+
+        /// <summary>
+        /// Set the temperature limit to the specified temperature
+        /// </summary>
+        /// <param name="temperature">Temperature setpoint</param>
+        /// <see cref="DnaConnection.SetTemperature(Temperature)"/>
+        public void SetTemperature(Temperature temperature)
+        {
+            lock (sampleLockObject)
+            {
+                if (dnaConnection != null) dnaConnection.SetTemperature(temperature);
+            }
+        }
+
+        /// <summary>
+        /// Set the power limit setpoint to the specified wattage
+        /// </summary>
+        /// <param name="watts">Power setpoint in watts</param>
+        /// <see cref="DnaConnection.SetPower(float)"/>
+        public void SetPower(float watts)
+        {
+            lock (sampleLockObject)
+            {
+                if (dnaConnection != null) dnaConnection.SetPower(watts);
+            }
+        }
+
+        /// <summary>
+        /// Fire a puff for the specified duration
+        /// </summary>
+        /// <param name="seconds">Duration of fire in seconds</param>
+        /// <see cref="DnaConnection.Fire(float)"/>
+        public void Fire(float seconds)
+        {
+            lock (sampleLockObject)
+            {
+                if (dnaConnection != null) dnaConnection.Fire(seconds);
+            }
+        }
+
+        /// <summary>
         /// EventHandler for when a sample is collected
         /// </summary>
         /// <param name="sample">Sample</param>
@@ -249,7 +301,11 @@ namespace LibDnaSerial
                             PuffEnd?.Invoke();
                             if (LastPuffStatisticsSampleCollected != null)
                             {
-                                var lastPuffSample = dnaConnection.GetLastPuffStatisticsSample();
+                                LastPuffStatisticsSample lastPuffSample;
+                                lock (sampleLockObject)
+                                {
+                                    lastPuffSample = dnaConnection.GetLastPuffStatisticsSample();
+                                }
                                 LastPuffStatisticsSampleCollected.Invoke(lastPuffSample);
                             }
                         }

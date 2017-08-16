@@ -40,6 +40,7 @@ namespace ModMonitor.ViewModels
             set
             {
                 SetValue(SelectedDeviceProperty, value);
+                FocusSelectedItem();
             }
         }
 
@@ -52,6 +53,8 @@ namespace ModMonitor.ViewModels
         public ICommand RefreshCommand { get; private set; }
 
         public event Action<bool, DnaDevice> CloseDialog = (result, device) => { };
+
+        public event Action FocusSelectedItem = () => { };
 
         private ILogger log;
 
@@ -112,6 +115,7 @@ namespace ModMonitor.ViewModels
                 {
                     Devices.Add(device);
                 }
+                SelectedDevice = Devices[0];
             }
             Loading = false;
         }

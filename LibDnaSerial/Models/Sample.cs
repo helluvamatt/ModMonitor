@@ -117,6 +117,12 @@ namespace LibDnaSerial.Models
         public Buttons Buttons { get; set; }
 
         /// <summary>
+        /// Which profile is currently selected
+        /// </summary>
+        /// <see cref="DnaConnection.GetProfile"/>
+        public int Profile { get; set; }
+
+        /// <summary>
         /// Format the line as CSV
         /// </summary>
         /// <returns></returns>

@@ -44,7 +44,7 @@ namespace LibDnaSerial.Models
         /// <summary>
         /// Last peak temperature
         /// </summary>
-        public Temperature? LastTemperaturePeak { get; set; }
+        public Temperature LastTemperaturePeak { get; set; }
 
         /// <summary>
         /// Last puff time in seconds
