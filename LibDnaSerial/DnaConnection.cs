@@ -405,17 +405,22 @@ namespace LibDnaSerial
         {
             SendMessage(new Message(CODE_TEMPERATURE, "GET"));
             var m = ReadMessage();
-            if (m.Argument == "?") return new Temperature { Unit = TemperatureUnit.C, Value = 0f };
+            if (m.Argument == "?") return null;
             return ParseTemperature(m.Argument);
         }
 
         /// <summary>
         /// Set the temperature limit for temperature sensing coils, actual operation depends on the selected profile settings
         /// </summary>
-        /// <param name="temperature">Temperature model, conversion from Kelvin is supported</param>
+        /// <param name="temperature">Temperature model, conversion from Kelvin is supported, pass null to disable temperature protection</param>
         public void SetTemperature(Temperature temperature)
         {
-            if (temperature == null) throw new ArgumentNullException("temperature");
+            // Special case for diabling temperature control
+            if (temperature == null)
+            {
+                SendMessage(new Message(CODE_TEMPERATURE, "?"));
+                return;
+            }
 
             if (temperature.Unit == TemperatureUnit.K)
             {
@@ -435,7 +440,7 @@ namespace LibDnaSerial
         {
             SendMessage(new Message(CODE_TEMPERATURE, "GET SP"));
             var m = ReadMessage();
-            if (m.Argument == "?") return new Temperature { Unit = TemperatureUnit.C, Value = 0f };
+            if (m.Argument == "?") return null;
             return ParseTemperature(m.Argument);
         }
 
@@ -447,7 +452,7 @@ namespace LibDnaSerial
         {
             SendMessage(new Message(CODE_TEMPERATURE, "GET BOARD"));
             var m = ReadMessage();
-            if (m.Argument == "?") return new Temperature { Unit = TemperatureUnit.C, Value = 0f };
+            if (m.Argument == "?") return null;
             return ParseTemperature(m.Argument);
         }
 
@@ -459,7 +464,7 @@ namespace LibDnaSerial
         {
             SendMessage(new Message(CODE_TEMPERATURE, "GET ROOM"));
             var m = ReadMessage();
-            if (m.Argument == "?") return new Temperature { Unit = TemperatureUnit.C, Value = 0f };
+            if (m.Argument == "?") return null;
             return ParseTemperature(m.Argument);
         }
 

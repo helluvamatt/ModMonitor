@@ -1,0 +1,38 @@
+﻿<Window x:Class="ModMonitor.SetTemperatureWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:ModMonitor"
+        xmlns:c="clr-namespace:ModMonitor.Converters"
+        xmlns:lib="clr-namespace:LibDnaSerial;assembly=LibDnaSerial"
+        mc:Ignorable="d"
+        Title="Set Temperature..." SizeToContent="WidthAndHeight" ResizeMode="NoResize" ShowInTaskbar="False" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="temperatureUnitValues" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="lib:TemperatureUnit" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <c:BooleanNegationConverter x:Key="booleanNegationConverter" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="28px" />
+            <RowDefinition Height="28px" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
+        <RadioButton Grid.Column="0" Grid.Row="0" Margin="3 0 0 0" VerticalAlignment="Center" IsChecked="{Binding IsTemperatureEnabled, Converter={StaticResource booleanNegationConverter}}" />
+        <Label Grid.Column="1" Grid.Row="0">Disabled</Label>
+        <RadioButton Grid.Column="0" Grid.Row="1" Margin="3 0 0 0" VerticalAlignment="Center" IsChecked="{Binding IsTemperatureEnabled}" />
+        <TextBox Grid.Row="1" Grid.Column="1" x:Name="valueField" Margin="3 3 3 3" Width="100" IsEnabled="{Binding IsTemperatureEnabled}" />
+        <ComboBox Grid.Row="1" Grid.Column="2" x:Name="unitField" Margin="0 3 3 3" Width="50" IsEnabled="{Binding IsTemperatureEnabled}" ItemsSource="{Binding Source={StaticResource temperatureUnitValues }}" ItemStringFormat="{}º{0}" />
+        <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right" Padding="8 3 8 3" Margin="0 3 3 3" Click="okButton_Click">OK</Button>
+    </Grid>
+</Window>

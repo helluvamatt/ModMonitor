@@ -371,19 +371,35 @@ namespace ModMonitor.ViewModels
 
         public ICommand LiveDataModeCommand { get; private set; }
 
+        public ICommand SetTemperatureCommand { get; private set; }
+
+        public ICommand SetPowerCommand { get; private set; }
+
+        public ICommand SetProfileCommand { get; private set; }
+
+        public ICommand FireCommand { get; private set; }
+
         #endregion
 
         #endregion
 
         #region Events
 
-        public event SaveFileRequestedEvent SaveFileRequested = (sender, args) => { };
+        public event SaveFileRequestedEvent SaveFileRequested;
 
-        public event DevicePickerRequestedEvent DevicePickerRequested = (sender, args) => { };
+        public event DevicePickerRequestedEvent DevicePickerRequested;
 
-        public event EventHandler EditSettingsRequested = (sender, args) => { };
+        public event EventHandler EditSettingsRequested;
 
-        public event EventHandler ShowAboutRequested = (sender, args) => { };
+        public event EventHandler ShowAboutRequested;
+
+        public event SetTemperaturePromptRequestedEventHandler SetTemperaturePromptRequested;
+
+        public event SetPowerPromptRequestedEventHandler SetPowerPromptRequested;
+
+        public event SetProfilePromptRequestedEventHandler SetProfilePromptRequested;
+
+        public event FirePromptRequestedEventHandler FirePromptRequested;
 
         #endregion
 
@@ -410,6 +426,10 @@ namespace ModMonitor.ViewModels
             RefreshStatisticsCommand = new RelayCommand(RefreshStatistics);
             StatisticsModeCommand = new RelayCommand(() => IsStatsMode = true);
             LiveDataModeCommand = new RelayCommand(() => IsStatsMode = false);
+            SetTemperatureCommand = new RelayCommand(() => { if (sampleManager != null) SetTemperaturePromptRequested(this, new SetTemperaturePromptRequestedEventArgs(SetTemperature, LatestSample.TemperatureSetpoint)); });
+            SetPowerCommand = new RelayCommand(() => { if (sampleManager != null) SetPowerPromptRequested(this, new SetPowerPromptRequestedEventArgs(SetPower, LatestSample.PowerSetpoint)); });
+            SetProfileCommand = new RelayCommand(() => { if (sampleManager != null) SetProfilePromptRequested(this, new SetProfilePromptRequestedEventArgs(SetProfile, LatestSample.Profile)); });
+            FireCommand = new RelayCommand(() => { if (sampleManager != null) FirePromptRequested(this, new FirePromptRequestedEventArgs(Fire, Settings.Default.FireDuration)); });
             SetGraphTemperatureUnit(Settings.Default.TemperatureUnitForce ? Settings.Default.TemperatureUnit : TemperatureUnit.F);
             Settings.Default.PropertyChanged += Settings_PropertyChanged;
             log = LogManager.GetCurrentClassLogger();
@@ -491,7 +511,7 @@ namespace ModMonitor.ViewModels
         {
             Invoke(() => {
                 LatestStatisticSample = sample;
-                CurrentPuffDuration = sample.LastTime;
+                CurrentPuffDuration = Settings.Default.FireDuration = sample.LastTime;
                 PeakTemperature = GraphData.Max(kvp => kvp.Value.Temperature);
             });
         }
@@ -528,6 +548,50 @@ namespace ModMonitor.ViewModels
         private void ShowAbout()
         {
             ShowAboutRequested(this, EventArgs.Empty);
+        }
+
+        private void SetTemperature(Temperature temperature)
+        {
+            Task.Run(() =>
+            {
+                if (sampleManager != null)
+                {
+                    sampleManager.SetTemperature(temperature);
+                }
+            });
+        }
+
+        private void SetPower(float watts)
+        {
+            Task.Run(() =>
+            {
+                if (sampleManager != null)
+                {
+                    sampleManager.SetPower(watts);
+                }
+            });
+        }
+
+        private void SetProfile(int profile)
+        {
+            Task.Run(() =>
+            {
+                if (sampleManager != null)
+                {
+                    sampleManager.SetProfile(profile);
+                }
+            });
+        }
+
+        private void Fire(float seconds)
+        {
+            Task.Run(() =>
+            {
+                if (sampleManager != null && seconds <= MAX_OFFSET && seconds > 0)
+                {
+                    sampleManager.Fire(seconds);
+                }
+            });
         }
 
         private void RefreshStatistics()

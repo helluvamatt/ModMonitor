@@ -111,20 +111,33 @@
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\BooleanNegationConverter.cs" />
     <Compile Include="Converters\DateTimeConverter.cs" />
     <Compile Include="Converters\DoubleNegationConverter.cs" />
     <Compile Include="Converters\IsNullToVisibilityConverter.cs" />
+    <Compile Include="Converters\TemperatureToStringConverter.cs" />
     <Compile Include="DevicePicker.xaml.cs">
       <DependentUpon>DevicePicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="Events\DevicePickerRequestedEvent.cs" />
     <Compile Include="Events\EditColorEventHandler.cs" />
+    <Compile Include="Events\FirePromptRequestedEventHandler.cs" />
+    <Compile Include="Events\SetPowerPromptRequestedEventHandler.cs" />
+    <Compile Include="Events\SetProfilePromptRequestedEventHandler.cs" />
+    <Compile Include="Events\SetTemperaturePromptRequestedEventHandler.cs" />
+    <Compile Include="FireWindow.xaml.cs">
+      <DependentUpon>FireWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\SampleRecorder.cs" />
     <Page Include="AboutWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DevicePicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FireWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -141,6 +154,15 @@
     <Compile Include="Converters\TemperatureConverter.cs" />
     <Compile Include="Converters\TemperatureValueConverter.cs" />
     <Compile Include="Events\SaveFileRequestedEvent.cs" />
+    <Compile Include="SetPowerWindow.xaml.cs">
+      <DependentUpon>SetPowerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SetProfileWindow.xaml.cs">
+      <DependentUpon>SetProfileWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SetTemperatureWindow.xaml.cs">
+      <DependentUpon>SetTemperatureWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -154,6 +176,18 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SetPowerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SetProfileWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SetTemperatureWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

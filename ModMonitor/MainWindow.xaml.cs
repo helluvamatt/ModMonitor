@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -84,6 +85,26 @@ namespace ModMonitor
         {
             var ctxt = DataContext as MainViewModel;
             ctxt.SetHoveredSample(-1);
+        }
+
+        private void MainViewModel_FirePromptRequested(object sender, Events.FirePromptRequestedEventArgs args)
+        {
+            new FireWindow(args.Callback, args.LastUsedDuration).ShowDialog();
+        }
+
+        private void MainViewModel_SetTemperaturePromptRequested(object sender, Events.SetTemperaturePromptRequestedEventArgs args)
+        {
+            new SetTemperatureWindow(args.Callback, args.CurrentTemperature).ShowDialog();
+        }
+
+        private void MainViewModel_SetPowerPromptRequested(object sender, Events.SetPowerPromptRequestedEventArgs args)
+        {
+            new SetPowerWindow(args.Callback, args.CurrentPower).ShowDialog();
+        }
+
+        private void MainViewModel_SetProfilePromptRequested(object sender, Events.SetProfilePromptRequestedEventArgs args)
+        {
+            new SetProfileWindow(args.Callback, args.CurrentProfile).ShowDialog();
         }
     }
 }

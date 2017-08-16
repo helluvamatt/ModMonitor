@@ -4,24 +4,21 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
 
 namespace ModMonitor.Converters
 {
-    [ValueConversion(typeof(object), typeof(Visibility))]
-    class IsNullToVisibilityConverter : IValueConverter
+    [ValueConversion(typeof(bool), typeof(bool))]
+    class BooleanNegationConverter : IValueConverter
     {
-        public bool Negate { get; set; }
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value != null ^ Negate ? Visibility.Visible : Visibility.Collapsed;
+            return !(bool)value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            return !(bool)value;
         }
     }
 }

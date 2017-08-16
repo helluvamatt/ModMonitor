@@ -370,5 +370,17 @@ namespace ModMonitor.Properties {
                 this["AutoDownloadStats"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public float FireDuration {
+            get {
+                return ((float)(this["FireDuration"]));
+            }
+            set {
+                this["FireDuration"] = value;
+            }
+        }
     }
 }
