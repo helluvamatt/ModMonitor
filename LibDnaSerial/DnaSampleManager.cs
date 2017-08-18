@@ -295,7 +295,7 @@ namespace LibDnaSerial
                         {
                             sampleQueue.Enqueue(s);
                         }
-                        var sampleIsFiring = s.Buttons.HasFlag(Buttons.Fire);
+                        var sampleIsFiring = s.Buttons.HasFlag(Buttons.Fire) || s.Power > 0;
                         if (!sampleIsFiring && isFiring)
                         {
                             PuffEnd?.Invoke();
@@ -318,11 +318,13 @@ namespace LibDnaSerial
                     else
                     {
                         Buttons buttons;
+                        float power = 0;
                         lock (sampleLockObject)
                         {
                             buttons = dnaConnection.GetButtons();
+                            power = dnaConnection.GetPower();
                         }
-                        var sampleIsFiring = buttons.HasFlag(Buttons.Fire);
+                        var sampleIsFiring = buttons.HasFlag(Buttons.Fire) || power > 0;
                         if (!sampleIsFiring && isFiring)
                         {
                             PuffEnd?.Invoke();

@@ -650,7 +650,7 @@ namespace ModMonitor.ViewModels
                     sampleRecorder.RecordSample(sample);
                 }
 
-                if (sample.Buttons.HasFlag(Buttons.Fire))
+                if (sample.Buttons.HasFlag(Buttons.Fire) || sample.Power > 0)
                 {
                     if (!isFiring)
                     {
