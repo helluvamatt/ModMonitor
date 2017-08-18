@@ -1,6 +1,6 @@
 ﻿using LibDnaSerial.Models;
-using RJCP.IO.Ports;
 using System.Collections.Generic;
+using System.IO.Ports;
 
 namespace LibDnaSerial
 {
@@ -45,7 +45,7 @@ namespace LibDnaSerial
         public static List<DnaDevice> ListDnaDevices()
         {
             List<DnaDevice> devices = new List<DnaDevice>();
-            foreach (string serialPort in SerialPortStream.GetPortNames())
+            foreach (string serialPort in SerialPort.GetPortNames())
             {
                 var dev = CheckForDnaDevice(serialPort);
                 if (dev != null)
