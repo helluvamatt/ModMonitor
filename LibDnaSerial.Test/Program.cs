@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LibDnaSerial;
 using System.Threading;
 using System.IO.Ports;
+using LibDnaSerial.Models;
 
 namespace LibDnaSerial.Test
 {
@@ -13,16 +14,14 @@ namespace LibDnaSerial.Test
     {
         static void Main(string[] args)
         {
-            string comPort = WaitForDnaDevice();
+            Console.WriteLine("Testing for serial port issues...");
 
-            Console.WriteLine("Collecting samples... Press Enter to stop.");
-
-            DnaSampleManager sampleManager = new DnaSampleManager(comPort, 100);
-            sampleManager.SampleCollected += (sample) => { Console.WriteLine("{0:0,0.0} °{1}  {2} W  {3} V  {4} Ω", sample.Temperature.Value, sample.Temperature.Unit, sample.Power, sample.Voltage, sample.LiveResistance); };
-            sampleManager.Error += (msg, ex) => { Console.WriteLine("Device connection lost."); };
-            sampleManager.Connect();
-            Console.ReadLine();
-            sampleManager.Disconnect();
+            for (int i = 0; i < 1000; i++)
+            {
+                var device = WaitForDnaDevice();
+                Console.WriteLine("Found device: {0}", device);
+            }
+           
 
             // Disabled this code, samples coming through the even handler are not queued
             /*
@@ -59,22 +58,18 @@ namespace LibDnaSerial.Test
             */
         }
 
-        static string WaitForDnaDevice()
+        static DnaDevice WaitForDnaDevice()
         {
+            Console.WriteLine("Waiting for DNA device...");
             string comPort = null;
             while (comPort == null)
             {
-                foreach (string port in SerialPort.GetPortNames())
+                var devices = DnaDeviceManager.ListDnaDevices();
+                if (devices.Any())
                 {
-                    var dev = DnaDeviceManager.CheckForDnaDevice(port);
-                    if (dev != null)
-                    {
-                        Console.WriteLine("Found \"{0}\" on {1}", dev, port);
-                        return port;
-                    }
+                    return devices[0];
                 }
-                Console.WriteLine("Waiting for DNA device...");
-                Thread.Sleep(5000);
+                Thread.Sleep(500);
             }
             return null;
         }

@@ -1,7 +1,7 @@
 ﻿using LibDnaSerial.Models;
+using RJCP.IO.Ports;
 using System;
 using System.Collections.Generic;
-using System.IO.Ports;
 using System.Text.RegularExpressions;
 
 namespace LibDnaSerial
@@ -33,7 +33,7 @@ namespace LibDnaSerial
         private const string MESSAGE_PATTERN = @".*?([A-Z])=(.*)";
         private const string TEMP_PATTERN = @"(\d+(?:\.\d+)?)([FCK])";
 
-        private SerialPort serialPort;
+        private SerialPortStream serialPort;
         private object lockObject = new { };
 
         private Regex messageRegEx;
@@ -62,7 +62,7 @@ namespace LibDnaSerial
         /// <param name="readTimeout">Read timeout (ms)</param>
         public DnaConnection(string portName, int readTimeout)
         {
-            serialPort = new SerialPort(portName);
+            serialPort = new SerialPortStream(portName);
             serialPort.ReadTimeout = readTimeout;
             serialPort.Open();
             messageRegEx = new Regex(MESSAGE_PATTERN);
