@@ -1,7 +1,10 @@
 ﻿using LibDnaSerial.Models;
+using LibDnaSerial.Transports;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Ports;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace LibDnaSerial
@@ -33,7 +36,7 @@ namespace LibDnaSerial
         private const string MESSAGE_PATTERN = @".*?([A-Z])=(.*)";
         private const string TEMP_PATTERN = @"(\d+(?:\.\d+)?)([FCK])";
 
-        private SerialPort serialPort;
+        private ISerialTransport serialPort;
         private object lockObject = new { };
 
         private Regex messageRegEx;
@@ -42,6 +45,11 @@ namespace LibDnaSerial
         private uint cellCount = 0;
         private ulong sampleIndex = 0;
         private ulong statisticSampleIndex = 0;
+
+        /// <summary>
+        /// Is the connection using the native Serial driver (NativeSerialConnection.dll)
+        /// </summary>
+        public bool UsingNativeDriver { get; private set; }
 
         /// <summary>
         /// C'tor
@@ -62,13 +70,21 @@ namespace LibDnaSerial
         /// <param name="readTimeout">Read timeout (ms)</param>
         public DnaConnection(string portName, int readTimeout)
         {
-            serialPort = new SerialPort(portName);
-            serialPort.ReadTimeout = readTimeout;
-            serialPort.Open();
+            try
+            {
+                serialPort = new NativeTransport(portName, readTimeout);
+                UsingNativeDriver = true;
+            }
+            catch
+            {
+                serialPort = new SerialPortTransport(portName, readTimeout);
+            }
             messageRegEx = new Regex(MESSAGE_PATTERN);
             tempRegex = new Regex(TEMP_PATTERN);
             cellCount = GetCellCount();
         }
+
+        #region Disposing pattern
 
         ~DnaConnection()
         {
@@ -88,6 +104,8 @@ namespace LibDnaSerial
                 serialPort.Dispose();
             }
         }
+
+        #endregion
 
         /// <summary>
         /// Sample all available data points at once

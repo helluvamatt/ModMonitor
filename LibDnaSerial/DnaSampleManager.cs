@@ -44,6 +44,18 @@ namespace LibDnaSerial
         }
 
         /// <summary>
+        /// Is the underlying DnaConnection using it's native Serial driver
+        /// </summary>
+        /// <seealso cref="DnaConnection.UsingNativeDriver"/>
+        public bool UsingNativeDriver
+        {
+            get
+            {
+                return dnaConnection != null && dnaConnection.UsingNativeDriver;
+            }
+        }
+
+        /// <summary>
         /// Delay in milliseconds between sample collections
         /// </summary>
         public long Throttle { get; set; }

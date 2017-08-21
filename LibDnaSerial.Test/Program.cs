@@ -7,6 +7,7 @@ using LibDnaSerial;
 using System.Threading;
 using System.IO.Ports;
 using LibDnaSerial.Models;
+using System.Diagnostics;
 
 namespace LibDnaSerial.Test
 {
@@ -16,12 +17,12 @@ namespace LibDnaSerial.Test
         {
             Console.WriteLine("Testing for serial port issues...");
 
-            for (int i = 0; i < 1000; i++)
+            using (DnaConnection conn = new DnaConnection("COM3"))
             {
-                var device = WaitForDnaDevice();
-                Console.WriteLine("Found device: {0}", device);
+                Console.WriteLine(conn.GetSerialNumber());
             }
-           
+
+            if (Debugger.IsAttached) Debugger.Break();
 
             // Disabled this code, samples coming through the even handler are not queued
             /*

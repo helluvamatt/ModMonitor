@@ -496,7 +496,7 @@ namespace ModMonitor.ViewModels
                             ConnectText = "Disconnect";
                             Status = string.Format("Connected to \"{0}\"", device);
                         });
-                        log.Info("Connected to device \"{0}\"", device);
+                        log.Info("Connected to device \"{0}\", using native driver = {1}", device, sampleManager.UsingNativeDriver ? "Yes" : "No");
                     }
                     catch (Exception ex)
                     {
