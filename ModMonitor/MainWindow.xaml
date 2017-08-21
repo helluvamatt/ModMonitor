@@ -760,7 +760,7 @@
                     </g:LinearAxis>
                     <g:LinearAxis x:Name="yAxisSingleTemperatureLow" Orientation="Y" Minimum="0" Maximum="{Binding MaxTempLow.Value}">
                         <g:LinearAxis.Title>
-                            <TextBlock Text="{Binding MaxTmep.Unit, StringFormat={}Temperature (º{0}), Mode=OneWay}" />
+                            <TextBlock Text="{Binding MaxTempLow.Unit, StringFormat={}Temperature (º{0}), Mode=OneWay}" />
                         </g:LinearAxis.Title>
                     </g:LinearAxis>
                     <g:LinearAxis x:Name="yAxisSinglePower" Orientation="Y" Title="Power (W)" Minimum="0" Maximum="{Binding MaxPower}" />
