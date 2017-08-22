@@ -21,7 +21,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <c:TemperatureConverter x:Key="temperatureConverter" Unit="{Binding MaxTemp.Unit}" />
-            <c:TemperatureToStringConverter x:Key="temperatureToStringConverter" />
+            <c:TemperatureToStringConverter x:Key="temperatureToStringConverter" Unit="{Binding MaxTemp.Unit}" />
             <c:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
             <c:BooleanToVisibilityConverter x:Key="notBooleanToVisibilityConverter" Negate="True" />
             <c:ColorToSolidBrushConverter x:Key="colorToSolidBrushConverter" />
@@ -376,7 +376,7 @@
 
                             <!-- Row 2: Temperature -->
                             <Label Grid.Column="1" Grid.Row="2" Content="Temperature" />
-                            <Label Grid.Column="2" Grid.Row="2" Content="{Binding LatestStatisticSample.LastTemperature, TargetNullValue=N/A, FallbackValue=N/A, Converter={StaticResource temperatureToStringConverter}}" />
+                            <Label Grid.Column="2" Grid.Row="2" Content="{Binding LatestStatisticSample.LastTemperature, Converter={StaticResource temperatureToStringConverter}}" />
 
                             <!-- Row 3: Power -->
                             <Label Grid.Column="1" Grid.Row="3" Content="Power" />
@@ -384,7 +384,7 @@
 
                             <!-- Row 4: Temperature Peak (calculated, since the value from the device is not reliably provided -->
                             <Label Grid.Column="1" Grid.Row="4" Content="Peak Temperature" />
-                            <Label Grid.Column="2" Grid.Row="4" Content="{Binding PeakTemperature, TargetNullValue=N/A, FallbackValue=N/A, Converter={StaticResource temperatureToStringConverter}}" />
+                            <Label Grid.Column="2" Grid.Row="4" Content="{Binding PeakTemperature, Converter={StaticResource temperatureToStringConverter}}" />
 
                             <!-- Row 5: Energy -->
                             <Label Grid.Column="1" Grid.Row="5" Content="Energy" />
@@ -402,31 +402,31 @@
                                 <CheckBox IsChecked="{Binding ShowTemperature, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
                             </DockPanel>
                             <Label Grid.Column="1" Grid.Row="8" Content="Temperature" />
-                            <Label Grid.Column="2" Grid.Row="8" Content="{Binding Path=LatestSample.Temperature, Converter={StaticResource temperatureToStringConverter}, FallbackValue=?}" />
+                            <Label Grid.Column="2" Grid.Row="8" Content="{Binding Path=LatestSample.Temperature, Converter={StaticResource temperatureToStringConverter}}" />
 
                             <DockPanel Grid.Column="0" Grid.Row="9" Background="{Binding ColorVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
                                 <CheckBox IsChecked="{Binding ShowVoltage, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
                             </DockPanel>
                             <Label Grid.Column="1" Grid.Row="9" Content="Voltage" />
-                            <Label Grid.Column="2" Grid.Row="9" Content="{Binding Path=LatestSample.Voltage, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} V" />
+                            <Label Grid.Column="2" Grid.Row="9" Content="{Binding Path=LatestSample.Voltage, TargetNullValue=N/A, FallbackValue=N/A}" ContentStringFormat="{}{0} V" />
 
                             <DockPanel Grid.Column="0" Grid.Row="10" Background="{Binding ColorCurrent, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
                                 <CheckBox IsChecked="{Binding ShowCurrent, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
                             </DockPanel>
                             <Label Grid.Column="1" Grid.Row="10" Content="Current" />
-                            <Label Grid.Column="2" Grid.Row="10" Content="{Binding Path=LatestSample.Current, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} A" />
+                            <Label Grid.Column="2" Grid.Row="10" Content="{Binding Path=LatestSample.Current, TargetNullValue=N/A, FallbackValue=N/A}" ContentStringFormat="{}{0} A" />
 
                             <DockPanel Grid.Column="0" Grid.Row="11" Background="{Binding ColorLiveResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
                                 <CheckBox IsChecked="{Binding ShowLiveResistance, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
                             </DockPanel>
                             <Label Grid.Column="1" Grid.Row="11" Content="Live Resistance" />
-                            <Label Grid.Column="2" Grid.Row="11" Content="{Binding Path=LatestSample.LiveResistance, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} Ω" />
+                            <Label Grid.Column="2" Grid.Row="11" Content="{Binding Path=LatestSample.LiveResistance, TargetNullValue=N/A, FallbackValue=N/A}" ContentStringFormat="{}{0} Ω" />
 
                             <DockPanel Grid.Column="0" Grid.Row="12" Background="{Binding ColorColdResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
                                 <CheckBox IsChecked="{Binding ShowColdResistance, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
                             </DockPanel>
                             <Label Grid.Column="1" Grid.Row="12" Content="Cold Resistance" />
-                            <Label Grid.Column="2" Grid.Row="12" Content="{Binding Path=LatestSample.ColdResistance, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0} Ω" />
+                            <Label Grid.Column="2" Grid.Row="12" Content="{Binding Path=LatestSample.ColdResistance, TargetNullValue=N/A, FallbackValue=N/A}" ContentStringFormat="{}{0} Ω" />
 
                             <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="13" Style="{StaticResource legendHeader}" Content="Battery" />
 
@@ -434,13 +434,13 @@
                                 <CheckBox IsChecked="{Binding ShowBatteryLevel, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
                             </DockPanel>
                             <Label Grid.Column="1" Grid.Row="14" Content="Battery Level" />
-                            <Label Grid.Column="2" Grid.Row="14" Content="{Binding Path=LatestSample.BatteryLevel, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0}%" />
+                            <Label Grid.Column="2" Grid.Row="14" Content="{Binding Path=LatestSample.BatteryLevel, TargetNullValue=N/A, FallbackValue=N/A}" ContentStringFormat="{}{0}%" />
 
                             <DockPanel Grid.Column="0" Grid.Row="15" Background="{Binding ColorBatteryVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}">
                                 <CheckBox IsChecked="{Binding ShowBatteryVoltage, Source={x:Static p:Settings.Default}, Mode=TwoWay}" VerticalAlignment="Center" Margin="3" />
                             </DockPanel>
                             <Label Grid.Column="1" Grid.Row="15" Content="Battery Voltage" />
-                            <Label Grid.Column="2" Grid.Row="15" Content="{Binding Path=LatestSample.BatteryVoltage, TargetNullValue=?, FallbackValue=?}" ContentStringFormat="{}{0:#0.00} V" />
+                            <Label Grid.Column="2" Grid.Row="15" Content="{Binding Path=LatestSample.BatteryVoltage, TargetNullValue=N/A, FallbackValue=N/A}" ContentStringFormat="{}{0:#0.00} V" />
 
                             <Label Grid.Column="0" Grid.ColumnSpan="3"  Grid.Row="16" Style="{StaticResource legendHeader}" Content="Device" />
 
@@ -480,7 +480,7 @@
                             <Label Grid.Column="1" Grid.Row="21" Content="Profile" />
                             <Label Grid.Column="2" Grid.Row="21">
                                 <Hyperlink Command="{Binding SetProfileCommand}">
-                                    <TextBlock Text="{Binding Path=LatestSample.Profile, FallbackValue=?}" />
+                                    <TextBlock Text="{Binding Path=LatestSample.Profile, FallbackValue=N/A}" />
                                 </Hyperlink>
                             </Label>
 
@@ -723,7 +723,7 @@
                         </Style>
                     </g:LineSeries.DataPointStyle>
                 </g:LineSeries>
-                <g:LineSeries IndependentValuePath="Key" DependentValueBinding="{Binding Path=Value.BoardTemperature, Converter={StaticResource temperatureConverter}}" DependentRangeAxis="{Binding ElementName=yAxisSingleTemperatureLow}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowBoardTemperature, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
+                <g:LineSeries IndependentValuePath="Key" DependentValueBinding="{Binding Path=Value.BoardTemperature, Converter={StaticResource temperatureConverter}}" DependentRangeAxis="{Binding ElementName=yAxisSingleTemperature}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowBoardTemperature, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
                     <g:LineSeries.DataPointStyle>
                         <Style TargetType="{x:Type g:DataPoint}">
                             <Setter Property="Background" Value="{Binding ColorBoardTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
@@ -731,7 +731,7 @@
                         </Style>
                     </g:LineSeries.DataPointStyle>
                 </g:LineSeries>
-                <g:LineSeries IndependentValuePath="Key" DependentValueBinding="{Binding Path=Value.RoomTemperature, Converter={StaticResource temperatureConverter}}" DependentRangeAxis="{Binding ElementName=yAxisSingleTemperatureLow}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowRoomTemperature, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
+                <g:LineSeries IndependentValuePath="Key" DependentValueBinding="{Binding Path=Value.RoomTemperature, Converter={StaticResource temperatureConverter}}" DependentRangeAxis="{Binding ElementName=yAxisSingleTemperature}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowRoomTemperature, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
                     <g:LineSeries.DataPointStyle>
                         <Style TargetType="{x:Type g:DataPoint}">
                             <Setter Property="Background" Value="{Binding ColorRoomTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
@@ -753,14 +753,9 @@
                             </Style>
                         </g:LinearAxis.AxisLabelStyle>
                     </g:LinearAxis>
-                    <g:LinearAxis x:Name="yAxisSingleTemperature" Orientation="Y" Minimum="0" Maximum="{Binding MaxTemp.Value}">
+                    <g:LinearAxis x:Name="yAxisSingleTemperature" Orientation="Y" Minimum="0" Maximum="{Binding MaxTemp, Converter={StaticResource temperatureConverter}}">
                         <g:LinearAxis.Title>
                             <TextBlock Text="{Binding MaxTemp.Unit, StringFormat={}Temperature (º{0}), Mode=OneWay}" />
-                        </g:LinearAxis.Title>
-                    </g:LinearAxis>
-                    <g:LinearAxis x:Name="yAxisSingleTemperatureLow" Orientation="Y" Minimum="0" Maximum="{Binding MaxTempLow.Value}">
-                        <g:LinearAxis.Title>
-                            <TextBlock Text="{Binding MaxTempLow.Unit, StringFormat={}Temperature (º{0}), Mode=OneWay}" />
                         </g:LinearAxis.Title>
                     </g:LinearAxis>
                     <g:LinearAxis x:Name="yAxisSinglePower" Orientation="Y" Title="Power (W)" Minimum="0" Maximum="{Binding MaxPower}" />

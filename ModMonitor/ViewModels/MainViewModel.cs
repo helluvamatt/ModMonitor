@@ -297,26 +297,6 @@ namespace ModMonitor.ViewModels
 
         #endregion
 
-        #region MaxTempLow
-
-        public Temperature MaxTempLow
-        {
-            get
-            {
-                return (Temperature)GetValue(MaxTempLowProperty);
-            }
-            private set
-            {
-                SetValue(MaxTempLowProperty, value);
-            }
-        }
-
-        public static readonly DependencyProperty MaxTempLowProperty = DependencyProperty.Register("MaxTempLow", typeof(Temperature), typeof(MainViewModel), new UIPropertyMetadata(DEFAULT_MAX_TEMP_LOW));
-
-        public static readonly Temperature DEFAULT_MAX_TEMP_LOW = new Temperature { Unit = TemperatureUnit.F, Value = 200f };
-
-        #endregion
-
         #region MaxPower
 
         public float MaxPower
@@ -417,6 +397,7 @@ namespace ModMonitor.ViewModels
 
         public MainViewModel()
         {
+            log = LogManager.GetCurrentClassLogger();
             GraphData = new ObservableDictionary<double, Sample>();
             ConnectCommand = new RelayCommand(Connect);
             StartRecordingCommand = new RelayCommand(StartRecording, () => !IsRecording);
@@ -432,7 +413,6 @@ namespace ModMonitor.ViewModels
             FireCommand = new RelayCommand(() => { if (sampleManager != null) FirePromptRequested(this, new FirePromptRequestedEventArgs(Fire, Settings.Default.FireDuration)); });
             SetGraphTemperatureUnit(Settings.Default.TemperatureUnitForce ? Settings.Default.TemperatureUnit : TemperatureUnit.F);
             Settings.Default.PropertyChanged += Settings_PropertyChanged;
-            log = LogManager.GetCurrentClassLogger();
         }
 
         private void Connect()
@@ -629,18 +609,10 @@ namespace ModMonitor.ViewModels
         {
             Invoke(() =>
             {
-                if (Settings.Default.TemperatureUnitForce)
+                if (!Settings.Default.TemperatureUnitForce)
                 {
-                    var unit = Settings.Default.TemperatureUnit;
-                    SetGraphTemperatureUnit(unit);
-                    if (sample.Temperature.Unit != unit) sample.Temperature = new Temperature { Unit = unit, Value = sample.Temperature.GetValue(unit) };
-                    if (sample.TemperatureSetpoint.Unit != unit) sample.TemperatureSetpoint = new Temperature { Unit = unit, Value = sample.TemperatureSetpoint.GetValue(unit) };
-                    if (sample.BoardTemperature.Unit != unit) sample.BoardTemperature = new Temperature { Unit = unit, Value = sample.BoardTemperature.GetValue(unit) };
-                    if (sample.RoomTemperature.Unit != unit) sample.RoomTemperature = new Temperature { Unit = unit, Value = sample.RoomTemperature.GetValue(unit) };
-                }
-                else
-                {
-                    SetGraphTemperatureUnit(sample.BoardTemperature.Unit);
+                    var unit = sample.BoardTemperature.Unit;
+                    if (MaxTemp.Unit != unit) SetGraphTemperatureUnit(unit);
                 }
 
                 LatestSample = sample;
@@ -680,11 +652,18 @@ namespace ModMonitor.ViewModels
             {
                 sampleManager.Throttle = Settings.Default.SampleThrottle;
             }
+            if ((e.PropertyName == "TemperatureUnitForce" || e.PropertyName == "TemperatureUnit") && Settings.Default.TemperatureUnitForce)
+            {
+                GraphData.Clear();
+                MaxOffset = MAX_OFFSET;
+                PeakTemperature = default(Temperature);
+                LatestStatisticSample = null;
+                SetGraphTemperatureUnit(Settings.Default.TemperatureUnit);
+            }
         }
 
         private void SetGraphTemperatureUnit(TemperatureUnit unit)
         {
-            MaxTempLow = new Temperature { Unit = unit, Value = DEFAULT_MAX_TEMP_LOW.GetValue(unit) };
             MaxTemp = new Temperature { Unit = unit, Value = DEFAULT_MAX_TEMP.GetValue(unit) };
         }
 

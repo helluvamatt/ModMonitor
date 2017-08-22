@@ -7,7 +7,7 @@ using System.Windows.Data;
 namespace ModMonitor.Converters
 {
     [ValueConversion(typeof(Temperature), typeof(double))]
-    class TemperatureConverter : DependencyObject, IValueConverter
+    public class TemperatureConverter : Freezable, IValueConverter
     {
         public TemperatureUnit Unit
         {
@@ -39,6 +39,11 @@ namespace ModMonitor.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return new Temperature { Unit = Unit, Value = (float)value }; // Not used
+        }
+
+        protected override Freezable CreateInstanceCore()
+        {
+            return new TemperatureConverter();
         }
     }
 }
