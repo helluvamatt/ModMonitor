@@ -153,6 +153,7 @@
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BooleanNegationConverter.cs" />
+    <Compile Include="Converters\BooleanToLengthConverter.cs" />
     <Compile Include="Converters\DateTimeConverter.cs" />
     <Compile Include="Converters\DoubleNegationConverter.cs" />
     <Compile Include="Converters\IsNullToVisibilityConverter.cs" />

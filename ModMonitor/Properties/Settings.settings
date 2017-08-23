@@ -29,9 +29,6 @@
     <Setting Name="ShowBatteryVoltage" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="ShowBatteryLevel" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="ShowBoardTemperature" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
@@ -65,9 +62,6 @@
     <Setting Name="ColorBatteryVoltage" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">Black</Value>
     </Setting>
-    <Setting Name="ColorBatteryLevel" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">Gray</Value>
-    </Setting>
     <Setting Name="ColorBoardTemperature" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">DarkSalmon</Value>
     </Setting>
@@ -84,13 +78,40 @@
       <Value Profile="(Default)">50</Value>
     </Setting>
     <Setting Name="ExpandGraph" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="AutoDownloadStats" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="FireDuration" Type="System.Single" Scope="User">
       <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="GraphColorTemperature" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Red</Value>
+    </Setting>
+    <Setting Name="GraphColorPower" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Green</Value>
+    </Setting>
+    <Setting Name="GraphColorVoltage" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Blue</Value>
+    </Setting>
+    <Setting Name="GraphColorCurrent" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Orange</Value>
+    </Setting>
+    <Setting Name="GraphColorPercentage" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Gray</Value>
+    </Setting>
+    <Setting Name="GraphShowGridLines" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ColorBatteryLevel" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Gray</Value>
+    </Setting>
+    <Setting Name="ShowBatteryLevel" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="GraphColorResistance" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Purple</Value>
     </Setting>
   </Settings>
 </SettingsFile>

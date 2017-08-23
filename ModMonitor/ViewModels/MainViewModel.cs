@@ -234,49 +234,6 @@ namespace ModMonitor.ViewModels
 
         #endregion
 
-        #region HoveredSample
-
-        private double hoveredX;
-
-        public Sample HoveredSample
-        {
-            get
-            {
-                return (Sample)GetValue(HoveredSampleProperty);
-            }
-            set
-            {
-                SetValue(HoveredSampleProperty, value);
-            }
-        }
-
-        public static readonly DependencyProperty HoveredSampleProperty = DependencyProperty.Register("HoveredSample", typeof(Sample), typeof(MainViewModel));
-
-        public void SetHoveredSample(double normalizedX)
-        {
-            hoveredX = normalizedX;
-            if (GraphData.Any() && normalizedX >= 0)
-            {
-                var x = normalizedX * MaxOffset;
-                if (x > GraphData.Max(kvp => kvp.Key))
-                {
-                    HoveredSample = GraphData.Last().Value;
-                }
-                else
-                {
-                    double toTheRight = GraphData.Select(kvp => kvp.Key).FirstOrDefault(key => key >= x);
-                    double toTheLeft = GraphData.Select(kvp => kvp.Key).LastOrDefault(key => key <= x);
-                    HoveredSample = GraphData[Math.Abs(x - toTheLeft) < Math.Abs(x - toTheRight) ? toTheLeft : toTheRight];
-                }
-            }
-            else
-            {
-                HoveredSample = null;
-            }
-        }
-
-        #endregion
-
         #region MaxTemp
 
         public Temperature MaxTemp
@@ -330,6 +287,114 @@ namespace ModMonitor.ViewModels
         }
 
         public static readonly DependencyProperty MaxOffsetProperty = DependencyProperty.Register("MaxOffset", typeof(double), typeof(MainViewModel), new UIPropertyMetadata(MAX_OFFSET));
+
+        #endregion
+
+        #region GraphShowAxisTemperature
+
+        public bool GraphShowAxisTemperature
+        {
+            get
+            {
+                return (bool)GetValue(GraphShowAxisTemperatureProperty);
+            }
+            set
+            {
+                SetValue(GraphShowAxisTemperatureProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty GraphShowAxisTemperatureProperty = DependencyProperty.Register("GraphShowAxisTemperature", typeof(bool), typeof(MainViewModel));
+
+        #endregion
+
+        #region GraphShowAxisPower
+
+        public bool GraphShowAxisPower
+        {
+            get
+            {
+                return (bool)GetValue(GraphShowAxisPowerProperty);
+            }
+            set
+            {
+                SetValue(GraphShowAxisPowerProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty GraphShowAxisPowerProperty = DependencyProperty.Register("GraphShowAxisPower", typeof(bool), typeof(MainViewModel));
+
+        #endregion
+
+        #region GraphShowAxisVoltage
+
+        public bool GraphShowAxisVoltage
+        {
+            get
+            {
+                return (bool)GetValue(GraphShowAxisVoltageProperty);
+            }
+            set
+            {
+                SetValue(GraphShowAxisVoltageProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty GraphShowAxisVoltageProperty = DependencyProperty.Register("GraphShowAxisVoltage", typeof(bool), typeof(MainViewModel));
+
+        #endregion
+
+        #region GraphShowAxisCurrent
+
+        public bool GraphShowAxisCurrent
+        {
+            get
+            {
+                return (bool)GetValue(GraphShowAxisCurrentProperty);
+            }
+            set
+            {
+                SetValue(GraphShowAxisCurrentProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty GraphShowAxisCurrentProperty = DependencyProperty.Register("GraphShowAxisCurrent", typeof(bool), typeof(MainViewModel));
+
+        #endregion
+
+        #region GraphShowAxisResistance
+
+        public bool GraphShowAxisResistance
+        {
+            get
+            {
+                return (bool)GetValue(GraphShowAxisResistanceProperty);
+            }
+            set
+            {
+                SetValue(GraphShowAxisResistanceProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty GraphShowAxisResistanceProperty = DependencyProperty.Register("GraphShowAxisResistance", typeof(bool), typeof(MainViewModel));
+
+        #endregion
+
+        #region GraphShowAxisPercentage
+
+        public bool GraphShowAxisPercentage
+        {
+            get
+            {
+                return (bool)GetValue(GraphShowAxisPercentageProperty);
+            }
+            set
+            {
+                SetValue(GraphShowAxisPercentageProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty GraphShowAxisPercentageProperty = DependencyProperty.Register("GraphShowAxisPercentage", typeof(bool), typeof(MainViewModel));
 
         #endregion
 
@@ -391,6 +456,9 @@ namespace ModMonitor.ViewModels
         private bool isFiring = false;
         private DateTime puffStart;
 
+        private double hoveredX;
+        private bool isHovered = false;
+
         private ILogger log;
 
         #endregion
@@ -412,7 +480,32 @@ namespace ModMonitor.ViewModels
             SetProfileCommand = new RelayCommand(() => { if (sampleManager != null) SetProfilePromptRequested(this, new SetProfilePromptRequestedEventArgs(SetProfile, LatestSample.Profile)); });
             FireCommand = new RelayCommand(() => { if (sampleManager != null) FirePromptRequested(this, new FirePromptRequestedEventArgs(Fire, Settings.Default.FireDuration)); });
             SetGraphTemperatureUnit(Settings.Default.TemperatureUnitForce ? Settings.Default.TemperatureUnit : TemperatureUnit.F);
+            SetGraphAxisVisibility();
             Settings.Default.PropertyChanged += Settings_PropertyChanged;
+        }
+
+        public void SetHoveredSample(double normalizedX)
+        {
+            hoveredX = normalizedX;
+            if (GraphData.Any() && normalizedX >= 0)
+            {
+                isHovered = true;
+                var x = normalizedX * MaxOffset;
+                if (x > GraphData.Max(kvp => kvp.Key))
+                {
+                    LatestSample = GraphData.Last().Value;
+                }
+                else
+                {
+                    double toTheRight = GraphData.Select(kvp => kvp.Key).FirstOrDefault(key => key >= x);
+                    double toTheLeft = GraphData.Select(kvp => kvp.Key).LastOrDefault(key => key <= x);
+                    LatestSample = GraphData[Math.Abs(x - toTheLeft) < Math.Abs(x - toTheRight) ? toTheLeft : toTheRight];
+                }
+            }
+            else
+            {
+                isHovered = false;
+            }
         }
 
         private void Connect()
@@ -618,7 +711,7 @@ namespace ModMonitor.ViewModels
                     if (MaxTemp.Unit != unit) SetGraphTemperatureUnit(unit);
                 }
 
-                LatestSample = sample;
+                if (!isHovered) LatestSample = sample;
 
                 if (IsRecording && sampleRecorder != null)
                 {
@@ -645,6 +738,7 @@ namespace ModMonitor.ViewModels
                     if (isFiring && Settings.Default.ExpandGraph) MaxOffset = GraphData.Keys.Max();
                     isFiring = false;
                 }
+
                 SetHoveredSample(hoveredX);
             });
         }
@@ -663,11 +757,25 @@ namespace ModMonitor.ViewModels
                 LatestStatisticSample = null;
                 SetGraphTemperatureUnit(Settings.Default.TemperatureUnit);
             }
+            if (e.PropertyName.StartsWith("Show"))
+            {
+                SetGraphAxisVisibility();
+            }
         }
 
         private void SetGraphTemperatureUnit(TemperatureUnit unit)
         {
             MaxTemp = new Temperature { Unit = unit, Value = DEFAULT_MAX_TEMP.GetValue(unit) };
+        }
+
+        private void SetGraphAxisVisibility()
+        {
+            GraphShowAxisTemperature = Settings.Default.ShowTemperature || Settings.Default.ShowTemperatureSetpoint || Settings.Default.ShowBoardTemperature || Settings.Default.ShowRoomTemperature;
+            GraphShowAxisPower = Settings.Default.ShowPower || Settings.Default.ShowPowerSetpoint;
+            GraphShowAxisVoltage = Settings.Default.ShowVoltage || Settings.Default.ShowBatteryVoltage;
+            GraphShowAxisCurrent = Settings.Default.ShowCurrent;
+            GraphShowAxisResistance = Settings.Default.ShowLiveResistance || Settings.Default.ShowColdResistance;
+            GraphShowAxisPercentage = Settings.Default.ShowBatteryLevel;
         }
 
         private void Invoke(Action action)

@@ -134,18 +134,6 @@ namespace ModMonitor.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowBatteryLevel {
-            get {
-                return ((bool)(this["ShowBatteryLevel"]));
-            }
-            set {
-                this["ShowBatteryLevel"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool ShowBoardTemperature {
             get {
                 return ((bool)(this["ShowBoardTemperature"]));
@@ -277,18 +265,6 @@ namespace ModMonitor.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Gray")]
-        public global::System.Drawing.Color ColorBatteryLevel {
-            get {
-                return ((global::System.Drawing.Color)(this["ColorBatteryLevel"]));
-            }
-            set {
-                this["ColorBatteryLevel"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("DarkSalmon")]
         public global::System.Drawing.Color ColorBoardTemperature {
             get {
@@ -349,7 +325,7 @@ namespace ModMonitor.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool ExpandGraph {
             get {
                 return ((bool)(this["ExpandGraph"]));
@@ -380,6 +356,114 @@ namespace ModMonitor.Properties {
             }
             set {
                 this["FireDuration"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Red")]
+        public global::System.Drawing.Color GraphColorTemperature {
+            get {
+                return ((global::System.Drawing.Color)(this["GraphColorTemperature"]));
+            }
+            set {
+                this["GraphColorTemperature"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Green")]
+        public global::System.Drawing.Color GraphColorPower {
+            get {
+                return ((global::System.Drawing.Color)(this["GraphColorPower"]));
+            }
+            set {
+                this["GraphColorPower"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Blue")]
+        public global::System.Drawing.Color GraphColorVoltage {
+            get {
+                return ((global::System.Drawing.Color)(this["GraphColorVoltage"]));
+            }
+            set {
+                this["GraphColorVoltage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Orange")]
+        public global::System.Drawing.Color GraphColorCurrent {
+            get {
+                return ((global::System.Drawing.Color)(this["GraphColorCurrent"]));
+            }
+            set {
+                this["GraphColorCurrent"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Gray")]
+        public global::System.Drawing.Color GraphColorPercentage {
+            get {
+                return ((global::System.Drawing.Color)(this["GraphColorPercentage"]));
+            }
+            set {
+                this["GraphColorPercentage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool GraphShowGridLines {
+            get {
+                return ((bool)(this["GraphShowGridLines"]));
+            }
+            set {
+                this["GraphShowGridLines"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Gray")]
+        public global::System.Drawing.Color ColorBatteryLevel {
+            get {
+                return ((global::System.Drawing.Color)(this["ColorBatteryLevel"]));
+            }
+            set {
+                this["ColorBatteryLevel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowBatteryLevel {
+            get {
+                return ((bool)(this["ShowBatteryLevel"]));
+            }
+            set {
+                this["ShowBatteryLevel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Purple")]
+        public global::System.Drawing.Color GraphColorResistance {
+            get {
+                return ((global::System.Drawing.Color)(this["GraphColorResistance"]));
+            }
+            set {
+                this["GraphColorResistance"] = value;
             }
         }
     }
