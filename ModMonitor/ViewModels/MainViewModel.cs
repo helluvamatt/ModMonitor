@@ -593,7 +593,10 @@ namespace ModMonitor.ViewModels
             sampleManager.Dispose();
             sampleManager = null;
             Invoke(() => {
+                CurrentDevice = null;
                 LatestSample = null;
+                LatestStatisticSample = null;
+                LatestDetailedStatisticsSample = null;
                 ConnectText = "Connect";
                 Status = "Disconnected";
                 GraphData.Clear();
