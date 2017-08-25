@@ -157,6 +157,7 @@
     <Compile Include="Converters\DateTimeConverter.cs" />
     <Compile Include="Converters\DoubleNegationConverter.cs" />
     <Compile Include="Converters\IsNullToVisibilityConverter.cs" />
+    <Compile Include="Converters\SecondsToStringConverter.cs" />
     <Compile Include="Converters\TemperatureToStringConverter.cs" />
     <Compile Include="DevicePicker.xaml.cs">
       <DependentUpon>DevicePicker.xaml</DependentUpon>
@@ -209,6 +210,7 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\EnterKeyPressTrigger.cs" />
+    <Compile Include="Utils\FixedSizeQueue.cs" />
     <Compile Include="Utils\LinqUtils.cs" />
     <Compile Include="Utils\PortableSettingsProvider.cs" />
     <Compile Include="ViewModels\DevicePickerViewModel.cs" />

@@ -210,6 +210,42 @@ namespace ModMonitor.ViewModels
 
         #endregion
 
+        #region BatterySag
+
+        public float BatterySag
+        {
+            get
+            {
+                return (float)GetValue(BatterySagProperty);
+            }
+            set
+            {
+                SetValue(BatterySagProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty BatterySagProperty = DependencyProperty.Register("BatterySag", typeof(float), typeof(MainViewModel));
+
+        #endregion
+
+        #region PreheatDuration
+
+        public float PreheatDuration
+        {
+            get
+            {
+                return (float)GetValue(PreheatDurationProperty);
+            }
+            set
+            {
+                SetValue(PreheatDurationProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty PreheatDurationProperty = DependencyProperty.Register("PreheatDuration", typeof(float), typeof(MainViewModel));
+
+        #endregion
+
         #region CurrentDevice
 
         public DnaDevice CurrentDevice
@@ -454,7 +490,9 @@ namespace ModMonitor.ViewModels
         private SampleRecorder sampleRecorder = null;
 
         private bool isFiring = false;
+        private bool hadPreheat = false;
         private DateTime puffStart;
+        private FixedSizeQueue<float> batteryVoltages;
 
         private double hoveredX;
         private bool isHovered = false;
@@ -467,6 +505,7 @@ namespace ModMonitor.ViewModels
         {
             log = LogManager.GetCurrentClassLogger();
             GraphData = new ObservableDictionary<double, Sample>();
+            batteryVoltages = new FixedSizeQueue<float>(100);
             ConnectCommand = new RelayCommand(Connect);
             StartRecordingCommand = new RelayCommand(StartRecording, () => !IsRecording);
             StopRecordingCommand = new RelayCommand(StopRecording, () => IsRecording);
@@ -582,10 +621,13 @@ namespace ModMonitor.ViewModels
 
         private void LastPuffStatisticsSampleArrived(LastPuffStatisticsSample sample)
         {
+            float batterySag = GraphData.Average(kvp => kvp.Value.BatteryVoltage) - batteryVoltages.Average();
+            Temperature peakTemp = GraphData.Max(kvp => kvp.Value.Temperature);
             Invoke(() => {
                 LatestStatisticSample = sample;
                 CurrentPuffDuration = Settings.Default.FireDuration = sample.LastTime;
-                PeakTemperature = GraphData.Max(kvp => kvp.Value.Temperature);
+                PeakTemperature = peakTemp;
+                BatterySag = batterySag;
             });
         }
 
@@ -730,6 +772,22 @@ namespace ModMonitor.ViewModels
                     }
                     isFiring = true;
                     var duration = (sample.End - puffStart).TotalSeconds;
+                    if (duration > 0 && sample.Temperature != null && sample.Temperature.Value > 0)
+                    {
+                        var isPreheating = sample.Power > sample.PowerSetpoint;
+                        if (!hadPreheat)
+                        {
+                            if (isPreheating)
+                            {
+                                PreheatDuration = (float)duration;
+                            }
+                            else
+                            {
+                                hadPreheat = true;
+                            }
+                        }
+                    }
+
                     GraphData.Add(duration, sample);
                     CurrentPuffDuration = duration;
                 }
@@ -737,6 +795,8 @@ namespace ModMonitor.ViewModels
                 {
                     if (isFiring && Settings.Default.ExpandGraph) MaxOffset = GraphData.Keys.Max();
                     isFiring = false;
+                    hadPreheat = false;
+                    batteryVoltages.Enqueue(sample.BatteryVoltage);
                 }
 
                 SetHoveredSample(hoveredX);
