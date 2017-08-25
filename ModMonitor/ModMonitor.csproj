@@ -152,6 +152,7 @@
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\BatteryIndicator.cs" />
     <Compile Include="Converters\BooleanNegationConverter.cs" />
     <Compile Include="Converters\BooleanToLengthConverter.cs" />
     <Compile Include="Converters\DateTimeConverter.cs" />

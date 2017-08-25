@@ -65,6 +65,24 @@ namespace ModMonitor.ViewModels
 
         #endregion
 
+        #region IsCharging
+
+        public bool IsCharging
+        {
+            get
+            {
+                return (bool)GetValue(IsChargingProperty);
+            }
+            set
+            {
+                SetValue(IsChargingProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty IsChargingProperty = DependencyProperty.Register("IsCharging", typeof(bool), typeof(MainViewModel));
+
+        #endregion
+
         #region IsRecording
 
         public bool IsRecording
@@ -752,6 +770,9 @@ namespace ModMonitor.ViewModels
                     var unit = sample.BoardTemperature.Unit;
                     if (MaxTemp.Unit != unit) SetGraphTemperatureUnit(unit);
                 }
+
+                // TODO Get charging status from Mode (X=GET MODE serial command)
+                IsCharging = true;
 
                 if (!isHovered) LatestSample = sample;
 

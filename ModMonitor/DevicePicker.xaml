@@ -32,12 +32,10 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </ListView>
-        <Grid Grid.Row="0" Background="Black" Opacity="0.7" Visibility="{Binding Loading, Converter={StaticResource boolToVisibilityConverter}}">
-            <TextBlock  HorizontalAlignment="Stretch" TextAlignment="Center" VerticalAlignment="Center" FontSize="24pt" Foreground="White">Loading...</TextBlock>
-        </Grid>
-        <Button Grid.Row="1" Command="{Binding RefreshCommand}" Padding="4" Margin="6 6 0 6" HorizontalAlignment="Left">
-            <fa:FontAwesome Icon="Refresh" />
-        </Button>
+
+        <Rectangle Grid.Row="0" Fill="Black" Opacity="0.7" Visibility="{Binding NoDevices, Converter={StaticResource boolToVisibilityConverter}}" />
+        <TextBlock HorizontalAlignment="Stretch" TextAlignment="Center" VerticalAlignment="Center" FontSize="24pt" Foreground="White" Visibility="{Binding NoDevices, Converter={StaticResource boolToVisibilityConverter}}">No Devices Found</TextBlock>
+
         <Button Grid.Row="1" HorizontalAlignment="Right" Padding="8 3 8 3" MinWidth="60" Margin="0 6 6 6" Command="{Binding CancelCommand}" >Cancel</Button>
     </Grid>
 </Window>

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -17,19 +18,19 @@ namespace ModMonitor.ViewModels
     {
         public ObservableCollection<DnaDevice> Devices { get; private set; }
 
-        public bool Loading
+        public bool NoDevices
         {
             get
             {
-                return (bool)GetValue(LoadingProperty);
+                return (bool)GetValue(NoDevicesProperty);
             }
             private set
             {
-                SetValue(LoadingProperty, value);
+                SetValue(NoDevicesProperty, value);
             }
         }
 
-        public static readonly DependencyProperty LoadingProperty = DependencyProperty.Register("Loading", typeof(bool), typeof(DevicePickerViewModel));
+        public static readonly DependencyProperty NoDevicesProperty = DependencyProperty.Register("NoDevices", typeof(bool), typeof(DevicePickerViewModel));
 
         public DnaDevice SelectedDevice
         {
@@ -50,11 +51,11 @@ namespace ModMonitor.ViewModels
 
         public ICommand CancelCommand { get; private set; }
 
-        public ICommand RefreshCommand { get; private set; }
-
         public event Action<bool, DnaDevice> CloseDialog = (result, device) => { };
 
         public event Action FocusSelectedItem = () => { };
+
+        private bool isDeviceChosen = false;
 
         private ILogger log;
 
@@ -63,61 +64,76 @@ namespace ModMonitor.ViewModels
             log = LogManager.GetCurrentClassLogger();
             OkCommand = new RelayCommand(OkCommandExecute);
             CancelCommand = new RelayCommand(CancelCommandExecute);
-            RefreshCommand = new RelayCommand(Refresh);
             Devices = new ObservableCollection<DnaDevice>();
-            Refresh();
+            new Thread(DeviceWatcherThread).Start();
         }
 
         private void OkCommandExecute()
         {
+            isDeviceChosen = true;
             CloseDialog(SelectedDevice != null, SelectedDevice);
         }
 
         private void CancelCommandExecute()
         {
+            isDeviceChosen = true;
             CloseDialog(false, null);
         }
 
-        private async void Refresh()
+        private void DeviceWatcherThread()
         {
-            log.Debug("Refreshing device list...");
-            Loading = true;
-            var result = await Task.Run(() =>
+            while (!isDeviceChosen)
             {
+                log.Debug("Refreshing device list...");
                 try
                 {
                     List<DnaDevice> devices = DnaDeviceManager.ListDnaDevices();
                     if (devices.Count > 0)
                     {
                         log.Debug("Found {0} device(s)", devices.Count);
-                        return new QueryResult { Devices = devices };
+                        Invoke(() => {
+                            var selectedSerialNo = SelectedDevice?.SerialNumber;
+                            Devices.Clear();
+                            foreach (var device in devices)
+                            {
+                                Devices.Add(device);
+                            }
+                            if (selectedSerialNo != null && Devices.Any(d => d.SerialNumber == selectedSerialNo))
+                            {
+                                SelectedDevice = Devices.First(d => d.SerialNumber == selectedSerialNo);
+                            }
+                            else
+                            {
+                                SelectedDevice = Devices[0];
+                            }
+                            NoDevices = false;
+                        });
                     }
                     else
                     {
                         log.Debug("Found 0 device(s)");
-                        return new QueryResult { IsError = true, Error = "No DNA devices found. Please connect a DNA device and try again." };
+                        Invoke(() => NoDevices = true);
                     }
                 }
                 catch (Exception ex)
                 {
                     log.Error(ex, "Error refreshing device list");
-                    return new QueryResult { IsError = true, Error = "An error occurred while querying for DNA devices." };
+                    Invoke(() =>
+                    {
+                        MessageBox.Show("An error occurred while querying for DNA devices.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    });
                 }
-            });
-            if (result.IsError)
-            {
-                MessageBox.Show(result.Error, "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                Thread.Sleep(500);
             }
-            else
+        }
+
+        private void Invoke(Action action)
+        {
+            if (!Dispatcher.HasShutdownStarted)
             {
-                Devices.Clear();
-                foreach (var device in result.Devices)
-                {
-                    Devices.Add(device);
-                }
-                SelectedDevice = Devices[0];
+                Dispatcher.Invoke(action);
             }
-            Loading = false;
         }
 
         internal class QueryResult
