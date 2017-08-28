@@ -58,4 +58,27 @@ namespace LibDnaSerial
         /// </summary>
         Select = 8,
     }
+
+    /// <summary>
+    /// Mode values returned from the "X=GET MODE" serial command
+    /// </summary>
+    /// <remarks>
+    /// Only the "Charging" value is known from testing, the rest of the bits are unknown.
+    /// 
+    /// Link to forum post on Evolv Forum requesting the rest of the values:
+    /// https://forum.evolvapor.com/topic/69008-serial-command-xget-mode-return-value/
+    /// </remarks>
+    [Flags]
+    public enum Mode
+    {
+        /// <summary>
+        /// Invalid or no modes present
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// Device is charging via USB
+        /// </summary>
+        Charging = 0x80,
+    }
 }

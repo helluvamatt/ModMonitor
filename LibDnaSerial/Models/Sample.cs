@@ -123,6 +123,12 @@ namespace LibDnaSerial.Models
         public int Profile { get; set; }
 
         /// <summary>
+        /// Current mode
+        /// </summary>
+        /// <see cref="DnaConnection.GetMode"/>
+        public Mode Mode { get; set; }
+
+        /// <summary>
         /// Format the line as CSV
         /// </summary>
         /// <returns></returns>

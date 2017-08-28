@@ -1,5 +1,6 @@
 ﻿using LibDnaSerial;
 using LibDnaSerial.Models;
+using ModMonitor.Properties;
 using MvvmFoundation.Wpf;
 using NLog;
 using System;
@@ -91,23 +92,31 @@ namespace ModMonitor.ViewModels
                     if (devices.Count > 0)
                     {
                         log.Debug("Found {0} device(s)", devices.Count);
-                        Invoke(() => {
-                            var selectedSerialNo = SelectedDevice?.SerialNumber;
-                            Devices.Clear();
-                            foreach (var device in devices)
-                            {
-                                Devices.Add(device);
-                            }
-                            if (selectedSerialNo != null && Devices.Any(d => d.SerialNumber == selectedSerialNo))
-                            {
-                                SelectedDevice = Devices.First(d => d.SerialNumber == selectedSerialNo);
-                            }
-                            else
-                            {
-                                SelectedDevice = Devices[0];
-                            }
-                            NoDevices = false;
-                        });
+                        if (Settings.Default.AutoConnect)
+                        {
+                            isDeviceChosen = true;
+                            Invoke(() => CloseDialog(true, devices[0]));
+                        }
+                        else
+                        {
+                            Invoke(() => {
+                                var selectedSerialNo = SelectedDevice?.SerialNumber;
+                                Devices.Clear();
+                                foreach (var device in devices)
+                                {
+                                    Devices.Add(device);
+                                }
+                                if (selectedSerialNo != null && Devices.Any(d => d.SerialNumber == selectedSerialNo))
+                                {
+                                    SelectedDevice = Devices.First(d => d.SerialNumber == selectedSerialNo);
+                                }
+                                else
+                                {
+                                    SelectedDevice = Devices[0];
+                                }
+                                NoDevices = false;
+                            });
+                        }
                     }
                     else
                     {

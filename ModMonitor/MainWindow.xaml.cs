@@ -106,5 +106,10 @@ namespace ModMonitor
         {
             new SetProfileWindow(args.Callback, args.CurrentProfile).ShowDialog();
         }
+
+        private void MainViewModel_ConsoleRequested(object sender, Events.ConsoleRequestedEventArgs args)
+        {
+            new ConsoleWindow(args.Callback).Show();
+        }
     }
 }

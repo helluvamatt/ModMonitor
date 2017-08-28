@@ -152,6 +152,9 @@
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ConsoleWindow.xaml.cs">
+      <DependentUpon>ConsoleWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\BatteryIndicator.cs" />
     <Compile Include="Converters\BooleanNegationConverter.cs" />
     <Compile Include="Converters\BooleanToLengthConverter.cs" />
@@ -163,6 +166,7 @@
     <Compile Include="DevicePicker.xaml.cs">
       <DependentUpon>DevicePicker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Events\ConsoleRequestedEvent.cs" />
     <Compile Include="Events\DevicePickerRequestedEvent.cs" />
     <Compile Include="Events\EditColorEventHandler.cs" />
     <Compile Include="Events\FirePromptRequestedEventHandler.cs" />
@@ -174,6 +178,10 @@
     </Compile>
     <Compile Include="Models\SampleRecorder.cs" />
     <Page Include="AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConsoleWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

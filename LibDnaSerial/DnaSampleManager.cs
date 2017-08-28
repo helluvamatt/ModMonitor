@@ -234,6 +234,21 @@ namespace LibDnaSerial
         }
 
         /// <summary>
+        /// Send a raw command to the device. If the device sends a response, it will be returned.
+        /// </summary>
+        /// <param name="cmd">Raw command to send</param>
+        /// <returns>Response string, null if no response</returns>
+        /// <see cref="DnaConnection.SendRawCommand(string)"/>
+        public string SendRawCommand(string cmd)
+        {
+            lock (sampleLockObject)
+            {
+                if (dnaConnection != null) return dnaConnection.SendRawCommand(cmd);
+            }
+            return null;
+        }
+
+        /// <summary>
         /// EventHandler for when a sample is collected
         /// </summary>
         /// <param name="sample">Sample</param>

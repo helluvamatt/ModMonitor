@@ -113,5 +113,8 @@
     <Setting Name="GraphColorResistance" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">Purple</Value>
     </Setting>
+    <Setting Name="AutoConnect" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

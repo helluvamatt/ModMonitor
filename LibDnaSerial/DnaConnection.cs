@@ -132,6 +132,7 @@ namespace LibDnaSerial
             s.Voltage = GetVoltage();
             s.Buttons = GetButtons();
             s.Profile = GetProfile();
+            s.Mode = GetMode();
             s.End = DateTime.Now;
             return s;
         }
@@ -511,6 +512,18 @@ namespace LibDnaSerial
         }
 
         /// <summary>
+        /// Get the current mode values
+        /// </summary>
+        /// <returns>Mode enum indicating which modes are active</returns>
+        public Mode GetMode()
+        {
+            SendMessage(new Message(CODE_EXTRA, "GET MODE"));
+            var m = ReadMessage();
+            int rawValue = int.Parse(m.Argument);
+            return (Mode)rawValue;
+        }
+
+        /// <summary>
         /// Get a statistics sample containing only the data for the last puff
         /// </summary>
         /// <returns>Last puff statistics sample</returns>
@@ -553,6 +566,24 @@ namespace LibDnaSerial
             PopulateDetailedStatistics(sample);
             sample.End = DateTime.Now;
             return sample;
+        }
+
+        /// <summary>
+        /// Send a raw command to the device, if the device sends a message back, it is returned, otherwise null is returned
+        /// </summary>
+        /// <param name="cmd">Raw command to send</param>
+        /// <returns>The response, null if no response</returns>
+        public string SendRawCommand(string cmd)
+        {
+            serialPort.WriteLine(cmd);
+            try
+            {
+                return serialPort.ReadLine();
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #region Private methods

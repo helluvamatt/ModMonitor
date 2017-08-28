@@ -478,6 +478,8 @@ namespace ModMonitor.ViewModels
 
         public ICommand FireCommand { get; private set; }
 
+        public ICommand ConsoleCommand { get; private set; }
+
         #endregion
 
         #endregion
@@ -499,6 +501,8 @@ namespace ModMonitor.ViewModels
         public event SetProfilePromptRequestedEventHandler SetProfilePromptRequested;
 
         public event FirePromptRequestedEventHandler FirePromptRequested;
+
+        public event ConsoleRequestedEventHandler ConsoleRequested;
 
         #endregion
 
@@ -536,6 +540,7 @@ namespace ModMonitor.ViewModels
             SetPowerCommand = new RelayCommand(() => { if (sampleManager != null) SetPowerPromptRequested(this, new SetPowerPromptRequestedEventArgs(SetPower, LatestSample.PowerSetpoint)); });
             SetProfileCommand = new RelayCommand(() => { if (sampleManager != null) SetProfilePromptRequested(this, new SetProfilePromptRequestedEventArgs(SetProfile, LatestSample.Profile)); });
             FireCommand = new RelayCommand(() => { if (sampleManager != null) FirePromptRequested(this, new FirePromptRequestedEventArgs(Fire, Settings.Default.FireDuration)); });
+            ConsoleCommand = new RelayCommand(() => { if (sampleManager != null) ConsoleRequested(this, new ConsoleRequestedEventArgs(SendConsoleCommand)); });
             SetGraphTemperatureUnit(Settings.Default.TemperatureUnitForce ? Settings.Default.TemperatureUnit : TemperatureUnit.F);
             SetGraphAxisVisibility();
             Settings.Default.PropertyChanged += Settings_PropertyChanged;
@@ -727,6 +732,15 @@ namespace ModMonitor.ViewModels
             });
         }
 
+        private void SendConsoleCommand(string command, Action<string> responseCallback)
+        {
+            if (sampleManager != null)
+            {
+                string response = sampleManager.SendRawCommand(command);
+                responseCallback(response);
+            }
+        }
+
         private void RefreshStatistics()
         {
             if (sampleManager != null)
@@ -771,8 +785,7 @@ namespace ModMonitor.ViewModels
                     if (MaxTemp.Unit != unit) SetGraphTemperatureUnit(unit);
                 }
 
-                // TODO Get charging status from Mode (X=GET MODE serial command)
-                IsCharging = true;
+                IsCharging = sample.Mode.HasFlag(Mode.Charging);
 
                 if (!isHovered) LatestSample = sample;
 

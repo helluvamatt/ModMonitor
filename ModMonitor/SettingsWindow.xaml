@@ -159,17 +159,20 @@
         </Button>
         <Label Grid.Column="5" Grid.Row="4" Content="Temperature Setpoint" />
 
-        <Label Grid.Row="6" Grid.Column="3" Grid.ColumnSpan="3" Style="{StaticResource legendHeader}" Content="Mod Monitor" />
+        <Label Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="3" Style="{StaticResource legendHeader}" Content="Mod Monitor" />
 
-        <ComboBox Grid.Row="7" Grid.Column="3" Grid.ColumnSpan="2" IsEditable="False" Margin="4" ItemsSource="{Binding Source={StaticResource sampleThrottleValues}}" SelectedItem="{Binding SampleThrottle, Source={x:Static p:Settings.Default}}" ItemStringFormat="{}{0} ms" />
-        <Label Grid.Row="7" Grid.Column="5" Content="Sample Delay" ToolTip="Delay in milliseconds between samples on the graph." />
+        <ComboBox Grid.Row="6" Grid.Column="3" Grid.ColumnSpan="2" IsEditable="False" Margin="4" ItemsSource="{Binding Source={StaticResource sampleThrottleValues}}" SelectedItem="{Binding SampleThrottle, Source={x:Static p:Settings.Default}}" ItemStringFormat="{}{0} ms" />
+        <Label Grid.Row="6" Grid.Column="5" Content="Sample Delay" ToolTip="Delay in milliseconds between samples on the graph." />
 
-        <CheckBox Grid.Row="8" Grid.Column="3" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnitForce}" ToolTip="Force temperature conversions to the specified unit" />
-        <ComboBox Grid.Row="8" Grid.Column="4" IsEnabled="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnitForce, Mode=OneWay}" IsEditable="False" ItemsSource="{Binding Source={StaticResource temperatureUnitValues}}" SelectedItem="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnit}" Margin="4" />
-        <Label Grid.Row="8" Grid.Column="5" VerticalAlignment="Center" ToolTip="Temperatures will be converted into this unit for display. 'Auto' means to use the values provided by the device.">Convert Temperatures</Label>
+        <CheckBox Grid.Row="7" Grid.Column="3" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnitForce}" ToolTip="Force temperature conversions to the specified unit" />
+        <ComboBox Grid.Row="7" Grid.Column="4" IsEnabled="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnitForce, Mode=OneWay}" IsEditable="False" ItemsSource="{Binding Source={StaticResource temperatureUnitValues}}" SelectedItem="{Binding Source={x:Static p:Settings.Default}, Path=TemperatureUnit}" Margin="4" />
+        <Label Grid.Row="7" Grid.Column="5" VerticalAlignment="Center" ToolTip="Temperatures will be converted into this unit for display. 'Auto' means to use the values provided by the device.">Convert Temperatures</Label>
 
-        <CheckBox Grid.Row="9" Grid.Column="3" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=AutoDownloadStats}" />
-        <Label Grid.Row="9" Grid.Column="4" Grid.ColumnSpan="2" VerticalAlignment="Center" ToolTip="Automatically refresh statistics after each puff">Auto Download Stats</Label>
+        <CheckBox Grid.Row="8" Grid.Column="3" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=AutoDownloadStats}" />
+        <Label Grid.Row="8" Grid.Column="4" Grid.ColumnSpan="2" VerticalAlignment="Center" ToolTip="Automatically refresh statistics after each puff">Auto Download Stats</Label>
+
+        <CheckBox Grid.Row="9" Grid.Column="3" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=AutoConnect}" />
+        <Label Grid.Row="9" Grid.Column="4" Grid.ColumnSpan="2" VerticalAlignment="Center" ToolTip="Automatically connect to first detected device">Auto Connect to first device</Label>
 
         <Label Grid.Row="0" Grid.Column="6" Grid.ColumnSpan="3" Style="{StaticResource legendHeader}" Content="Graph" />
 

@@ -17,9 +17,9 @@
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
-        <TextBox Grid.Row="0" Grid.Column="0" Width="130" x:Name="inputField" Margin="3 3 3 3" />
-        <Label Grid.Row="0" Grid.Column="1" Margin="0 3 3 3">s</Label>
-        <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Padding="8 3 8 3" Margin="3 0 3 3" Click="okButton_Click" ToolTip="WARNING: This will fire the connected device for the given duration.">
+        <TextBox Grid.Row="0" Grid.Column="0" Width="130" x:Name="inputField" Margin="6 6 6 6" />
+        <Label Grid.Row="0" Grid.Column="1" Margin="0 6 6 6">s</Label>
+        <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Padding="15 3 15 3" Margin="6 0 6 6" Click="okButton_Click" ToolTip="WARNING: This will fire the connected device for the given duration.">
             <TextBlock>
                 <fa:FontAwesome Icon="Fire" />
                 <Span>Fire</Span>

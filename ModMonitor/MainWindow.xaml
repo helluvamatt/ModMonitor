@@ -17,7 +17,7 @@
         Closed="Window_Closed"
         Title="Mod Monitor" Height="720" Width="1280">
     <Window.DataContext>
-        <vm:MainViewModel SaveFileRequested="MainViewModel_SaveFileRequested" DevicePickerRequested="MainViewModel_DevicePickerRequested" EditSettingsRequested="MainViewModel_EditSettingsRequested" ShowAboutRequested="MainViewModel_ShowAboutRequested" SetTemperaturePromptRequested="MainViewModel_SetTemperaturePromptRequested" SetPowerPromptRequested="MainViewModel_SetPowerPromptRequested" SetProfilePromptRequested="MainViewModel_SetProfilePromptRequested" FirePromptRequested="MainViewModel_FirePromptRequested" />
+        <vm:MainViewModel SaveFileRequested="MainViewModel_SaveFileRequested" DevicePickerRequested="MainViewModel_DevicePickerRequested" EditSettingsRequested="MainViewModel_EditSettingsRequested" ShowAboutRequested="MainViewModel_ShowAboutRequested" SetTemperaturePromptRequested="MainViewModel_SetTemperaturePromptRequested" SetPowerPromptRequested="MainViewModel_SetPowerPromptRequested" SetProfilePromptRequested="MainViewModel_SetProfilePromptRequested" FirePromptRequested="MainViewModel_FirePromptRequested" ConsoleRequested="MainViewModel_ConsoleRequested" />
     </Window.DataContext>
     <Window.Resources>
         <ResourceDictionary>
@@ -84,23 +84,29 @@
                         <fa:ImageAwesome Icon="Plug" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <Separator />
-                <MenuItem Header="Set Temperature..." Command="{Binding SetTemperatureCommand}">
+                <Separator Visibility="{Binding CurrentDevice, Converter={StaticResource isNullToVisibilityConverter}}" />
+                <MenuItem Header="Serial Console..." Command="{Binding ConsoleCommand}" Visibility="{Binding CurrentDevice, Converter={StaticResource isNullToVisibilityConverter}}">
+                    <MenuItem.Icon>
+                        <fa:ImageAwesome Icon="Terminal" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator Visibility="{Binding CurrentDevice, Converter={StaticResource isNullToVisibilityConverter}}" />
+                <MenuItem Header="Set Temperature..." Command="{Binding SetTemperatureCommand}" Visibility="{Binding CurrentDevice, Converter={StaticResource isNullToVisibilityConverter}}">
                     <MenuItem.Icon>
                         <fa:ImageAwesome Icon="ThermometerHalf" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Set Power..." Command="{Binding SetPowerCommand}">
+                <MenuItem Header="Set Power..." Command="{Binding SetPowerCommand}" Visibility="{Binding CurrentDevice, Converter={StaticResource isNullToVisibilityConverter}}">
                     <MenuItem.Icon>
                         <fa:ImageAwesome Icon="Bolt" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Set Profile..." Command="{Binding SetProfileCommand}">
+                <MenuItem Header="Set Profile..." Command="{Binding SetProfileCommand}" Visibility="{Binding CurrentDevice, Converter={StaticResource isNullToVisibilityConverter}}">
                     <MenuItem.Icon>
                         <fa:ImageAwesome Icon="Cog" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Start Puff..." Command="{Binding FireCommand}">
+                <MenuItem Header="Start Puff..." Command="{Binding FireCommand}" Visibility="{Binding CurrentDevice, Converter={StaticResource isNullToVisibilityConverter}}">
                     <MenuItem.Icon>
                         <fa:ImageAwesome Icon="Cloud" />
                     </MenuItem.Icon>
