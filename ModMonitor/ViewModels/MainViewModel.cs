@@ -580,16 +580,7 @@ namespace ModMonitor.ViewModels
                     log.Info("Disconnectiong...");
                     sampleManager.Dispose();
                     sampleManager = null;
-                    Invoke(() =>
-                    {
-                        CurrentDevice = null;
-                        LatestSample = null;
-                        LatestStatisticSample = null;
-                        LatestDetailedStatisticsSample = null;
-                        ConnectText = "Connect";
-                        Status = "Disconnected";
-                        GraphData.Clear();
-                    });
+                    Invoke(OnDeviceDisconnected);
                     log.Info("Disconnected");
                 });
             }
@@ -759,15 +750,7 @@ namespace ModMonitor.ViewModels
             log.Error(ex, "Exception on device thread: {0}", msg);
             sampleManager.Dispose();
             sampleManager = null;
-            Invoke(() => {
-                CurrentDevice = null;
-                LatestSample = null;
-                LatestStatisticSample = null;
-                LatestDetailedStatisticsSample = null;
-                ConnectText = "Connect";
-                Status = "Disconnected";
-                GraphData.Clear();
-            });
+            Invoke(OnDeviceDisconnected);
         }
 
         private void PuffEnd()
@@ -799,10 +782,7 @@ namespace ModMonitor.ViewModels
                     if (!isFiring)
                     {
                         puffStart = sample.End;
-                        GraphData.Clear();
-                        MaxOffset = MAX_OFFSET;
-                        PeakTemperature = default(Temperature);
-                        LatestStatisticSample = null;
+                        ClearLiveData();
                     }
                     isFiring = true;
                     var duration = (sample.End - puffStart).TotalSeconds;
@@ -845,10 +825,7 @@ namespace ModMonitor.ViewModels
             }
             if ((e.PropertyName == "TemperatureUnitForce" || e.PropertyName == "TemperatureUnit") && Settings.Default.TemperatureUnitForce)
             {
-                GraphData.Clear();
-                MaxOffset = MAX_OFFSET;
-                PeakTemperature = default(Temperature);
-                LatestStatisticSample = null;
+                ClearLiveData();
                 SetGraphTemperatureUnit(Settings.Default.TemperatureUnit);
             }
             if (e.PropertyName.StartsWith("Show"))
@@ -870,6 +847,26 @@ namespace ModMonitor.ViewModels
             GraphShowAxisCurrent = Settings.Default.ShowCurrent;
             GraphShowAxisResistance = Settings.Default.ShowLiveResistance || Settings.Default.ShowColdResistance;
             GraphShowAxisPercentage = Settings.Default.ShowBatteryLevel;
+        }
+
+        private void OnDeviceDisconnected()
+        {
+            CurrentDevice = null;
+            LatestSample = null;
+            LatestDetailedStatisticsSample = null;
+            ClearLiveData();
+            ConnectText = "Connect";
+            Status = "Disconnected";
+        }
+
+        private void ClearLiveData()
+        {
+            GraphData.Clear();
+            MaxOffset = MAX_OFFSET;
+            PeakTemperature = default(Temperature);
+            LatestStatisticSample = null;
+            PreheatDuration = 0;
+            BatterySag = 0;
         }
 
         private void Invoke(Action action)
