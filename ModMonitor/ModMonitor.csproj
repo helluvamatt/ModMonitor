@@ -112,6 +112,12 @@
     <Reference Include="DotNetProjects.WPF.Themes, Version=5.0.43.0, Culture=neutral, PublicKeyToken=79778c5f2eed289b, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetProjects.Wpf.Toolkit.5.0.43\lib\net40\DotNetProjects.WPF.Themes.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
       <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
     </Reference>
@@ -124,9 +130,22 @@
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="SQLite.CodeFirst, Version=1.3.2.19, Culture=neutral, PublicKeyToken=eb96ba0a78d831a7, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLite.CodeFirst.1.3.2.19\lib\net45\SQLite.CodeFirst.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.105.2\lib\net451\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.EF6, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.105.2\lib\net451\System.Data.SQLite.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.105.2\lib\net451\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -172,6 +191,7 @@
     <Compile Include="Events\DevicePickerRequestedEvent.cs" />
     <Compile Include="Events\EditColorEventHandler.cs" />
     <Compile Include="Events\FirePromptRequestedEventHandler.cs" />
+    <Compile Include="Events\SaveStatisticsRequestedEvent.cs" />
     <Compile Include="Events\SetPowerPromptRequestedEventHandler.cs" />
     <Compile Include="Events\SetProfilePromptRequestedEventHandler.cs" />
     <Compile Include="Events\SetTemperaturePromptRequestedEventHandler.cs" />
@@ -179,6 +199,11 @@
       <DependentUpon>FireWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\SampleRecorder.cs" />
+    <Compile Include="Utils\CsvUtils.cs" />
+    <Compile Include="ViewModels\ViewStatisticsViewModel.cs" />
+    <Compile Include="ViewStatisticsWindow.xaml.cs">
+      <DependentUpon>ViewStatisticsWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="AboutWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -208,6 +233,10 @@
     <Compile Include="Converters\TemperatureConverter.cs" />
     <Compile Include="Converters\TemperatureValueConverter.cs" />
     <Compile Include="Events\SaveFileRequestedEvent.cs" />
+    <Compile Include="Models\StatisticsDatabase.cs" />
+    <Compile Include="SaveStatistics.xaml.cs">
+      <DependentUpon>SaveStatistics.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SetPowerWindow.xaml.cs">
       <DependentUpon>SetPowerWindow.xaml</DependentUpon>
     </Compile>
@@ -224,6 +253,7 @@
     <Compile Include="Utils\FixedSizeQueue.cs" />
     <Compile Include="Utils\LinqUtils.cs" />
     <Compile Include="Utils\PortableSettingsProvider.cs" />
+    <Compile Include="Utils\SQLiteConnectionFactory.cs" />
     <Compile Include="ViewModels\DevicePickerViewModel.cs" />
     <Compile Include="ViewModels\EditSettingsViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
@@ -231,6 +261,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SaveStatistics.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SetPowerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -244,6 +278,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewStatisticsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -280,7 +318,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="App.DebugPortable.config">
       <DependentUpon>App.config</DependentUpon>
     </None>
@@ -343,6 +383,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets'))" />
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.105.2\build\net451\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.105.2\build\net451\System.Data.SQLite.Core.targets'))" />
   </Target>
   <ItemGroup>
     <ZipFiles Include="$(SolutionDir)Build\$(Configuration)\$(Platform)\ModMonitor\*.*" />
@@ -351,8 +392,9 @@
     <MakeDir Directories="$(SolutionDir)Build\$(Configuration)\$(Platform)\ModMonitor" />
     <Copy DestinationFolder="$(SolutionDir)Build\$(Configuration)\$(Platform)\ModMonitor" SourceFiles="@(BuiltProjectFiles)" />
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
-      <Output TaskParameter="Assemblies" ItemName="AssemblyIdent"/>
+      <Output TaskParameter="Assemblies" ItemName="AssemblyIdent" />
     </GetAssemblyIdentity>
     <Zip Files="@(ZipFiles)" WorkingDirectory="$(SolutionDir)Build\$(Configuration)\$(Platform)" ZipFileName="$(SolutionDir)Build\$(Configuration)\$(Platform)\ModMonitor-$(Platform)-%(AssemblyIdent.Version).zip" />
   </Target>
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.105.2\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.105.2\build\net451\System.Data.SQLite.Core.targets')" />
 </Project>

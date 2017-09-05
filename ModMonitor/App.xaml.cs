@@ -22,11 +22,14 @@ namespace ModMonitor
     {
         private ILogger log;
 
+        public string DataPath { get; private set; }
+
         public App()
         {
             var productName = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyProductAttribute>().Product;
             if (bool.Parse(ConfigurationManager.AppSettings["portableMode"]))
             {
+                DataPath = AppDomain.CurrentDomain.BaseDirectory;
                 var portableProvider = new PortableSettingsProvider(AppDomain.CurrentDomain.BaseDirectory);
                 portableProvider.ApplicationName = productName;
                 Settings.Default.Providers.Add(portableProvider);
@@ -38,7 +41,8 @@ namespace ModMonitor
             }
             else
             {
-                LogManager.Configuration.FindTargetByName<FileTarget>("defaultFileTarget").FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), productName, "logs", "${shortdate}.log");
+                DataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), productName);
+                LogManager.Configuration.FindTargetByName<FileTarget>("defaultFileTarget").FileName = Path.Combine(DataPath, "logs", "${shortdate}.log");
             }
             
             log = LogManager.GetCurrentClassLogger();

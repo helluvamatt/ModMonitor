@@ -17,13 +17,12 @@
         Closed="Window_Closed"
         Title="Mod Monitor" Height="720" Width="1280">
     <Window.DataContext>
-        <vm:MainViewModel SaveFileRequested="MainViewModel_SaveFileRequested" DevicePickerRequested="MainViewModel_DevicePickerRequested" EditSettingsRequested="MainViewModel_EditSettingsRequested" ShowAboutRequested="MainViewModel_ShowAboutRequested" SetTemperaturePromptRequested="MainViewModel_SetTemperaturePromptRequested" SetPowerPromptRequested="MainViewModel_SetPowerPromptRequested" SetProfilePromptRequested="MainViewModel_SetProfilePromptRequested" FirePromptRequested="MainViewModel_FirePromptRequested" ConsoleRequested="MainViewModel_ConsoleRequested" />
+        <vm:MainViewModel SaveFileRequested="MainViewModel_SaveFileRequested" DevicePickerRequested="MainViewModel_DevicePickerRequested" EditSettingsRequested="MainViewModel_EditSettingsRequested" ShowAboutRequested="MainViewModel_ShowAboutRequested" SetTemperaturePromptRequested="MainViewModel_SetTemperaturePromptRequested" SetPowerPromptRequested="MainViewModel_SetPowerPromptRequested" SetProfilePromptRequested="MainViewModel_SetProfilePromptRequested" FirePromptRequested="MainViewModel_FirePromptRequested" ConsoleRequested="MainViewModel_ConsoleRequested" SaveStatisticsRequested="MainViewModel_SaveStatisticsRequested" />
     </Window.DataContext>
     <Window.Resources>
         <ResourceDictionary>
             <c:TemperatureConverter x:Key="temperatureConverter" Unit="{Binding MaxTemp.Unit}" />
             <c:TemperatureToStringConverter x:Key="temperatureToStringConverter" Unit="{Binding MaxTemp.Unit}" />
-            <c:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
             <c:BooleanToVisibilityConverter x:Key="notBooleanToVisibilityConverter" Negate="True" />
             <c:ColorToSolidBrushConverter x:Key="colorToSolidBrushConverter" />
             <c:DateTimeConverter x:Key="timestampConverter" Format="yyyy-MM-dd HH:mm:ss.fff" />
@@ -48,23 +47,6 @@
             </Style>
             <Style x:Key="collapseControlStyle" TargetType="Control">
                 <Setter Property="Visibility" Value="Collapsed" />
-            </Style>
-            <Style x:Key="shadeStyle" TargetType="Rectangle">
-                <Setter Property="Opacity" Value="0.7" />
-                <Setter Property="Fill" Value="Black" />
-                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                <Setter Property="VerticalAlignment" Value="Stretch" />
-                <Setter Property="Panel.ZIndex" Value="5" />
-            </Style>
-            <Style x:Key="dialogContainerStyle" TargetType="Border">
-                <Setter Property="HorizontalAlignment" Value="Center" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="Panel.ZIndex" Value="10" />
-                <Setter Property="Background" Value="White" />
-                <Setter Property="CornerRadius" Value="3" />
-                <Setter Property="BorderBrush" Value="Silver" />
-                <Setter Property="BorderThickness" Value="2" />
-                <Setter Property="Padding" Value="6" />
             </Style>
             <Style TargetType="{x:Type ScrollViewer}">
                 <Setter Property="OverridesDefaultStyle" Value="True" />
@@ -121,6 +103,29 @@
                 <MenuItem Header="E_xit" Click="exit_Click" InputGestureText="Alt+F4">
                     <MenuItem.Icon>
                         <fa:ImageAwesome Icon="WindowClose" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Statistics">
+                <MenuItem Header="Save Statistics..." Command="{Binding SaveStatisticsCommand}" Visibility="{Binding CurrentDevice, Converter={StaticResource isNullToVisibilityConverter}}">
+                    <MenuItem.Icon>
+                        <fa:ImageAwesome Icon="ArrowCircleOutlineDown" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="View Saved Statistics..." Click="viewSavedStatisticsMenuItem_Click">
+                    <MenuItem.Icon>
+                        <fa:ImageAwesome Icon="BarChart" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator Visibility="{Binding CurrentDevice, Converter={StaticResource isNullToVisibilityConverter}}" />
+                <MenuItem Header="Refresh Statistics" Command="{Binding RefreshStatisticsCommand}" Visibility="{Binding CurrentDevice, Converter={StaticResource isNullToVisibilityConverter}}">
+                    <MenuItem.Icon>
+                        <fa:ImageAwesome Icon="Refresh" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Reset Statistics" Command="{Binding ResetStatisticsCommand}" Visibility="{Binding CurrentDevice, Converter={StaticResource isNullToVisibilityConverter}}">
+                    <MenuItem.Icon>
+                        <fa:ImageAwesome Icon="History" />
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -304,11 +309,8 @@
 
                             <Label Grid.Row="22" Grid.Column="0">Resets</Label>
                             <Label Grid.Row="23" Grid.Column="1" Grid.ColumnSpan="2" Content="{Binding LatestDetailedStatisticsSample.Resets, FallbackValue=N/A}" />
-
-
                         </Grid>
                     </ScrollViewer>
-
                 </DockPanel>
                 <DockPanel>
                     <DockPanel.RenderTransform>

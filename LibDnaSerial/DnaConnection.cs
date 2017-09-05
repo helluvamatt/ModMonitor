@@ -569,6 +569,14 @@ namespace LibDnaSerial
         }
 
         /// <summary>
+        /// Reset device statistics
+        /// </summary>
+        public void ResetStatistics()
+        {
+            SendMessage(new Message(CODE_STATISTICS, "RESET"));
+        }
+
+        /// <summary>
         /// Send a raw command to the device, if the device sends a message back, it is returned, otherwise null is returned
         /// </summary>
         /// <param name="cmd">Raw command to send</param>
@@ -620,6 +628,7 @@ namespace LibDnaSerial
 
         private string TrimUnit(string argument, string unit)
         {
+            if (argument == "?") return "0";
             return argument.Substring(0, argument.LastIndexOf(unit));
         }
 

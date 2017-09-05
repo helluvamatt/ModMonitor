@@ -2,11 +2,20 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ModMonitor"
+             xmlns:c="clr-namespace:ModMonitor.Converters"
              StartupUri="MainWindow.xaml"
              Startup="Application_Startup"
              Exit="Application_Exit">
     <Application.Resources>
         <ResourceDictionary>
+            <Style x:Key="shadeStyle" TargetType="Rectangle">
+                <Setter Property="Opacity" Value="0.7" />
+                <Setter Property="Fill" Value="Black" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="VerticalAlignment" Value="Stretch" />
+                <Setter Property="Panel.ZIndex" Value="5" />
+            </Style>
+            <c:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

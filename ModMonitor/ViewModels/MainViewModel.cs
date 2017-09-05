@@ -18,6 +18,7 @@ using ModMonitor.Properties;
 using System.ComponentModel;
 using NLog;
 using LibDnaSerial.Models;
+using System.IO;
 
 namespace ModMonitor.ViewModels
 {
@@ -480,6 +481,10 @@ namespace ModMonitor.ViewModels
 
         public ICommand ConsoleCommand { get; private set; }
 
+        public ICommand SaveStatisticsCommand { get; private set; }
+
+        public ICommand ResetStatisticsCommand { get; private set; }
+
         #endregion
 
         #endregion
@@ -503,6 +508,8 @@ namespace ModMonitor.ViewModels
         public event FirePromptRequestedEventHandler FirePromptRequested;
 
         public event ConsoleRequestedEventHandler ConsoleRequested;
+
+        public event SaveStatisticsRequestedEvent SaveStatisticsRequested;
 
         #endregion
 
@@ -541,6 +548,8 @@ namespace ModMonitor.ViewModels
             SetProfileCommand = new RelayCommand(() => { if (sampleManager != null) SetProfilePromptRequested(this, new SetProfilePromptRequestedEventArgs(SetProfile, LatestSample.Profile)); });
             FireCommand = new RelayCommand(() => { if (sampleManager != null) FirePromptRequested(this, new FirePromptRequestedEventArgs(Fire, Settings.Default.FireDuration)); });
             ConsoleCommand = new RelayCommand(() => { if (sampleManager != null) ConsoleRequested(this, new ConsoleRequestedEventArgs(SendConsoleCommand)); });
+            SaveStatisticsCommand = new RelayCommand(DoSaveStatistics);
+            ResetStatisticsCommand = new RelayCommand(() => Task.Run(() => ResetStatistics()));
             SetGraphTemperatureUnit(Settings.Default.TemperatureUnitForce ? Settings.Default.TemperatureUnit : TemperatureUnit.F);
             SetGraphAxisVisibility();
             Settings.Default.PropertyChanged += Settings_PropertyChanged;
@@ -732,6 +741,79 @@ namespace ModMonitor.ViewModels
             }
         }
 
+        private void DoSaveStatistics()
+        {
+            if (sampleManager != null)
+            {
+                string initialValue;
+                try
+                {
+                    using (var db = StatisticsDatabase.Open())
+                    {
+                        initialValue = db.GetLatestRecordNote();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error(ex, "Failed to open statistics database.");
+                    initialValue = "";
+                }
+                SaveStatisticsRequested(this, new SaveStatisticsRequestedEventArgs(DoSaveStatistics, initialValue));
+            }
+        }
+
+        private void DoSaveStatistics(string note)
+        {
+            Task.Run(() =>
+            {
+                if (sampleManager != null)
+                {
+                    // Grab detailed statistics
+                    var statsSample = InvokeWithReturn(() => LatestDetailedStatisticsSample);
+
+                    try
+                    {
+                        if (statsSample == null)
+                        {
+                            statsSample = sampleManager.GetDetailedStatisticsSample();
+                        }
+
+                        // Save to database with note
+                        using (var db = StatisticsDatabase.Open())
+                        {
+                            Statistics stats = new Statistics();
+                            stats.Timestamp = DateTime.Now;
+                            stats.Note = note;
+                            stats.MeanEnergy = statsSample.MeanEnergy;
+                            stats.MeanPower = statsSample.MeanPower;
+                            stats.MeanTemperature = DbTemperature.FromTemperature(statsSample.MeanTemperature);
+                            stats.MeanTemperaturePeak = DbTemperature.FromTemperature(statsSample.MeanTemperaturePeak);
+                            stats.MeanTime = statsSample.MeanTime;
+                            stats.Puffs = statsSample.Puffs;
+                            stats.TemperatureProtectedPuffs = statsSample.TemperatureProtectedPuffs;
+                            stats.StdDevEnergy = statsSample.StdDevEnergy;
+                            stats.StdDevPower = statsSample.StdDevPower;
+                            stats.StdDevTemperature = DbTemperature.FromTemperature(statsSample.StdDevTemperature);
+                            stats.StdDevTemperaturePeak = DbTemperature.FromTemperature(statsSample.StdDevTemperaturePeak);
+                            stats.StdDevTime = statsSample.StdDevTime;
+                            stats.TotalEnergy = statsSample.TotalEnergy;
+                            stats.TotalTime = statsSample.TotalTime;
+                            db.Statistics.Add(stats);
+                            db.SaveChanges();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error(ex, "Failed to save statistics record.");
+                        return;
+                    }
+
+                    // Reset device stats
+                    ResetStatistics();
+                }
+            });
+        }
+
         private void RefreshStatistics()
         {
             if (sampleManager != null)
@@ -742,6 +824,16 @@ namespace ModMonitor.ViewModels
                     var sample = sampleManager.GetDetailedStatisticsSample();
                     Invoke(() => { LatestDetailedStatisticsSample = sample; IsDownloadingStatistics = false; });
                 });
+            }
+        }
+
+        // Do not run on UI thread!
+        private void ResetStatistics()
+        {
+            if (sampleManager != null)
+            {
+                sampleManager.ResetStatistics();
+                Invoke(RefreshStatistics);
             }
         }
 
@@ -875,6 +967,15 @@ namespace ModMonitor.ViewModels
             {
                 Dispatcher.Invoke(action);
             }
+        }
+
+        private T InvokeWithReturn<T>(Func<T> action) where T : class
+        {
+            if (!Dispatcher.HasShutdownStarted)
+            {
+                return Dispatcher.Invoke(action);
+            }
+            return null;
         }
 
         public void Dispose()

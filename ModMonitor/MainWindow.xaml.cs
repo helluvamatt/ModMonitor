@@ -39,6 +39,7 @@ namespace ModMonitor
             {
                 (DataContext as IDisposable).Dispose();
             }
+            Application.Current.Shutdown();
         }
 
         private void exit_Click(object sender, RoutedEventArgs e)
@@ -110,6 +111,22 @@ namespace ModMonitor
         private void MainViewModel_ConsoleRequested(object sender, Events.ConsoleRequestedEventArgs args)
         {
             new ConsoleWindow(args.Callback).Show();
+        }
+
+        private void MainViewModel_SaveStatisticsRequested(object sender, Events.SaveStatisticsRequestedEventArgs args)
+        {
+            var dlg = new SaveStatistics();
+            dlg.NoteText = args.InitialValue;
+            var result = dlg.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                args.Callback(dlg.NoteText);
+            }
+        }
+
+        private void viewSavedStatisticsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            new ViewStatisticsWindow().Show();
         }
     }
 }

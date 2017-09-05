@@ -234,6 +234,18 @@ namespace LibDnaSerial
         }
 
         /// <summary>
+        /// Reset device statistics
+        /// </summary>
+        /// <see cref="DnaConnection.ResetStatistics"/>
+        public void ResetStatistics()
+        {
+            lock (sampleLockObject)
+            {
+                if (dnaConnection != null) dnaConnection.ResetStatistics();
+            }
+        }
+
+        /// <summary>
         /// Send a raw command to the device. If the device sends a response, it will be returned.
         /// </summary>
         /// <param name="cmd">Raw command to send</param>
@@ -372,15 +384,18 @@ namespace LibDnaSerial
             }
             catch (Exception ex)
             {
-                lock (lockObject)
+                if (running)
                 {
-                    running = false;
-                    try
+                    lock (lockObject)
                     {
-                        dnaConnection.Dispose();
+                        running = false;
+                        try
+                        {
+                            dnaConnection.Dispose();
+                        }
+                        catch { } // Ignore, it's already gone
+                        dnaConnection = null;
                     }
-                    catch { } // Ignore, it's already gone
-                    dnaConnection = null;
                 }
                 Error?.Invoke("A device error occurred.", ex);
             }
