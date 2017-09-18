@@ -16,6 +16,7 @@
                 <Setter Property="Panel.ZIndex" Value="5" />
             </Style>
             <c:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+            <FontFamily x:Key="DSEG7Classic">pack://application:,,,/Resources/Fonts/#DSEG7 Classic</FontFamily>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
