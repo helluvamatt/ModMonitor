@@ -478,5 +478,17 @@ namespace ModMonitor.Properties {
                 this["AutoConnect"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("White")]
+        public global::System.Drawing.Color DigitalDisplayColor {
+            get {
+                return ((global::System.Drawing.Color)(this["DigitalDisplayColor"]));
+            }
+            set {
+                this["DigitalDisplayColor"] = value;
+            }
+        }
     }
 }

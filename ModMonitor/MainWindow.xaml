@@ -548,6 +548,12 @@
             <GridSplitter Grid.Column="1" Grid.Row="0" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="DarkGray" ShowsPreview="True" Width="2" Cursor="SizeWE" />
 
             <Grid Grid.Column="0" Grid.Row="0">
+                <Grid.Resources>
+                    <Style x:Key="digitalDisplayStyle" TargetType="ctrl:DigitalDisplay">
+                        <Setter Property="Background" Value="Black" />
+                        <Setter Property="Foreground" Value="{Binding Path=DigitalDisplayColor, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" />
+                    </Style>
+                </Grid.Resources>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
@@ -559,11 +565,11 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
-                <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="0" Grid.Row="1" Background="Black" Foreground="White" Value="{Binding LatestSample.Power}" Unit="W" />
-                <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="1" Grid.Row="1" Background="Black" Foreground="White" Value="{Binding LatestSample.Temperature.Value}" Unit="{Binding LatestSample.Temperature.Unit, StringFormat={}º{0}, FallbackValue=ºF}" />
-                <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="2" Grid.Row="1" Background="Black" Foreground="White" Value="{Binding LatestSample.LiveResistance}" Unit="Ω" NumberFormat="{}{0:#0.000}" />
-                <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="3" Grid.Row="1" Background="Black" Foreground="White" Value="{Binding LatestSample.Voltage}" Unit="V" />
-                <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="4" Grid.Row="1" Background="Black" Foreground="White" Value="{Binding LatestSample.Current}" Unit="A" />
+                <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="0" Grid.Row="1" Style="{StaticResource digitalDisplayStyle}" Value="{Binding LatestSample.Power}" Unit="W" />
+                <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="1" Grid.Row="1" Style="{StaticResource digitalDisplayStyle}" Value="{Binding LatestSample.Temperature.Value}" Unit="{Binding LatestSample.Temperature.Unit, StringFormat={}º{0}, FallbackValue=ºF}" />
+                <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="2" Grid.Row="1" Style="{StaticResource digitalDisplayStyle}" Value="{Binding LatestSample.LiveResistance}" Unit="Ω" NumberFormat="{}{0:#0.000}" />
+                <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="3" Grid.Row="1" Style="{StaticResource digitalDisplayStyle}" Value="{Binding LatestSample.Voltage}" Unit="V" />
+                <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="4" Grid.Row="1" Style="{StaticResource digitalDisplayStyle}" Value="{Binding LatestSample.Current}" Unit="A" />
                 <g:Chart x:Name="chart" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5" BorderThickness="0" Title="Current Puff" Padding="8 0 8 8" CrosshairVisibility="Visible">
                     <g:Chart.Resources>
                         <Style x:Key="LocationLegendStyle" TargetType="Border">
