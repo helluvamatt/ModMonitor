@@ -60,7 +60,7 @@
     </Window.InputBindings>
     <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Panel.ZIndex="0">
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="Device">
+            <MenuItem Header="_Device">
                 <MenuItem Header="{Binding ConnectText}" Command="{Binding ConnectCommand}" InputGestureText="F2">
                     <MenuItem.Icon>
                         <fa:ImageAwesome Icon="Plug" />
@@ -106,7 +106,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="Statistics">
+            <MenuItem Header="_Statistics">
                 <MenuItem Header="Save Statistics..." Command="{Binding SaveStatisticsCommand}" Visibility="{Binding CurrentDevice, Converter={StaticResource isNullToVisibilityConverter}}">
                     <MenuItem.Icon>
                         <fa:ImageAwesome Icon="ArrowCircleOutlineDown" />
@@ -548,236 +548,265 @@
             <GridSplitter Grid.Column="1" Grid.Row="0" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="DarkGray" ShowsPreview="True" Width="2" Cursor="SizeWE" />
 
             <Grid Grid.Column="0" Grid.Row="0">
-                <Grid.Resources>
-                    <Style x:Key="digitalDisplayStyle" TargetType="ctrl:DigitalDisplay">
-                        <Setter Property="Background" Value="Black" />
-                        <Setter Property="Foreground" Value="{Binding Path=DigitalDisplayColor, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" />
-                    </Style>
-                </Grid.Resources>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
-                <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="0" Grid.Row="1" Style="{StaticResource digitalDisplayStyle}" Value="{Binding LatestSample.Power}" Unit="W" />
-                <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="1" Grid.Row="1" Style="{StaticResource digitalDisplayStyle}" Value="{Binding LatestSample.Temperature.Value}" Unit="{Binding LatestSample.Temperature.Unit, StringFormat={}º{0}, FallbackValue=ºF}" />
-                <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="2" Grid.Row="1" Style="{StaticResource digitalDisplayStyle}" Value="{Binding LatestSample.LiveResistance}" Unit="Ω" NumberFormat="{}{0:#0.000}" />
-                <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="3" Grid.Row="1" Style="{StaticResource digitalDisplayStyle}" Value="{Binding LatestSample.Voltage}" Unit="V" />
-                <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="4" Grid.Row="1" Style="{StaticResource digitalDisplayStyle}" Value="{Binding LatestSample.Current}" Unit="A" />
-                <g:Chart x:Name="chart" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5" BorderThickness="0" Title="Current Puff" Padding="8 0 8 8" CrosshairVisibility="Visible">
-                    <g:Chart.Resources>
-                        <Style x:Key="LocationLegendStyle" TargetType="Border">
-                            <Setter Property="HorizontalAlignment" Value="Right"/>
-                            <Setter Property="VerticalAlignment" Value="Top"/>
-                            <Setter Property="Margin" Value="5"/>
-                            <Setter Property="Background" Value="White"/>
-                            <Setter Property="BorderThickness" Value="1"/>
-                            <Setter Property="BorderBrush" Value="DarkGray"/>
-                            <Setter Property="CornerRadius" Value="5"/>
+                <Grid Grid.Row="1">
+                    <Grid.Resources>
+                        <Style x:Key="digitalDisplayStyle" TargetType="ctrl:DigitalDisplay">
+                            <Setter Property="Background" Value="Black" />
+                            <Setter Property="Foreground" Value="{Binding Path=DigitalDisplayColor, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" />
                         </Style>
-                        <Style TargetType="Line" x:Key="gridLineStyle">
-                            <Setter Property="Opacity" Value="0.3" />
-                        </Style>
-                    </g:Chart.Resources>
-                    <g:Chart.Template>
-                        <!-- Override the template so we can add things -->
-                        <ControlTemplate TargetType="{x:Type g:Chart}">
-                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="0" Grid.Row="0" Style="{StaticResource digitalDisplayStyle}" Value="{Binding LatestSample.Power}" Unit="W" />
+                    <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="1" Grid.Row="0" Style="{StaticResource digitalDisplayStyle}" Value="{Binding LatestSample.Temperature.Value}" Unit="{Binding LatestSample.Temperature.Unit, StringFormat={}º{0}, FallbackValue=ºF}" />
+                    <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="2" Grid.Row="0" Style="{StaticResource digitalDisplayStyle}" Value="{Binding LatestSample.LiveResistance}" Unit="Ω" NumberFormat="{}{0:#0.000}" />
+                    <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="3" Grid.Row="0" Style="{StaticResource digitalDisplayStyle}" Value="{Binding LatestSample.Voltage}" Unit="V" />
+                    <ctrl:DigitalDisplay HorizontalContentAlignment="Center" Grid.Column="4" Grid.Row="0" Style="{StaticResource digitalDisplayStyle}" Value="{Binding LatestSample.Current}" Unit="A" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <ItemsControl Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" ItemsSource="{Binding LatestSample.CellVoltages}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
                                 <Grid>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
+                                        <RowDefinition Height="auto" />
                                     </Grid.RowDefinitions>
-                                    <dv:Title Content="{TemplateBinding Title}" Style="{TemplateBinding TitleStyle}" />
-                                    <!--  Use a nested Grid to avoid possible clipping behavior resulting from ColumnSpan+Width=Auto  -->
-                                    <Grid Grid.Row="1" Margin="0,15,0,15">
-                                        <dvp:EdgePanel x:Name="ChartArea" Style="{TemplateBinding ChartAreaStyle}">
-                                            <Grid x:Name="PlotArea" Canvas.ZIndex="-1" Style="{TemplateBinding PlotAreaStyle}" />
-                                            <Border BorderBrush="#FF919191" BorderThickness="1" Canvas.ZIndex="10" />
-                                            <Grid Name="PART_CrosshairContainer" Visibility="{TemplateBinding CrosshairVisibility}" Background="Transparent" Canvas.ZIndex="1" MouseMove="CrosshairContainer_MouseMove" MouseLeave="CrosshairContainer_MouseLeave">
-                                                <Grid Name="PART_Crosshair">
-                                                    <Line Name="Vertical" Stroke="Black" X1="{Binding Path=X}" X2="{Binding Path=X}" Y1="0" Y2="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
-                                                </Grid>
-                                            </Grid>
-                                            <Border Name="PART_LocationIndicator" Visibility="Collapsed" />
-                                            <Canvas x:Name="SelectionArea" Background="Transparent" />
-                                        </dvp:EdgePanel>
-                                    </Grid>
+                                    <ctrl:BatteryIndicator Orientation="Vertical" MinLevel="0" MaxLevel="4.2" WarningLevel="3.4" CriticalLevel="3.2" Level="{Binding}" Margin="8" />
+                                    <Label Grid.Row="1" Content="{Binding}" ContentStringFormat="{}{0:0.00} V" Margin="8 0 8 8" HorizontalAlignment="Center" />
                                 </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </g:Chart.Template>
-                    <g:Chart.TitleStyle>
-                        <Style TargetType="dv:Title">
-                            <Setter Property="FontSize" Value="12pt" />
-                            <Setter Property="FontWeight" Value="Bold" />
-                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                            <Setter Property="Padding" Value="2" />
-                        </Style>
-                    </g:Chart.TitleStyle>
-                    <g:LineSeries IndependentValuePath="Key" DependentValueBinding="{Binding Path=Value.Temperature, Converter={StaticResource temperatureConverter}}" DependentRangeAxis="{Binding ElementName=yAxisSingleTemperature}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowTemperature, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
-                        <g:LineSeries.DataPointStyle>
-                            <Style TargetType="{x:Type g:DataPoint}">
-                                <Setter Property="Background" Value="{Binding ColorTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
-                                <Setter Property="Template" Value="{x:Null}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <g:Chart x:Name="chart" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="5" BorderThickness="0" Title="Current Puff" Padding="8 0 8 8" CrosshairVisibility="Visible">
+                        <g:Chart.Resources>
+                            <Style x:Key="LocationLegendStyle" TargetType="Border">
+                                <Setter Property="HorizontalAlignment" Value="Right"/>
+                                <Setter Property="VerticalAlignment" Value="Top"/>
+                                <Setter Property="Margin" Value="5"/>
+                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="BorderBrush" Value="DarkGray"/>
+                                <Setter Property="CornerRadius" Value="5"/>
                             </Style>
-                        </g:LineSeries.DataPointStyle>
-                    </g:LineSeries>
-                    <g:LineSeries IndependentValuePath="Key" DependentValueBinding="{Binding Path=Value.TemperatureSetpoint, Converter={StaticResource temperatureConverter}}" DependentRangeAxis="{Binding ElementName=yAxisSingleTemperature}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowTemperatureSetpoint, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
-                        <g:LineSeries.DataPointStyle>
-                            <Style TargetType="{x:Type g:DataPoint}">
-                                <Setter Property="Background" Value="{Binding ColorTemperatureSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
-                                <Setter Property="Template" Value="{x:Null}"/>
+                            <Style TargetType="Line" x:Key="gridLineStyle">
+                                <Setter Property="Opacity" Value="0.3" />
                             </Style>
-                        </g:LineSeries.DataPointStyle>
-                    </g:LineSeries>
-                    <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.Power" DependentRangeAxis="{Binding ElementName=yAxisSinglePower}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowPower, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
-                        <g:LineSeries.DataPointStyle>
-                            <Style TargetType="{x:Type g:DataPoint}">
-                                <Setter Property="Background" Value="{Binding ColorPower, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
-                                <Setter Property="Template" Value="{x:Null}"/>
+                        </g:Chart.Resources>
+                        <g:Chart.Template>
+                            <!-- Override the template so we can add things -->
+                            <ControlTemplate TargetType="{x:Type g:Chart}">
+                                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <dv:Title Content="{TemplateBinding Title}" Style="{TemplateBinding TitleStyle}" />
+                                        <!--  Use a nested Grid to avoid possible clipping behavior resulting from ColumnSpan+Width=Auto  -->
+                                        <Grid Grid.Row="1" Margin="0,15,0,15">
+                                            <dvp:EdgePanel x:Name="ChartArea" Style="{TemplateBinding ChartAreaStyle}">
+                                                <Grid x:Name="PlotArea" Canvas.ZIndex="-1" Style="{TemplateBinding PlotAreaStyle}" />
+                                                <Border BorderBrush="#FF919191" BorderThickness="1" Canvas.ZIndex="10" />
+                                                <Grid Name="PART_CrosshairContainer" Visibility="{TemplateBinding CrosshairVisibility}" Background="Transparent" Canvas.ZIndex="1" MouseMove="CrosshairContainer_MouseMove" MouseLeave="CrosshairContainer_MouseLeave">
+                                                    <Grid Name="PART_Crosshair">
+                                                        <Line Name="Vertical" Stroke="Black" X1="{Binding Path=X}" X2="{Binding Path=X}" Y1="0" Y2="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
+                                                    </Grid>
+                                                </Grid>
+                                                <Border Name="PART_LocationIndicator" Visibility="Collapsed" />
+                                                <Canvas x:Name="SelectionArea" Background="Transparent" />
+                                            </dvp:EdgePanel>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </ControlTemplate>
+                        </g:Chart.Template>
+                        <g:Chart.TitleStyle>
+                            <Style TargetType="dv:Title">
+                                <Setter Property="FontSize" Value="12pt" />
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                <Setter Property="Padding" Value="2" />
                             </Style>
-                        </g:LineSeries.DataPointStyle>
-                    </g:LineSeries>
-                    <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.PowerSetpoint" DependentRangeAxis="{Binding ElementName=yAxisSinglePower}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowPowerSetpoint, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
-                        <g:LineSeries.DataPointStyle>
-                            <Style TargetType="{x:Type g:DataPoint}">
-                                <Setter Property="Background" Value="{Binding ColorPowerSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
-                                <Setter Property="Template" Value="{x:Null}"/>
-                            </Style>
-                        </g:LineSeries.DataPointStyle>
-                    </g:LineSeries>
-                    <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.Voltage" DependentRangeAxis="{Binding ElementName=yAxisSingleVoltage}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowVoltage, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
-                        <g:LineSeries.DataPointStyle>
-                            <Style TargetType="{x:Type g:DataPoint}">
-                                <Setter Property="Background" Value="{Binding ColorVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
-                                <Setter Property="Template" Value="{x:Null}" />
-                            </Style>
-                        </g:LineSeries.DataPointStyle>
-                    </g:LineSeries>
-                    <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.Current" DependentRangeAxis="{Binding ElementName=yAxisSingleCurrent}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowCurrent, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
-                        <g:LineSeries.DataPointStyle>
-                            <Style TargetType="{x:Type g:DataPoint}">
-                                <Setter Property="Background" Value="{Binding ColorCurrent, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
-                                <Setter Property="Template" Value="{x:Null}" />
-                            </Style>
-                        </g:LineSeries.DataPointStyle>
-                    </g:LineSeries>
-                    <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.LiveResistance" DependentRangeAxis="{Binding ElementName=yAxisSingleResistance}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowLiveResistance, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
-                        <g:LineSeries.DataPointStyle>
-                            <Style TargetType="{x:Type g:DataPoint}">
-                                <Setter Property="Background" Value="{Binding ColorLiveResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
-                                <Setter Property="Template" Value="{x:Null}" />
-                            </Style>
-                        </g:LineSeries.DataPointStyle>
-                    </g:LineSeries>
-                    <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.ColdResistance" DependentRangeAxis="{Binding ElementName=yAxisSingleResistance}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowColdResistance, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
-                        <g:LineSeries.DataPointStyle>
-                            <Style TargetType="{x:Type g:DataPoint}">
-                                <Setter Property="Background" Value="{Binding ColorColdResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
-                                <Setter Property="Template" Value="{x:Null}" />
-                            </Style>
-                        </g:LineSeries.DataPointStyle>
-                    </g:LineSeries>
-                    <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.BatteryVoltage" DependentRangeAxis="{Binding ElementName=yAxisSingleVoltage}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowBatteryVoltage, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
-                        <g:LineSeries.DataPointStyle>
-                            <Style TargetType="{x:Type g:DataPoint}">
-                                <Setter Property="Background" Value="{Binding ColorBatteryVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
-                                <Setter Property="Template" Value="{x:Null}" />
-                            </Style>
-                        </g:LineSeries.DataPointStyle>
-                    </g:LineSeries>
-                    <g:LineSeries IndependentValuePath="Key" DependentValueBinding="{Binding Path=Value.BoardTemperature, Converter={StaticResource temperatureConverter}}" DependentRangeAxis="{Binding ElementName=yAxisSingleTemperature}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowBoardTemperature, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
-                        <g:LineSeries.DataPointStyle>
-                            <Style TargetType="{x:Type g:DataPoint}">
-                                <Setter Property="Background" Value="{Binding ColorBoardTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
-                                <Setter Property="Template" Value="{x:Null}" />
-                            </Style>
-                        </g:LineSeries.DataPointStyle>
-                    </g:LineSeries>
-                    <g:LineSeries IndependentValuePath="Key" DependentValueBinding="{Binding Path=Value.RoomTemperature, Converter={StaticResource temperatureConverter}}" DependentRangeAxis="{Binding ElementName=yAxisSingleTemperature}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowRoomTemperature, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
-                        <g:LineSeries.DataPointStyle>
-                            <Style TargetType="{x:Type g:DataPoint}">
-                                <Setter Property="Background" Value="{Binding ColorRoomTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
-                                <Setter Property="Template" Value="{x:Null}" />
-                            </Style>
-                        </g:LineSeries.DataPointStyle>
-                    </g:LineSeries>
-                    <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.BatteryLevel" DependentRangeAxis="{Binding ElementName=yAxisSinglePercentage}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowBatteryLevel, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
-                        <g:LineSeries.DataPointStyle>
-                            <Style TargetType="{x:Type g:DataPoint}">
-                                <Setter Property="Background" Value="{Binding ColorBatteryLevel, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
-                                <Setter Property="Template" Value="{x:Null}" />
-                            </Style>
-                        </g:LineSeries.DataPointStyle>
-                    </g:LineSeries>
-                    <g:Chart.Axes>
-                        <g:LinearAxis Orientation="X" Minimum="0" Maximum="{Binding MaxOffset}" Interval="1">
-                            <g:LinearAxis.AxisLabelStyle>
-                                <Style TargetType="g:AxisLabel">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="g:AxisLabel">
-                                                <TextBlock DataContext="{TemplateBinding FormattedContent}" Text="{Binding StringFormat={}{0} s}" />
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
+                        </g:Chart.TitleStyle>
+                        <g:LineSeries IndependentValuePath="Key" DependentValueBinding="{Binding Path=Value.Temperature, Converter={StaticResource temperatureConverter}}" DependentRangeAxis="{Binding ElementName=yAxisSingleTemperature}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowTemperature, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
+                            <g:LineSeries.DataPointStyle>
+                                <Style TargetType="{x:Type g:DataPoint}">
+                                    <Setter Property="Background" Value="{Binding ColorTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
+                                    <Setter Property="Template" Value="{x:Null}"/>
                                 </Style>
-                            </g:LinearAxis.AxisLabelStyle>
-                        </g:LinearAxis>
-                        <g:LinearAxis x:Name="yAxisSingleTemperature" Orientation="Y" Minimum="0" Maximum="{Binding MaxTemp, Converter={StaticResource temperatureConverter}}" Foreground="{Binding GraphColorTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" ShowGridLines="{Binding GraphShowGridLines, Source={x:Static p:Settings.Default}}" Width="{Binding GraphShowAxisTemperature, Converter={StaticResource booleanToLengthConverter}}" Height="{Binding GraphShowAxisTemperature, Converter={StaticResource booleanToLengthConverter}}">
-                            <g:LinearAxis.Title>
-                                <TextBlock Text="{Binding MaxTemp.Unit, StringFormat={}Temperature (º{0}), Mode=OneWay}" />
-                            </g:LinearAxis.Title>
-                            <g:LinearAxis.GridLineStyle>
-                                <Style TargetType="Line" BasedOn="{StaticResource gridLineStyle}">
-                                    <Setter Property="Stroke" Value="{Binding Source={x:Static p:Settings.Default}, Path=GraphColorTemperature, Converter={StaticResource colorToSolidBrushConverter}}" />
+                            </g:LineSeries.DataPointStyle>
+                        </g:LineSeries>
+                        <g:LineSeries IndependentValuePath="Key" DependentValueBinding="{Binding Path=Value.TemperatureSetpoint, Converter={StaticResource temperatureConverter}}" DependentRangeAxis="{Binding ElementName=yAxisSingleTemperature}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowTemperatureSetpoint, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
+                            <g:LineSeries.DataPointStyle>
+                                <Style TargetType="{x:Type g:DataPoint}">
+                                    <Setter Property="Background" Value="{Binding ColorTemperatureSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
+                                    <Setter Property="Template" Value="{x:Null}"/>
                                 </Style>
-                            </g:LinearAxis.GridLineStyle>
-                        </g:LinearAxis>
-                        <g:LinearAxis x:Name="yAxisSinglePower" Orientation="Y" Title="Power (W)" Minimum="0" Maximum="{Binding MaxPower}" Foreground="{Binding GraphColorPower, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" ShowGridLines="{Binding GraphShowGridLines, Source={x:Static p:Settings.Default}}" Width="{Binding GraphShowAxisPower, Converter={StaticResource booleanToLengthConverter}}" Height="{Binding GraphShowAxisPower, Converter={StaticResource booleanToLengthConverter}}">
-                            <g:LinearAxis.GridLineStyle>
-                                <Style TargetType="Line" BasedOn="{StaticResource gridLineStyle}">
-                                    <Setter Property="Stroke" Value="{Binding Source={x:Static p:Settings.Default}, Path=GraphColorPower, Converter={StaticResource colorToSolidBrushConverter}}" />
+                            </g:LineSeries.DataPointStyle>
+                        </g:LineSeries>
+                        <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.Power" DependentRangeAxis="{Binding ElementName=yAxisSinglePower}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowPower, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
+                            <g:LineSeries.DataPointStyle>
+                                <Style TargetType="{x:Type g:DataPoint}">
+                                    <Setter Property="Background" Value="{Binding ColorPower, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
+                                    <Setter Property="Template" Value="{x:Null}"/>
                                 </Style>
-                            </g:LinearAxis.GridLineStyle>
-                        </g:LinearAxis>
-                        <g:LinearAxis x:Name="yAxisSingleVoltage" Orientation="Y" Title="Voltage (V)" Minimum="0" Maximum="10" Foreground="{Binding GraphColorVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" ShowGridLines="{Binding GraphShowGridLines, Source={x:Static p:Settings.Default}}" Width="{Binding GraphShowAxisVoltage, Converter={StaticResource booleanToLengthConverter}}" Height="{Binding GraphShowAxisVoltage, Converter={StaticResource booleanToLengthConverter}}">
-                            <g:LinearAxis.GridLineStyle>
-                                <Style TargetType="Line" BasedOn="{StaticResource gridLineStyle}">
-                                    <Setter Property="Stroke" Value="{Binding Source={x:Static p:Settings.Default}, Path=GraphColorColtage, Converter={StaticResource colorToSolidBrushConverter}}" />
+                            </g:LineSeries.DataPointStyle>
+                        </g:LineSeries>
+                        <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.PowerSetpoint" DependentRangeAxis="{Binding ElementName=yAxisSinglePower}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowPowerSetpoint, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
+                            <g:LineSeries.DataPointStyle>
+                                <Style TargetType="{x:Type g:DataPoint}">
+                                    <Setter Property="Background" Value="{Binding ColorPowerSetpoint, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
+                                    <Setter Property="Template" Value="{x:Null}"/>
                                 </Style>
-                            </g:LinearAxis.GridLineStyle>
-                        </g:LinearAxis>
-                        <g:LinearAxis x:Name="yAxisSingleCurrent" Orientation="Y" Title="Current (A)" Minimum="0" Maximum="40" Foreground="{Binding GraphColorCurrent, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" ShowGridLines="{Binding GraphShowGridLines, Source={x:Static p:Settings.Default}}" Width="{Binding GraphShowAxisCurrent, Converter={StaticResource booleanToLengthConverter}}" Height="{Binding GraphShowAxisCurrent, Converter={StaticResource booleanToLengthConverter}}">
-                            <g:LinearAxis.GridLineStyle>
-                                <Style TargetType="Line" BasedOn="{StaticResource gridLineStyle}">
-                                    <Setter Property="Stroke" Value="{Binding Source={x:Static p:Settings.Default}, Path=GraphColorCurrent, Converter={StaticResource colorToSolidBrushConverter}}" />
+                            </g:LineSeries.DataPointStyle>
+                        </g:LineSeries>
+                        <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.Voltage" DependentRangeAxis="{Binding ElementName=yAxisSingleVoltage}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowVoltage, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
+                            <g:LineSeries.DataPointStyle>
+                                <Style TargetType="{x:Type g:DataPoint}">
+                                    <Setter Property="Background" Value="{Binding ColorVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
+                                    <Setter Property="Template" Value="{x:Null}" />
                                 </Style>
-                            </g:LinearAxis.GridLineStyle>
-                        </g:LinearAxis>
-                        <g:LinearAxis x:Name="yAxisSingleResistance" Orientation="Y" Title="Resistance (Ω)" Minimum="0" Maximum="3" Foreground="{Binding GraphColorResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" ShowGridLines="{Binding GraphShowGridLines, Source={x:Static p:Settings.Default}}" Width="{Binding GraphShowAxisResistance, Converter={StaticResource booleanToLengthConverter}}" Height="{Binding GraphShowAxisResistance, Converter={StaticResource booleanToLengthConverter}}">
-                            <g:LinearAxis.GridLineStyle>
-                                <Style TargetType="Line" BasedOn="{StaticResource gridLineStyle}">
-                                    <Setter Property="Stroke" Value="{Binding Source={x:Static p:Settings.Default}, Path=GraphColorResistance, Converter={StaticResource colorToSolidBrushConverter}}" />
+                            </g:LineSeries.DataPointStyle>
+                        </g:LineSeries>
+                        <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.Current" DependentRangeAxis="{Binding ElementName=yAxisSingleCurrent}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowCurrent, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
+                            <g:LineSeries.DataPointStyle>
+                                <Style TargetType="{x:Type g:DataPoint}">
+                                    <Setter Property="Background" Value="{Binding ColorCurrent, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
+                                    <Setter Property="Template" Value="{x:Null}" />
                                 </Style>
-                            </g:LinearAxis.GridLineStyle>
-                        </g:LinearAxis>
-                        <g:LinearAxis x:Name="yAxisSinglePercentage" Orientation="Y" Title="Battery Level (%)" Minimum="0" Maximum="100" Foreground="{Binding GraphColorPercentage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" ShowGridLines="{Binding GraphShowGridLines, Source={x:Static p:Settings.Default}}" Width="{Binding GraphShowAxisPercentage, Converter={StaticResource booleanToLengthConverter}}" Height="{Binding GraphShowAxisPercentage, Converter={StaticResource booleanToLengthConverter}}">
-                            <g:LinearAxis.GridLineStyle>
-                                <Style TargetType="Line" BasedOn="{StaticResource gridLineStyle}">
-                                    <Setter Property="Stroke" Value="{Binding Source={x:Static p:Settings.Default}, Path=GraphColorPercentage, Converter={StaticResource colorToSolidBrushConverter}}" />
+                            </g:LineSeries.DataPointStyle>
+                        </g:LineSeries>
+                        <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.LiveResistance" DependentRangeAxis="{Binding ElementName=yAxisSingleResistance}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowLiveResistance, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
+                            <g:LineSeries.DataPointStyle>
+                                <Style TargetType="{x:Type g:DataPoint}">
+                                    <Setter Property="Background" Value="{Binding ColorLiveResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
+                                    <Setter Property="Template" Value="{x:Null}" />
                                 </Style>
-                            </g:LinearAxis.GridLineStyle>
-                        </g:LinearAxis>
-                    </g:Chart.Axes>
-                </g:Chart>
+                            </g:LineSeries.DataPointStyle>
+                        </g:LineSeries>
+                        <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.ColdResistance" DependentRangeAxis="{Binding ElementName=yAxisSingleResistance}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowColdResistance, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
+                            <g:LineSeries.DataPointStyle>
+                                <Style TargetType="{x:Type g:DataPoint}">
+                                    <Setter Property="Background" Value="{Binding ColorColdResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
+                                    <Setter Property="Template" Value="{x:Null}" />
+                                </Style>
+                            </g:LineSeries.DataPointStyle>
+                        </g:LineSeries>
+                        <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.BatteryVoltage" DependentRangeAxis="{Binding ElementName=yAxisSingleVoltage}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowBatteryVoltage, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
+                            <g:LineSeries.DataPointStyle>
+                                <Style TargetType="{x:Type g:DataPoint}">
+                                    <Setter Property="Background" Value="{Binding ColorBatteryVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
+                                    <Setter Property="Template" Value="{x:Null}" />
+                                </Style>
+                            </g:LineSeries.DataPointStyle>
+                        </g:LineSeries>
+                        <g:LineSeries IndependentValuePath="Key" DependentValueBinding="{Binding Path=Value.BoardTemperature, Converter={StaticResource temperatureConverter}}" DependentRangeAxis="{Binding ElementName=yAxisSingleTemperature}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowBoardTemperature, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
+                            <g:LineSeries.DataPointStyle>
+                                <Style TargetType="{x:Type g:DataPoint}">
+                                    <Setter Property="Background" Value="{Binding ColorBoardTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
+                                    <Setter Property="Template" Value="{x:Null}" />
+                                </Style>
+                            </g:LineSeries.DataPointStyle>
+                        </g:LineSeries>
+                        <g:LineSeries IndependentValuePath="Key" DependentValueBinding="{Binding Path=Value.RoomTemperature, Converter={StaticResource temperatureConverter}}" DependentRangeAxis="{Binding ElementName=yAxisSingleTemperature}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowRoomTemperature, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
+                            <g:LineSeries.DataPointStyle>
+                                <Style TargetType="{x:Type g:DataPoint}">
+                                    <Setter Property="Background" Value="{Binding ColorRoomTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
+                                    <Setter Property="Template" Value="{x:Null}" />
+                                </Style>
+                            </g:LineSeries.DataPointStyle>
+                        </g:LineSeries>
+                        <g:LineSeries IndependentValuePath="Key" DependentValuePath="Value.BatteryLevel" DependentRangeAxis="{Binding ElementName=yAxisSinglePercentage}" ItemsSource="{Binding GraphData}" Visibility="{Binding ShowBatteryLevel, Converter={StaticResource booleanToVisibilityConverter}, Source={x:Static p:Settings.Default}}">
+                            <g:LineSeries.DataPointStyle>
+                                <Style TargetType="{x:Type g:DataPoint}">
+                                    <Setter Property="Background" Value="{Binding ColorBatteryLevel, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}, Mode=OneWay}" />
+                                    <Setter Property="Template" Value="{x:Null}" />
+                                </Style>
+                            </g:LineSeries.DataPointStyle>
+                        </g:LineSeries>
+                        <g:Chart.Axes>
+                            <g:LinearAxis Orientation="X" Minimum="0" Maximum="{Binding MaxOffset}" Interval="1">
+                                <g:LinearAxis.AxisLabelStyle>
+                                    <Style TargetType="g:AxisLabel">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="g:AxisLabel">
+                                                    <TextBlock DataContext="{TemplateBinding FormattedContent}" Text="{Binding StringFormat={}{0} s}" />
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </g:LinearAxis.AxisLabelStyle>
+                            </g:LinearAxis>
+                            <g:LinearAxis x:Name="yAxisSingleTemperature" Orientation="Y" Minimum="0" Maximum="{Binding MaxTemp, Converter={StaticResource temperatureConverter}}" Foreground="{Binding GraphColorTemperature, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" ShowGridLines="{Binding GraphShowGridLines, Source={x:Static p:Settings.Default}}" Width="{Binding GraphShowAxisTemperature, Converter={StaticResource booleanToLengthConverter}}" Height="{Binding GraphShowAxisTemperature, Converter={StaticResource booleanToLengthConverter}}">
+                                <g:LinearAxis.Title>
+                                    <TextBlock Text="{Binding MaxTemp.Unit, StringFormat={}Temperature (º{0}), Mode=OneWay}" />
+                                </g:LinearAxis.Title>
+                                <g:LinearAxis.GridLineStyle>
+                                    <Style TargetType="Line" BasedOn="{StaticResource gridLineStyle}">
+                                        <Setter Property="Stroke" Value="{Binding Source={x:Static p:Settings.Default}, Path=GraphColorTemperature, Converter={StaticResource colorToSolidBrushConverter}}" />
+                                    </Style>
+                                </g:LinearAxis.GridLineStyle>
+                            </g:LinearAxis>
+                            <g:LinearAxis x:Name="yAxisSinglePower" Orientation="Y" Title="Power (W)" Minimum="0" Maximum="{Binding MaxPower}" Foreground="{Binding GraphColorPower, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" ShowGridLines="{Binding GraphShowGridLines, Source={x:Static p:Settings.Default}}" Width="{Binding GraphShowAxisPower, Converter={StaticResource booleanToLengthConverter}}" Height="{Binding GraphShowAxisPower, Converter={StaticResource booleanToLengthConverter}}">
+                                <g:LinearAxis.GridLineStyle>
+                                    <Style TargetType="Line" BasedOn="{StaticResource gridLineStyle}">
+                                        <Setter Property="Stroke" Value="{Binding Source={x:Static p:Settings.Default}, Path=GraphColorPower, Converter={StaticResource colorToSolidBrushConverter}}" />
+                                    </Style>
+                                </g:LinearAxis.GridLineStyle>
+                            </g:LinearAxis>
+                            <g:LinearAxis x:Name="yAxisSingleVoltage" Orientation="Y" Title="Voltage (V)" Minimum="0" Maximum="10" Foreground="{Binding GraphColorVoltage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" ShowGridLines="{Binding GraphShowGridLines, Source={x:Static p:Settings.Default}}" Width="{Binding GraphShowAxisVoltage, Converter={StaticResource booleanToLengthConverter}}" Height="{Binding GraphShowAxisVoltage, Converter={StaticResource booleanToLengthConverter}}">
+                                <g:LinearAxis.GridLineStyle>
+                                    <Style TargetType="Line" BasedOn="{StaticResource gridLineStyle}">
+                                        <Setter Property="Stroke" Value="{Binding Source={x:Static p:Settings.Default}, Path=GraphColorColtage, Converter={StaticResource colorToSolidBrushConverter}}" />
+                                    </Style>
+                                </g:LinearAxis.GridLineStyle>
+                            </g:LinearAxis>
+                            <g:LinearAxis x:Name="yAxisSingleCurrent" Orientation="Y" Title="Current (A)" Minimum="0" Maximum="40" Foreground="{Binding GraphColorCurrent, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" ShowGridLines="{Binding GraphShowGridLines, Source={x:Static p:Settings.Default}}" Width="{Binding GraphShowAxisCurrent, Converter={StaticResource booleanToLengthConverter}}" Height="{Binding GraphShowAxisCurrent, Converter={StaticResource booleanToLengthConverter}}">
+                                <g:LinearAxis.GridLineStyle>
+                                    <Style TargetType="Line" BasedOn="{StaticResource gridLineStyle}">
+                                        <Setter Property="Stroke" Value="{Binding Source={x:Static p:Settings.Default}, Path=GraphColorCurrent, Converter={StaticResource colorToSolidBrushConverter}}" />
+                                    </Style>
+                                </g:LinearAxis.GridLineStyle>
+                            </g:LinearAxis>
+                            <g:LinearAxis x:Name="yAxisSingleResistance" Orientation="Y" Title="Resistance (Ω)" Minimum="0" Maximum="3" Foreground="{Binding GraphColorResistance, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" ShowGridLines="{Binding GraphShowGridLines, Source={x:Static p:Settings.Default}}" Width="{Binding GraphShowAxisResistance, Converter={StaticResource booleanToLengthConverter}}" Height="{Binding GraphShowAxisResistance, Converter={StaticResource booleanToLengthConverter}}">
+                                <g:LinearAxis.GridLineStyle>
+                                    <Style TargetType="Line" BasedOn="{StaticResource gridLineStyle}">
+                                        <Setter Property="Stroke" Value="{Binding Source={x:Static p:Settings.Default}, Path=GraphColorResistance, Converter={StaticResource colorToSolidBrushConverter}}" />
+                                    </Style>
+                                </g:LinearAxis.GridLineStyle>
+                            </g:LinearAxis>
+                            <g:LinearAxis x:Name="yAxisSinglePercentage" Orientation="Y" Title="Battery Level (%)" Minimum="0" Maximum="100" Foreground="{Binding GraphColorPercentage, Source={x:Static p:Settings.Default}, Converter={StaticResource colorToSolidBrushConverter}}" ShowGridLines="{Binding GraphShowGridLines, Source={x:Static p:Settings.Default}}" Width="{Binding GraphShowAxisPercentage, Converter={StaticResource booleanToLengthConverter}}" Height="{Binding GraphShowAxisPercentage, Converter={StaticResource booleanToLengthConverter}}">
+                                <g:LinearAxis.GridLineStyle>
+                                    <Style TargetType="Line" BasedOn="{StaticResource gridLineStyle}">
+                                        <Setter Property="Stroke" Value="{Binding Source={x:Static p:Settings.Default}, Path=GraphColorPercentage, Converter={StaticResource colorToSolidBrushConverter}}" />
+                                    </Style>
+                                </g:LinearAxis.GridLineStyle>
+                            </g:LinearAxis>
+                        </g:Chart.Axes>
+                    </g:Chart>
+
+                </Grid>
             </Grid>
             <Rectangle Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Visibility="{Binding CurrentDevice, Converter={StaticResource isNullToVisibilityConverterNegate}}" Style="{StaticResource shadeStyle}" />
             <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Visibility="{Binding CurrentDevice, Converter={StaticResource isNullToVisibilityConverterNegate}}" Panel.ZIndex="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24pt" Foreground="White" Text="No Device Connected" />
