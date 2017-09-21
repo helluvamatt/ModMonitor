@@ -40,7 +40,7 @@
                     <Paragraph>For example, you can use these statistics to monitor battery and device efficiency by saving statistics from the device when you change or charge the device's battery.</Paragraph>
                 </FlowDocument>
             </FlowDocumentScrollViewer>
-            <DataGrid Grid.Row="1" ItemsSource="{Binding StatisticsData}" />
+            <DataGrid Grid.Row="1" ItemsSource="{Binding StatisticsData}" CanUserAddRows="False" CanUserDeleteRows="False" CanUserSortColumns="False" />
             <Rectangle Grid.RowSpan="2" Visibility="{Binding IsLoading, Converter={StaticResource booleanToVisibilityConverter}}" Style="{StaticResource shadeStyle}" />
             <fa:ImageAwesome Grid.RowSpan="2" Icon="Cog" Spin="True" SpinDuration="2" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Width="48" Height="48" Panel.ZIndex="10" Visibility="{Binding IsLoading, Converter={StaticResource booleanToVisibilityConverter}}" />
         </Grid>
