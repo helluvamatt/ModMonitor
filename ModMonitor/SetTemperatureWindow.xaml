@@ -23,16 +23,13 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-        </Grid.ColumnDefinitions>
-        <RadioButton Grid.Column="0" Grid.Row="0" Margin="6 0 0 0" VerticalAlignment="Center" IsChecked="{Binding IsTemperatureEnabled, Converter={StaticResource booleanNegationConverter}}" />
-        <Label Grid.Column="1" Grid.Row="0">Disabled</Label>
-        <RadioButton Grid.Column="0" Grid.Row="1" Margin="6 0 0 0" VerticalAlignment="Center" IsChecked="{Binding IsTemperatureEnabled}" />
-        <TextBox Grid.Row="1" Grid.Column="1" x:Name="valueField" Margin="6 6 6 6" Width="100" IsEnabled="{Binding IsTemperatureEnabled}" />
-        <ComboBox Grid.Row="1" Grid.Column="2" x:Name="unitField" Margin="0 6 6 6" Width="50" IsEnabled="{Binding IsTemperatureEnabled}" ItemsSource="{Binding Source={StaticResource temperatureUnitValues }}" ItemStringFormat="{}º{0}" />
-        <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right" Padding="15 3 15 3" Margin="0 6 6 6" Click="okButton_Click">OK</Button>
+        <RadioButton Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Margin="6 6 0 6" VerticalAlignment="Center" IsChecked="{Binding IsTemperatureEnabled, Converter={StaticResource booleanNegationConverter}}" Content="Disabled" />
+        <RadioButton Grid.Column="0" Grid.Row="1" Margin="6 6 6 6" VerticalAlignment="Center" IsChecked="{Binding IsTemperatureEnabled}" VerticalContentAlignment="Center">
+            <StackPanel Orientation="Horizontal">
+                <TextBox x:Name="valueField" Width="100" IsEnabled="{Binding IsTemperatureEnabled}" />
+                <ComboBox x:Name="unitField" Margin="6 0 0 0" Width="50" IsEnabled="{Binding IsTemperatureEnabled}" ItemsSource="{Binding Source={StaticResource temperatureUnitValues }}" ItemStringFormat="{}º{0}" />
+            </StackPanel>
+        </RadioButton>
+        <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right" Padding="15 3 15 3" Margin="0 0 6 6" Click="okButton_Click">OK</Button>
     </Grid>
 </Window>
