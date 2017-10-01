@@ -25,22 +25,14 @@ namespace ModMonitor
         {
             InitializeComponent();
             _Callback = callback;
-            inputField.Text = initialValue.ToString();
+            cbProfile.SelectedValue = initialValue;
         }
 
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
-            int result;
-            if (int.TryParse(inputField.Text, out result))
-            {
-                _Callback(result);
-                DialogResult = true;
-                Close();
-            }
-            else
-            {
-                MessageBox.Show("Please enter a number.");
-            }
+            _Callback((int)cbProfile.SelectedValue);
+            DialogResult = true;
+            Close();
         }
     }
 }
