@@ -76,6 +76,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
         <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Style="{StaticResource legendHeader}" Content="Coil" />
@@ -210,6 +211,8 @@
 
         <CheckBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Left" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=AutoConnect}" ToolTip="Automatically connect to first detected device" Content="Auto Connect to first device" />
 
+        <CheckBox Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Left" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=AutoReconnect}" ToolTip="Automatically reconnect to the same device when it becomes available again." Content="Auto Reconnect" />
+
         <Label Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="3" Style="{StaticResource legendHeader}" Content="Graph" />
 
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" Style="{StaticResource formControlStyle}">
@@ -265,6 +268,6 @@
             <Label Content="Digital Display Color" />
         </StackPanel>
 
-        <Button Grid.Row="10" Grid.ColumnSpan="3" Grid.Column="0" Command="{Binding ResetCommand}" Margin="0 5 0 0">Reset to Defaults</Button>
+        <Button Grid.Row="11" Grid.ColumnSpan="3" Grid.Column="0" Command="{Binding ResetCommand}" Margin="0 5 0 0">Reset to Defaults</Button>
     </Grid>
 </Window>

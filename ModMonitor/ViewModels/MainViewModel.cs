@@ -19,6 +19,7 @@ using System.ComponentModel;
 using NLog;
 using LibDnaSerial.Models;
 using System.IO;
+using System.Threading;
 
 namespace ModMonitor.ViewModels
 {
@@ -518,6 +519,8 @@ namespace ModMonitor.ViewModels
         private DnaSampleManager sampleManager = null;
         private SampleRecorder sampleRecorder = null;
 
+        private string lastDevice = null;
+
         private bool isFiring = false;
         private bool hadPreheat = false;
         private DateTime puffStart;
@@ -589,6 +592,7 @@ namespace ModMonitor.ViewModels
                     log.Info("Disconnectiong...");
                     sampleManager.Dispose();
                     sampleManager = null;
+                    lastDevice = null;
                     Invoke(OnDeviceDisconnected);
                     log.Info("Disconnected");
                 });
@@ -616,6 +620,7 @@ namespace ModMonitor.ViewModels
                         sampleManager.Error += Error;
                         Invoke(() => sampleManager.Paused = IsStatsMode); // Safe to set Paused property in UI thread, it just sets a bool, IsStatsMode must be read from UI thread
                         sampleManager.Connect();
+                        lastDevice = device.SerialPort;
                         Invoke(() =>
                         {
                             CurrentDevice = device;
@@ -949,6 +954,18 @@ namespace ModMonitor.ViewModels
             ClearLiveData();
             ConnectText = "Connect";
             Status = "Disconnected";
+            if (Settings.Default.AutoReconnect && lastDevice != null)
+            {
+                Task.Run(() => {
+                    DnaDevice device = null;
+                    while (device == null)
+                    {
+                        Thread.Sleep(100);
+                        device = DnaDeviceManager.CheckForDnaDevice(lastDevice);
+                    }
+                    Connect(device);
+                });
+            }
         }
 
         private void ClearLiveData()
