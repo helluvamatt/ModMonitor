@@ -27,7 +27,8 @@ namespace LibDnaSerial
                     dev.SerialNumber = conn.GetSerialNumber();
                     dev.FirmwareVersion = conn.GetFirmwareVersion();
                     dev.Features = conn.GetFeatures();
-                    dev.MaxPower = GetMaxPower(dev.Manufacturer, dev.ProductName);
+                    dev.CellCount = conn.GetCellCount();
+                    dev.MaxPower = GetMaxPower(dev.Manufacturer, dev.ProductName, dev.CellCount);
                     return dev;
                 }
             }
@@ -59,17 +60,19 @@ namespace LibDnaSerial
         // Table of devices to max power outputs
         private static readonly Dictionary<string, float> MaxPowerTable = new Dictionary<string, float>()
         {
-            { "Evolv_DNA 250", 250 },
-            { "Evolv_DNA 200", 200 },
-            { "Evolv_DNA 75", 75 },
-            { "Evolv_DNA 75C", 75 },
-            { "Evolv_DNA 60", 60 },
-            { "Evolv_DNA 40", 40 },
+            { "Evolv_DNA 250_3", 250 },
+            { "Evolv_DNA 200_3", 200 },
+            { "Evolv_DNA 250_2", 166 },
+            { "Evolv_DNA 200_2", 133 },
+            { "Evolv_DNA 75_1", 75 },
+            { "Evolv_DNA 75 Color_1", 75 },
+            { "Evolv_DNA 60_1", 60 },
+            { "Evolv_DNA 40_1", 40 },
         };
 
-        private static float? GetMaxPower(string manufacturer, string boardName)
+        private static float? GetMaxPower(string manufacturer, string boardName, uint cellCount)
         {
-            var key = string.Format("{0}_{1}", manufacturer, boardName);
+            var key = string.Format("{0}_{1}_{2}", manufacturer, boardName, cellCount);
             if (MaxPowerTable.ContainsKey(key))
             {
                 return MaxPowerTable[key];

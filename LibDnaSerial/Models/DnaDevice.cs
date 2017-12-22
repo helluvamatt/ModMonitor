@@ -37,6 +37,11 @@ namespace LibDnaSerial.Models
         public string FirmwareVersion { get; set; }
 
         /// <summary>
+        /// Number of cells connected to the device
+        /// </summary>
+        public uint CellCount { get; set; }
+
+        /// <summary>
         /// Max power of the device, provided by a table of known devices
         /// </summary>
         public float? MaxPower { get; set; }

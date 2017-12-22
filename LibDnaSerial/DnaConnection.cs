@@ -33,6 +33,31 @@ namespace LibDnaSerial
         private const string UNIT_WATT = "W";
         private const string UNIT_SECOND = "S";
 
+        /// <summary>
+        /// Feature code that indicates the device is aware of it's battery capacity
+        /// </summary>
+        public const string FEATURE_FUEL_GUAGE = "FG";
+
+        /// <summary>
+        /// Feature code the indicates the device is capable of temperature control
+        /// </summary>
+        public const string FEATURE_TEMPERATURE_CONTROL = "TC";
+
+        /// <summary>
+        /// Feature code that indicates the device is capable of wattage control
+        /// </summary>
+        public const string FEATURE_POWER_CONTROL = "PC";
+
+        /// <summary>
+        /// Feature code that indicates the device tracks and stores long term statistics
+        /// </summary>
+        public const string FEATURE_STATISTICS = "ST";
+
+        /// <summary>
+        /// Feature code that indicates the device uses profiles
+        /// </summary>
+        public const string FEATURE_PROFILES = "M";
+
         private const string MESSAGE_PATTERN = @".*?([A-Z])=(.*)";
         private const string TEMP_PATTERN = @"(\d+(?:\.\d+)?)([FCK])";
 
@@ -43,6 +68,7 @@ namespace LibDnaSerial
         private Regex tempRegex;
 
         private uint cellCount = 0;
+        private HashSet<string> features = new HashSet<string>();
         private ulong sampleIndex = 0;
         private ulong statisticSampleIndex = 0;
 
@@ -82,6 +108,7 @@ namespace LibDnaSerial
             messageRegEx = new Regex(MESSAGE_PATTERN);
             tempRegex = new Regex(TEMP_PATTERN);
             cellCount = GetCellCount();
+            features.UnionWith(GetFeatures());
         }
 
         #region Disposing pattern
@@ -118,7 +145,7 @@ namespace LibDnaSerial
             s.Begin = DateTime.Now;
             s.BatteryVoltage = GetBatteryVoltage();
             s.CellVoltages = GetCellVoltages();
-            s.BatteryCapacity = GetBatteryCapacityWh();
+            if (features.Contains(FEATURE_FUEL_GUAGE)) s.BatteryCapacity = GetBatteryCapacityWh();
             s.BatteryLevel = GetBatteryLevelPercent();
             s.Current = GetCurrent();
             s.Power = GetPower();
