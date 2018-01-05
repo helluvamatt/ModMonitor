@@ -52,6 +52,10 @@
                 <Setter Property="OverridesDefaultStyle" Value="True" />
                 <Setter Property="FocusVisualStyle" Value="{x:Null}" />
             </Style>
+            <Style TargetType="fa:ImageAwesome">
+                <Setter Property="Width" Value="20" />
+                <Setter Property="Height" Value="20" />
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
     <Window.InputBindings>
